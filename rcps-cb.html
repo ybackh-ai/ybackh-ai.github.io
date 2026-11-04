@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RCPS·CB 평가 필요 여부 | 기업 회계 도구</title>
+  <meta name="description" content="상환전환우선주(RCPS), 전환사채(CB), 신주인수권부사채(BW) 등의 발행 조건으로 부채·자본 분류, 파생상품 분리, 공정가치 평가 필요 여부를 안내합니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="RCPS·CB 평가 필요 여부 | 기업 회계 도구">
+  <meta property="og:description" content="상환전환우선주(RCPS), 전환사채(CB), 신주인수권부사채(BW) 등의 발행 조건으로 부채·자본 분류, 파생상품 분리, 공정가치 평가 필요 여부를 안내합니다.">
+  <meta property="og:url" content="https://ybackh-ai.github.io/rcps-cb.html">
+  <link rel="canonical" href="https://ybackh-ai.github.io/rcps-cb.html">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>RCPS·CB 평가 필요 여부</h1>
+      <p>투자계약서의 주요 조건을 고르면 회계상 부채·자본 분류, 전환권 등 파생상품 분리, 공정가치 평가가 필요한지 안내해 드립니다. 외부감사를 처음 받는 투자 유치 기업에서 자주 쟁점이 됩니다.</p>
+    </div>
+    <p class="basis-date">법령·기준 확인일 2026년 11월 4일 (법제처 현행 법령 기준). 개정이 반영되면 이 날짜를 갱신합니다.</p>
+
+    <div class="notice beta-notice"><span class="tag tag-beta">베타</span> 이 도구는 검증이 끝나지 않은 부분이 있습니다. K-IFRS 기준서 원문 문단을 확인하지 않은 일반 원칙 요약입니다. 결과는 참고용으로만 사용하시고, 중요한 결정 전에는 상담을 받으시기 바랍니다.</div>
+
+    <section>
+      <form id="rc-form" novalidate>
+        <fieldset>
+          <legend>1. 상품</legend>
+          <select id="instrument" name="instrument">
+            <option value="">선택해 주세요</option>
+            <option value="rcps">상환전환우선주 (RCPS)</option>
+            <option value="cps">전환우선주 (CPS)</option>
+            <option value="rps">상환우선주 (RPS)</option>
+            <option value="cb">전환사채 (CB)</option>
+            <option value="bw">신주인수권부사채 (BW)</option>
+            <option value="eb">교환사채 (EB)</option>
+          </select>
+          <div class="radio-row" style="margin-top:10px">
+            <label class="choice"><input type="radio" name="gaap" value="kifrs" checked><span>K-IFRS 적용</span></label>
+            <label class="choice"><input type="radio" name="gaap" value="kgaap"><span>일반기업회계기준 적용</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>2. 계약 조건 (해당하는 것만 선택)</legend>
+          <label class="choice only-pref"><input type="checkbox" name="holderRedemption"><span>투자자(보유자)가 회사에 상환을 청구할 수 있습니다.</span></label>
+          <label class="choice only-pref"><input type="checkbox" name="mandatoryDividend"><span>회사가 배당 지급을 피할 수 없습니다. <span class="hint" style="display:inline">(이익과 관계없이 지급 의무 등)</span></span></label>
+          <label class="choice only-conv"><input type="checkbox" name="refixing"><span>주가 하락·후속 투자 등에 따라 전환(행사)가격이 조정됩니다. <span class="hint" style="display:inline">(리픽싱)</span></span></label>
+          <label class="choice only-conv"><input type="checkbox" name="variableShares"><span>그 밖의 조건으로 전환(교환)되는 주식 수가 바뀔 수 있습니다.</span></label>
+          <label class="choice"><input type="checkbox" name="holderPut"><span>투자자가 만기 전에 조기상환을 청구할 수 있습니다. <span class="hint" style="display:inline">(풋옵션)</span></span></label>
+          <label class="choice"><input type="checkbox" name="callOption"><span>회사나 대주주가 주식·사채를 사 갈 수 있는 권리가 있습니다. <span class="hint" style="display:inline">(콜옵션·매도청구권)</span></span></label>
+          <label class="choice only-eb hidden"><input type="checkbox" name="exchangeOwnShares"><span>(교환사채) 교환 대상이 회사의 자기주식입니다.</span></label>
+        </fieldset>
+
+        <div id="errors" aria-live="polite"></div>
+        <button type="submit" class="btn">확인하기</button>
+      </form>
+
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+
+  <script src="assets/rcps-cb-rules.js"></script>
+  <script src="assets/rcps-cb.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+</body>
+</html>

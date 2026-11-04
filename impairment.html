@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>영업권·지분 손상검사 간이 진단 | 기업 회계 도구</title>
+  <meta name="description" content="장부금액과 회수가능액(순공정가치·사용가치)을 비교해 영업권·투자지분 손상차손과 여유율을 계산합니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="영업권·지분 손상검사 간이 진단 | 기업 회계 도구">
+  <meta property="og:description" content="장부금액과 회수가능액(순공정가치·사용가치)을 비교해 영업권·투자지분 손상차손과 여유율을 계산합니다.">
+  <meta property="og:url" content="https://ybackh-ai.github.io/impairment.html">
+  <link rel="canonical" href="https://ybackh-ai.github.io/impairment.html">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>영업권·지분 손상검사 간이 진단</h1>
+      <p>인수 후 영업권이나 종속·관계기업 투자지분의 장부금액이 회수가능액보다 큰지 확인합니다. 사용가치를 모르면 연도별 현금흐름과 할인율을 넣어 간이 계산할 수 있습니다. 금액 단위는 자유롭게(예: 백만원) 맞춰 넣으세요.</p>
+    </div>
+    <p class="basis-date">법령·기준 확인일 2026년 11월 4일 (법제처 현행 법령 기준). 개정이 반영되면 이 날짜를 갱신합니다.</p>
+    <div class="notice beta-notice"><span class="tag tag-beta">베타</span> K-IFRS 제1036호의 일반 원칙을 요약한 간이 계산입니다. 기준서 원문 문단을 대조하지 않았고, 현금창출단위 식별·개별 자산 배분·세전 할인율 환산은 다루지 않습니다.</div>
+
+    <section>
+      <form id="im-form" novalidate>
+        <fieldset>
+          <legend>장부금액</legend>
+          <div class="two">
+            <div class="field"><label for="carryingAmount">현금창출단위(또는 투자지분) 장부금액 합계</label><input id="carryingAmount" type="number" inputmode="decimal" placeholder="예: 12000"><p class="hint">영업권을 포함한 순자산 장부금액. 투자지분 손상이면 투자주식 장부금액.</p></div>
+            <div class="field"><label for="goodwill">그중 영업권</label><input id="goodwill" type="number" inputmode="decimal" placeholder="예: 3000"><p class="hint">없으면 0 또는 비워 두세요.</p></div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>회수가능액</legend>
+          <div class="two">
+            <div class="field"><label for="fvlcd">처분부대원가 차감 후 공정가치 (아는 경우)</label><input id="fvlcd" type="number" inputmode="decimal" placeholder="예: 11000"></div>
+            <div class="field"><label for="viu">사용가치 (아는 경우)</label><input id="viu" type="number" inputmode="decimal" placeholder="예: 11500"><p class="hint">비우면 아래 현금흐름으로 계산합니다.</p></div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>사용가치 간이 계산 (사용가치를 모를 때)</legend>
+          <div class="two">
+            <div class="field"><label for="cf1">1년차 현금흐름</label><input id="cf1" type="number" inputmode="decimal" placeholder="예: 1500"></div>
+            <div class="field"><label for="cf2">2년차</label><input id="cf2" type="number" inputmode="decimal"></div>
+            <div class="field"><label for="cf3">3년차</label><input id="cf3" type="number" inputmode="decimal"></div>
+            <div class="field"><label for="cf4">4년차</label><input id="cf4" type="number" inputmode="decimal"></div>
+            <div class="field"><label for="cf5">5년차</label><input id="cf5" type="number" inputmode="decimal"></div>
+            <div class="field"><label for="discountRate">세전 할인율 (%)</label><input id="discountRate" type="number" inputmode="decimal" step="0.1" placeholder="예: 12"><p class="hint">WACC는 <a href="dcf.html">DCF·WACC 계산기</a>로 추정할 수 있습니다(세후 기준이므로 세전 환산 필요).</p></div>
+            <div class="field"><label for="terminalGrowth">영구성장률 (%, 선택)</label><input id="terminalGrowth" type="number" inputmode="decimal" step="0.1" placeholder="예: 1"><p class="hint">비우면 마지막 연도 이후 현금흐름을 0으로 봅니다.</p></div>
+          </div>
+        </fieldset>
+        <div id="errors" aria-live="polite"></div>
+        <button type="submit" class="btn">손상 여부 계산하기</button>
+      </form>
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+  <script src="assets/impairment-rules.js"></script>
+  <script src="assets/impairment.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+</body>
+</html>

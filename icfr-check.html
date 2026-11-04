@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>내부회계관리제도 적용 대상 확인 | 기업 회계 도구</title>
+  <meta name="description" content="상장 여부와 자산총액으로 외감법상 내부회계관리제도 적용 대상인지, 감사인이 검토와 감사 중 무엇을 하는지 확인합니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="내부회계관리제도 적용 대상 확인 | 기업 회계 도구">
+  <meta property="og:description" content="상장 여부와 자산총액으로 외감법상 내부회계관리제도 적용 대상인지, 감사인이 검토와 감사 중 무엇을 하는지 확인합니다.">
+  <meta property="og:url" content="https://ybackh-ai.github.io/icfr-check.html">
+  <link rel="canonical" href="https://ybackh-ai.github.io/icfr-check.html">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>내부회계관리제도 적용 대상 확인</h1>
+      <p>「주식회사 등의 외부감사에 관한 법률」 제8조와 같은 법 시행령 제9조 기준으로 내부회계관리제도를 갖춰야 하는지, 감사인이 검토와 감사 중 무엇을 하는지 확인합니다.</p>
+    </div>
+    <p class="basis-date">법령·기준 확인일 2026년 11월 4일 (법제처 현행 법령 기준). 개정이 반영되면 이 날짜를 갱신합니다.</p>
+
+    <section>
+      <form id="icfr-form" novalidate>
+        <fieldset>
+          <legend>1. 기본 정보</legend>
+          <label class="choice"><input type="checkbox" name="audited" checked><span>외부감사 대상 회사입니다. <span class="hint" style="display:inline">(모르면 <a href="audit-check.html">외부감사 대상 판정기</a>로 먼저 확인하세요)</span></span></label>
+          <div class="radio-row" style="margin-top:6px">
+            <label class="choice"><input type="radio" name="companyType" value="stock" checked><span>주식회사</span></label>
+            <label class="choice"><input type="radio" name="companyType" value="llc"><span>유한회사</span></label>
+          </div>
+          <label class="choice"><input type="checkbox" name="listed"><span>주권상장법인입니다.</span></label>
+          <div class="field" style="margin:10px 0 0">
+            <label for="assets">직전 사업연도 말 자산총액</label>
+            <div class="input-unit"><input id="assets" name="assets" type="number" inputmode="decimal" step="0.01" min="0" placeholder="예: 1200"><span>억원</span></div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>2. 해당하는 경우만 선택</legend>
+          <label class="choice"><input type="checkbox" name="groupAffiliate"><span>직전 사업연도 말 기준 공시대상기업집단에 속하는 국내 회사입니다.</span></label>
+          <label class="choice"><input type="checkbox" name="reportingEntity"><span>직전 사업연도 말 기준 사업보고서 제출대상법인입니다. <span class="hint" style="display:inline">(채권 공모 등으로 상장사가 아니어도 해당할 수 있음)</span></span></label>
+          <label class="choice"><input type="checkbox" name="financial"><span>금융회사입니다.</span></label>
+          <label class="choice"><input type="checkbox" name="specialVehicle"><span>유동화전문회사, 프로젝트금융투자회사 등 「법인세법」 제51조의2제1항 각 호 또는 「조세특례제한법」 제104조의31제1항에 해당하는 회사입니다.</span></label>
+        </fieldset>
+
+        <div id="errors" aria-live="polite"></div>
+        <button type="submit" class="btn">확인하기</button>
+      </form>
+
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+
+    <section>
+      <h2>적용 기준 요약</h2>
+      <div class="card">
+        <table>
+          <thead><tr><th>구분</th><th>적용 여부</th><th>감사인</th></tr></thead>
+          <tbody>
+            <tr><td>주권상장법인 자산 1천억원 이상</td><td>적용</td><td>감사</td></tr>
+            <tr><td>주권상장법인 자산 1천억원 미만</td><td>적용</td><td>검토</td></tr>
+            <tr><td>비상장 자산 5천억원 이상</td><td>적용</td><td>검토</td></tr>
+            <tr><td>비상장 자산 1천억~5천억원 + 공시대상기업집단·사업보고서 제출대상·금융회사</td><td>적용</td><td>검토</td></tr>
+            <tr><td>그 밖의 비상장 회사, 유한회사</td><td>제외</td><td>-</td></tr>
+          </tbody>
+        </table>
+        <p class="hint" style="margin-top:10px">근거: 외감법 제2조·제8조, 시행령 제9조 (2026년 11월 4일 법제처 현행 법령 기준)</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+
+  <script src="assets/icfr-rules.js"></script>
+  <script src="assets/icfr-check.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+</body>
+</html>

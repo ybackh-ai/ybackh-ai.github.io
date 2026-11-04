@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>자본시장법 외부평가 대상 판정 | 기업 회계 도구</title>
+  <meta name="description" content="상장회사의 합병, 중요한 영업·자산 양수도, 주식교환·이전, 분할합병이 자본시장법상 외부평가기관 평가 대상인지 확인합니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="자본시장법 외부평가 대상 판정 | 기업 회계 도구">
+  <meta property="og:description" content="상장회사의 합병, 중요한 영업·자산 양수도, 주식교환·이전, 분할합병이 자본시장법상 외부평가기관 평가 대상인지 확인합니다.">
+  <meta property="og:url" content="https://ybackh-ai.github.io/external-valuation.html">
+  <link rel="canonical" href="https://ybackh-ai.github.io/external-valuation.html">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>자본시장법 외부평가 대상 판정</h1>
+      <p>주권상장법인의 합병 등이 「자본시장과 금융투자업에 관한 법률」 제165조의4와 같은 법 시행령 제176조의5·제176조의6에 따라 외부평가기관의 평가를 받아야 하는지 확인합니다.</p>
+    </div>
+    <p class="basis-date">법령·기준 확인일 2026년 11월 4일 (법제처 현행 법령 기준). 개정이 반영되면 이 날짜를 갱신합니다.</p>
+
+    <div class="notice beta-notice"><span class="tag tag-beta">베타</span> 이 도구는 검증이 끝나지 않은 부분이 있습니다. 2026년 12월 9일 시행되는 개정 자본시장법에 맞춘 시행령 개정을 아직 반영하지 못했습니다. 결과는 참고용으로만 사용하시고, 중요한 결정 전에는 상담을 받으시기 바랍니다.</div>
+
+    <div class="notice" style="margin:0 0 16px"><b>2026년 12월 9일 법률 개정 시행 예정</b> — 합병 등의 가액 결정 기준, 이사회 의견서·외부평가 공시, 계열회사 간 거래의 외부평가기관 선정 방식이 바뀝니다. 시행령 기준도 바뀔 수 있으므로 거래 시점의 법령을 다시 확인하세요.</div>
+
+    <section>
+      <form id="ev-form" novalidate>
+        <fieldset>
+          <legend>1. 거래 유형</legend>
+          <select id="dealType" name="dealType">
+            <option value="">선택해 주세요</option>
+            <option value="merger">합병</option>
+            <option value="business_transfer">중요한 영업·자산 양수·양도</option>
+            <option value="share_exchange">주식의 포괄적 교환</option>
+            <option value="share_transfer">주식의 포괄적 이전</option>
+            <option value="split_merger">분할합병</option>
+            <option value="split">단순분할</option>
+          </select>
+        </fieldset>
+
+        <fieldset>
+          <legend>2. 당사</legend>
+          <label class="choice"><input type="checkbox" name="weListed" checked><span>당사는 주권상장법인입니다.</span></label>
+          <label class="choice"><input type="checkbox" name="weKonex"><span>코넥스시장 상장법인입니다.</span></label>
+          <label class="choice only-merger hidden"><input type="checkbox" name="weSpac"><span>기업인수목적회사(SPAC)입니다.</span></label>
+        </fieldset>
+
+        <fieldset class="only-counterparty hidden">
+          <legend>3. 상대 법인</legend>
+          <div class="radio-row">
+            <label class="choice"><input type="radio" name="counterpartyType" value="unlisted" checked><span>주권비상장법인</span></label>
+            <label class="choice"><input type="radio" name="counterpartyType" value="listed"><span>주권상장법인</span></label>
+          </div>
+          <label class="choice only-merger hidden"><input type="checkbox" name="affiliate"><span>상대 법인이 계열회사입니다. <span class="hint" style="display:inline">(합병 이사회 결의일부터 최근 1년 이내 계열회사였던 법인 포함)</span></span></label>
+        </fieldset>
+
+        <fieldset class="only-merger hidden">
+          <legend>4. 합병 조건</legend>
+          <label class="choice"><input type="checkbox" name="weUsesAssetEarnings"><span>당사 합병가액을 자산가치·수익가치 가중평균(시행령 제176조의5제1항제2호나목)으로 산정합니다. <span class="hint" style="display:inline">(기준시가를 산정할 수 없는 경우 등)</span></span></label>
+          <label class="choice"><input type="checkbox" name="counterpartyUsesAssetEarnings"><span>(SPAC 합병) 상대 주권상장법인이 자산가치·수익가치로 산정한 합병가액에 따릅니다.</span></label>
+          <label class="choice"><input type="checkbox" name="becomesUnlisted"><span>합병 후 당사가 주권비상장법인이 됩니다.</span></label>
+          <label class="choice"><input type="checkbox" name="backdoor"><span>비상장 상대 법인이 더 커서 상장요건을 적용받는 합병입니다. <span class="hint" style="display:inline">(시행령 제176조의5제4항)</span></span></label>
+          <label class="choice"><input type="checkbox" name="whollyOwnedNoNewShares"><span>발행주식 전부를 가진 자회사를 신주 발행 없이 합병합니다.</span></label>
+        </fieldset>
+
+        <fieldset class="only-bt hidden">
+          <legend>4. 중요한 양수·양도 해당 여부 (최근 사업연도 말 대비)</legend>
+          <div class="two">
+            <div class="field"><label for="rAssets">대상 자산액 ÷ 자산총액</label><div class="input-unit"><input id="rAssets" type="number" inputmode="decimal" step="0.01" min="0"><span>%</span></div><span class="hint">자산액은 장부가액과 거래금액 중 큰 금액</span></div>
+            <div class="field"><label for="rSales">대상 영업 매출액 ÷ 매출액</label><div class="input-unit"><input id="rSales" type="number" inputmode="decimal" step="0.01" min="0"><span>%</span></div></div>
+            <div class="field"><label for="rLiab">인수 부채액 ÷ 부채총액</label><div class="input-unit"><input id="rLiab" type="number" inputmode="decimal" step="0.01" min="0"><span>%</span></div></div>
+          </div>
+          <label class="choice"><input type="checkbox" name="important"><span>비율 계산 없이, 중요한 양수·양도(10% 이상)에 해당하는 것으로 알고 있습니다.</span></label>
+          <label class="choice"><input type="checkbox" name="assetViaMarket"><span>증권시장을 통한 증권 매매, 자산 경매 등 금융위원회가 고시한 예외에 해당합니다.</span></label>
+        </fieldset>
+
+        <fieldset class="only-exchange hidden">
+          <legend>4. 예외 확인</legend>
+          <label class="choice only-se"><input type="checkbox" name="exchangeAffiliateException"><span>(포괄적 교환) 완전자회사가 되는 주권상장법인이 완전모회사가 되는 주권상장법인의 계열회사입니다.</span></label>
+          <label class="choice only-st"><input type="checkbox" name="transferAffiliateException"><span>(포괄적 이전) 완전자회사가 되는 주권상장법인이 다른 완전자회사 상장법인의 계열회사이고, 완전모회사가 주권상장법인입니다.</span></label>
+        </fieldset>
+
+        <div id="errors" aria-live="polite"></div>
+        <button type="submit" class="btn">판정하기</button>
+      </form>
+
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+
+  <script src="assets/external-valuation-rules.js"></script>
+  <script src="assets/external-valuation.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+</body>
+</html>

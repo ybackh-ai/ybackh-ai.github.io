@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>감사인 지정 대상 확인 | 기업 회계 도구</title>
+  <meta name="description" content="주기적 지정(6+3), 상장 예정, 3년 연속 영업손실 등 외감법 제11조의 감사인 지정 사유에 해당하는지 확인합니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="감사인 지정 대상 확인 | 기업 회계 도구">
+  <meta property="og:description" content="주기적 지정(6+3), 상장 예정, 3년 연속 영업손실 등 외감법 제11조의 감사인 지정 사유에 해당하는지 확인합니다.">
+  <meta property="og:url" content="https://ybackh-ai.github.io/audit-designation.html">
+  <link rel="canonical" href="https://ybackh-ai.github.io/audit-designation.html">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>감사인 지정 대상 확인</h1>
+      <p>증권선물위원회가 감사인을 지정하는 경우(주기적 지정, 상장 예정, 재무 악화, 관리종목 등)에 해당하는지 외감법 제11조 기준으로 확인합니다. 지정감사는 감사인을 고를 수 없고 보수·일정이 달라지므로 미리 아는 것이 중요합니다.</p>
+    </div>
+    <p class="basis-date">법령·기준 확인일 2026년 11월 4일 (법제처 현행 법령 기준). 개정이 반영되면 이 날짜를 갱신합니다.</p>
+
+    <section>
+      <form id="ad-form" novalidate>
+        <fieldset>
+          <legend>회사 구분</legend>
+          <label class="choice"><input type="radio" name="isListed" value="no" checked><span>비상장회사</span></label>
+          <label class="choice"><input type="radio" name="isListed" value="yes"><span>주권상장법인</span></label>
+          <div class="field listed-only hidden">
+            <span class="label">상장 시장</span>
+            <label class="choice"><input type="radio" name="market" value="kospi" checked><span>유가증권시장</span></label>
+            <label class="choice"><input type="radio" name="market" value="kosdaq"><span>코스닥시장</span></label>
+            <label class="choice"><input type="radio" name="market" value="konex"><span>코넥스시장</span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>주기적 지정 (6년 자유선임 → 3년 지정)</legend>
+          <div class="two">
+            <div class="field"><label for="freeYears">연속으로 회사가 직접 감사인을 선임한 사업연도 수</label><input id="freeYears" type="number" inputmode="numeric" min="0" step="1" placeholder="예: 5"><p class="hint">직전 지정감사 이후, 또는 처음부터 회사가 자유선임한 연속 사업연도 수입니다.</p></div>
+          </div>
+          <div class="unlisted-only">
+            <div class="two">
+              <div class="field"><label for="totalAssets">직전 사업연도 말 자산총액 (백만원)</label><input id="totalAssets" type="number" inputmode="numeric" min="0" placeholder="예: 520000"></div>
+              <div class="field"><label for="majorPct">대주주 + 특수관계인 합산 지분율 (%)</label><input id="majorPct" type="number" inputmode="decimal" min="0" max="100" step="0.1" placeholder="예: 65"><p class="hint">의결권 없는 주식은 빼고 계산합니다.</p></div>
+            </div>
+            <label class="choice"><input type="checkbox" name="ownerIsCeo"><span>대주주 또는 그 특수관계인이 대표이사입니다</span></label>
+            <label class="choice"><input type="checkbox" name="inGroupOrReport"><span>공시대상기업집단 소속이거나 사업보고서 제출대상법인입니다 (자산 기준 1천억원 적용)</span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>직권 지정 사유 — 해당하는 것을 모두 체크</legend>
+          <label class="choice"><input type="checkbox" name="ipoPlanned"><span>이번 사업연도 또는 다음 사업연도 중 상장(유가증권·코스닥)할 계획입니다</span></label>
+          <label class="choice ipo-only hidden" style="margin-left:26px"><input type="checkbox" name="ipoExcluded"><span>코넥스 상장, 시장 이전(코스닥↔유가증권), 기업인수목적회사(SPAC) 상장에 해당합니다 (제외 사유)</span></label>
+          <label class="choice"><input type="checkbox" name="notAppointed"><span>감사인 선임기간 안에 감사인을 선임하지 못했습니다</span></label>
+          <label class="choice"><input type="checkbox" name="violation"><span>재무제표 제출·공시, 내부회계관리제도 운영, 감사인 선임 보고 등 외감법 의무 위반이 있었습니다 (경미한 위반 제외)</span></label>
+          <div class="listed-only hidden">
+            <label class="choice"><input type="checkbox" name="loss3"><span>3개 사업연도 연속 영업이익이 0보다 작습니다</span></label>
+            <label class="choice"><input type="checkbox" name="ocf3"><span>3개 사업연도 연속 영업현금흐름이 0보다 작습니다</span></label>
+            <label class="choice"><input type="checkbox" name="icr3"><span>3개 사업연도 연속 이자보상배율이 1 미만입니다</span></label>
+            <label class="choice"><input type="checkbox" name="managed"><span>관리종목으로 지정되어 있습니다</span></label>
+            <label class="choice managed-only hidden" style="margin-left:26px"><input type="checkbox" name="managedMarketOnly"><span>지정 사유가 주식분산·거래량·시가총액 기준 미달뿐입니다 (제외 사유)</span></label>
+            <label class="choice"><input type="checkbox" name="ownerChange2"><span>직전 사업연도 포함 3년간 최대주주가 2회 이상 바뀌었습니다</span></label>
+            <label class="choice"><input type="checkbox" name="ceoChange3"><span>직전 사업연도 포함 3년간 대표이사가 3회 이상 바뀌었습니다</span></label>
+            <label class="choice"><input type="checkbox" name="embezzlement"><span>일정 금액 이상의 횡령·배임으로 임직원을 고소했거나 공소가 제기되었습니다</span></label>
+          </div>
+        </fieldset>
+        <div id="errors" aria-live="polite"></div>
+        <button type="submit" class="btn">확인하기</button>
+      </form>
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+  <script src="assets/audit-designation-rules.js"></script>
+  <script src="assets/audit-designation.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+</body>
+</html>

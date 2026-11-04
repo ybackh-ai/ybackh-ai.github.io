@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PPA 영업권 간이 계산기 | 기업 회계 도구</title>
+  <meta name="description" content="인수합병(사업결합) 후 취득원가 배분(PPA)으로 영업권 또는 염가매수차익이 얼마나 생길지 K-IFRS 1103 산식으로 미리 계산해 봅니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="PPA 영업권 간이 계산기 | 기업 회계 도구">
+  <meta property="og:description" content="인수합병(사업결합) 후 취득원가 배분(PPA)으로 영업권 또는 염가매수차익이 얼마나 생길지 K-IFRS 1103 산식으로 미리 계산해 봅니다.">
+  <meta property="og:url" content="https://ybackh-ai.github.io/ppa.html">
+  <link rel="canonical" href="https://ybackh-ai.github.io/ppa.html">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .row-list .row { display: grid; gap: 8px; grid-template-columns: 1.2fr 1.4fr 1fr .8fr auto; align-items: end; margin-bottom: 10px; }
+    .row-list.adj .row { grid-template-columns: 2fr 1fr auto; }
+    .row-list .row label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .row-del { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; color: var(--muted); font: inherit; }
+    .btn-add { background: none; border: 1px dashed var(--accent); color: var(--accent); border-radius: 8px; padding: 8px 14px; cursor: pointer; font: inherit; }
+    tr.total td { font-weight: 700; border-top: 2px solid var(--ink); }
+    tr.indent td:first-child { padding-left: 18px; color: var(--ink-soft); }
+    td.neg { color: var(--bad); }
+    @media (max-width: 640px) {
+      .row-list .row, .row-list.adj .row { grid-template-columns: 1fr 1fr; }
+      .row-list .row .row-del { grid-column: span 2; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>PPA 영업권 간이 계산기</h1>
+      <p>회사를 인수(사업결합)하면 인수가격을 피취득회사의 자산·부채 공정가치에 배분(PPA)하고, 남는 금액을 영업권으로 인식합니다. 인수 전에 영업권이나 염가매수차익이 대략 얼마나 생길지, 무형자산 상각이 손익에 얼마나 영향을 줄지 K-IFRS 1103 산식으로 미리 확인해 보세요.</p>
+    </div>
+    <p class="basis-date">법령·기준 확인일 2026년 11월 4일 (법제처 현행 법령 기준). 개정이 반영되면 이 날짜를 갱신합니다.</p>
+
+    <div class="notice beta-notice"><span class="tag tag-beta">베타</span> 이 도구는 검증이 끝나지 않은 부분이 있습니다. 근거로 삼은 K-IFRS 제1103호 문단을 기준서 원문과 대조하는 작업이 남아 있습니다. 결과는 참고용으로만 사용하시고, 중요한 결정 전에는 상담을 받으시기 바랍니다.</div>
+
+    <section>
+      <form id="ppa-form" novalidate>
+        <p class="hint" style="margin:0 0 14px">모든 금액은 <b>백만원</b> 단위로 입력합니다. 예) 35억원 → 3500</p>
+
+        <fieldset>
+          <legend>1. 인수 대가</legend>
+          <div class="two">
+            <div class="field">
+              <label for="consideration">이전대가 (조건부대가 제외)</label>
+              <div class="input-unit"><input id="consideration" name="consideration" type="number" inputmode="decimal" placeholder="예: 10000"><span>백만원</span></div>
+              <span class="hint">현금, 발행한 주식의 공정가치 등 취득일에 지급(약정)한 대가</span>
+            </div>
+            <div class="field">
+              <label for="contingentConsideration">조건부대가 공정가치 <span class="hint" style="display:inline">(선택)</span></label>
+              <div class="input-unit"><input id="contingentConsideration" name="contingentConsideration" type="number" inputmode="decimal" placeholder="예: 500"><span>백만원</span></div>
+              <span class="hint">언아웃(earn-out) 등 실적에 따라 추가 지급할 대가의 취득일 공정가치</span>
+            </div>
+            <div class="field">
+              <label for="ownershipPct">취득 후 보유 지분율</label>
+              <div class="input-unit"><input id="ownershipPct" name="ownershipPct" type="number" inputmode="decimal" step="0.01" placeholder="예: 100"><span>%</span></div>
+            </div>
+            <div class="field">
+              <label for="previousInterestFV">이전에 보유하던 지분의 공정가치 <span class="hint" style="display:inline">(선택)</span></label>
+              <div class="input-unit"><input id="previousInterestFV" name="previousInterestFV" type="number" inputmode="decimal" placeholder="단계적 취득일 때만"><span>백만원</span></div>
+            </div>
+          </div>
+          <div class="field nci-only hidden" style="margin-bottom:0">
+            <span class="label">비지배지분 측정 방법</span>
+            <div class="radio-row">
+              <label class="choice"><input type="radio" name="nciMethod" value="proportionate" checked><span>식별가능 순자산 비례지분</span></label>
+              <label class="choice"><input type="radio" name="nciMethod" value="fair_value"><span>공정가치</span></label>
+            </div>
+            <div class="input-unit nci-fv hidden" style="max-width:320px"><input id="nciFairValue" name="nciFairValue" type="number" inputmode="decimal" placeholder="비지배지분 공정가치"><span>백만원</span></div>
+            <span class="hint">사업결합마다 선택할 수 있습니다(K-IFRS 1103 문단 19). 공정가치를 고르면 영업권이 비지배지분 몫까지 포함됩니다.</span>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>2. 피취득회사 순자산</legend>
+          <div class="field">
+            <label for="bookNetAssets">순자산 장부금액 (취득일 기준)</label>
+            <div class="input-unit" style="max-width:320px"><input id="bookNetAssets" name="bookNetAssets" type="number" inputmode="decimal" placeholder="예: 6000 (자본잠식이면 음수)"><span>백만원</span></div>
+          </div>
+
+          <span class="label">공정가치 조정 (공정가치 − 장부금액)</span>
+          <span class="hint" style="margin:-2px 0 10px">토지 재평가, 재고·설비 조정 등. 감액이면 음수로 입력합니다.</span>
+          <div id="adj-list" class="row-list adj"></div>
+          <button type="button" class="btn-add" id="add-adj">+ 조정 항목 추가</button>
+
+          <div class="field" style="margin-top:18px">
+            <label for="contingentLiabilities">인식할 우발부채 공정가치 <span class="hint" style="display:inline">(선택)</span></label>
+            <div class="input-unit" style="max-width:320px"><input id="contingentLiabilities" name="contingentLiabilities" type="number" inputmode="decimal" placeholder="예: 200"><span>백만원</span></div>
+            <span class="hint">소송 등 현재의무이고 공정가치를 신뢰성 있게 측정할 수 있는 경우</span>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>3. 새로 식별한 무형자산</legend>
+          <span class="hint" style="margin:0 0 10px">피취득회사 장부에는 없지만 인수로 식별되는 무형자산입니다. 내용연수를 비우면 비한정(상각 안 함)으로 봅니다.</span>
+          <div id="int-list" class="row-list"></div>
+          <button type="button" class="btn-add" id="add-int">+ 무형자산 추가</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>4. 이연법인세</legend>
+          <label class="choice"><input type="checkbox" name="applyDeferredTax" checked><span>공정가치 조정과 무형자산에 이연법인세를 반영합니다.</span></label>
+          <div class="field tax-field" style="margin-bottom:0">
+            <label for="taxRate">적용 세율</label>
+            <div class="input-unit" style="max-width:200px"><input id="taxRate" name="taxRate" type="number" inputmode="decimal" step="0.1" placeholder="회사 적용 세율"><span>%</span></div>
+            <span class="hint">회사가 이연법인세 측정에 쓰는 세율(지방소득세 포함 여부 등)을 입력하세요. 주식 인수처럼 세무상 장부가액이 바뀌지 않는 거래는 보통 반영합니다.</span>
+          </div>
+        </fieldset>
+
+        <div id="errors" aria-live="polite"></div>
+        <button type="submit" class="btn">계산하기</button>
+      </form>
+
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+
+    <section>
+      <h2>흔히 식별되는 무형자산</h2>
+      <div class="card">
+        <table>
+          <thead><tr><th>분류</th><th>예시</th></tr></thead>
+          <tbody id="type-table"></tbody>
+        </table>
+        <p class="hint" style="margin-top:10px">무형자산은 분리 가능하거나 계약상·법적 권리에서 생기면 영업권과 구분해 인식합니다(K-IFRS 1103 부록 A '식별 가능'의 정의). 분류는 IFRS 3 적용사례 기준입니다.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>PPA 평가는 이렇게 진행됩니다</h2>
+      <div class="grid">
+        <div class="card"><span class="tag">1</span><h3>취득일·대가 확정</h3><p>지배력 획득일과 이전대가(조건부대가 포함)를 확정합니다.</p></div>
+        <div class="card"><span class="tag">2</span><h3>무형자산 식별</h3><p>경영진 인터뷰, 계약서, 사업계획으로 고객관계·기술·상표 등을 식별합니다.</p></div>
+        <div class="card"><span class="tag">3</span><h3>공정가치 평가</h3><p>초과이익법, 로열티공제법 등으로 무형자산을, 감정평가 등으로 유형자산을 평가합니다.</p></div>
+        <div class="card"><span class="tag">4</span><h3>영업권 산정·보고</h3><p>이연법인세를 반영해 영업권을 산정하고, 감사인 검토에 대응할 평가보고서를 작성합니다.</p></div>
+      </div>
+      <div class="notice">준비 자료 예: 주식매매계약서(SPA), 취득일 재무제표, 사업계획(추정 손익), 주요 고객·계약 목록, 특허·상표 등록 현황, 유형자산 명세</div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+
+  <script src="assets/ppa-rules.js"></script>
+  <script src="assets/ppa-page.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+</body>
+</html>
