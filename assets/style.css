@@ -93,6 +93,15 @@ img { max-width: 100%; }
 .audience .basis { margin: 0; }
 .audience .basis li { font-size: 14px; }
 
+/* fieldset은 기본값(min-width: min-content) 때문에 안의 넓은 표만큼 늘어나 모바일 가로 스크롤을 만든다 */
+fieldset { min-width: 0; }
+
+/* 입력용 표 (대손충당금·퇴직급여) */
+.input-table { width: 100%; }
+.input-table td { padding: 6px 6px; vertical-align: middle; }
+.input-table input[type=number] { width: 100%; min-width: 96px; }
+.input-table td:first-child { white-space: nowrap; font-size: 14px; }
+
 /* 기준일 표 */
 .basis-table td, .basis-table th { font-size: 13px; vertical-align: top; }
 .basis-table td:nth-child(2) { min-width: 180px; }
