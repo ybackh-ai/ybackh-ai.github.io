@@ -71,7 +71,7 @@
             <li>결산: <a href="lease.html">리스</a> · <a href="depreciation.html">감가상각</a> · <a href="allowance.html">대손충당금</a> · <a href="retirement.html">퇴직급여</a> · <a href="deferred-tax.html">이연법인세</a> · <a href="revenue-check.html">수익인식</a></li>
             <li><a href="tax-calendar.html">세무 신고 일정표</a> · <a href="corp-tax.html">법인세 계산</a> · <a href="withholding.html">원천징수</a></li>
             <li><a href="entertainment.html">접대비 한도</a> · <a href="business-car.html">업무용승용차</a> · <a href="investment-credit.html">투자 세액공제</a></li>
-            <li><a href="succession.html">가업상속공제</a> · <a href="related-price.html">특수관계인 주식 거래</a> · <a href="related-party.html">특수관계인 범위</a></li>
+            <li><a href="succession.html">가업상속공제</a> · <a href="related-price.html">특수관계인 주식 거래</a> · <a href="related-party.html">특수관계인 범위</a> · <a href="tax-penalty.html">가산세</a></li>
           </ul>
         </div>
         <div class="card">
@@ -81,7 +81,7 @@
             <li><a href="audit-designation.html">감사인 지정 대상</a> · <a href="icfr-check.html">내부회계 감사 여부</a></li>
             <li><a href="governance.html">감사위원회·상근감사 의무</a></li>
             <li><a href="external-valuation.html">외부평가 대상</a> · <a href="merger-price.html">합병가액</a></li>
-            <li><a href="capital-impairment.html">자본잠식 진단</a> · <a href="fin-ratio.html">재무비율</a></li>
+            <li><a href="capital-impairment.html">자본잠식 진단</a> · <a href="fin-ratio.html">재무비율</a> · <a href="distributable-profit.html">배당가능이익</a></li>
           </ul>
         </div>
         <div class="card">
@@ -91,7 +91,7 @@
             <li><a href="dcf.html">DCF·WACC</a> · <a href="stock-valuation.html">비상장주식 상증법 평가</a></li>
             <li><a href="ppa.html">PPA 영업권</a> · <a href="impairment.html">손상검사</a></li>
             <li><a href="equity-bridge.html">EV→지분가치</a> · <a href="multiples.html">멀티플 평가</a> · <a href="share-transfer-tax.html">주식 양도세</a></li>
-            <li><a href="pf-feasibility.html">부동산 PF 사업성</a></li>
+            <li><a href="qualified-reorg.html">적격합병·분할</a> · <a href="pf-feasibility.html">부동산 PF 사업성</a></li>
             <li><a href="cases.html">수행 사례 보기</a></li>
           </ul>
         </div>
@@ -100,6 +100,13 @@
 
     <section id="tools">
       <h2>회계 도구</h2>
+      <div class="tool-search" role="search">
+        <label for="tool-q" class="sr-only">도구 검색</label>
+        <input id="tool-q" type="search" placeholder="도구 검색 — 예: 접대비, 가산세, 스톡옵션, 합병" autocomplete="off" enterkeyhint="search">
+        <p id="tool-q-count" class="hint" aria-live="polite"></p>
+        <div class="chips" aria-label="자주 찾는 검색어"><button type="button">외부감사</button><button type="button">세액공제</button><button type="button">스톡옵션</button><button type="button">가산세</button><button type="button">합병</button><button type="button">평가</button></div>
+      </div>
+      <p id="tool-q-empty" class="notice hidden">찾는 도구가 없습니다. 다른 말로 검색하시거나 <a href="contact.html">상담 신청</a>으로 문의해 주세요.</p>
       <p class="hint" style="margin:-4px 0 14px"><span class="tag tag-beta" style="margin:0 4px 0 0">베타</span> 표시가 있는 도구는 근거 확인이나 법령 개정 반영이 끝나지 않은 도구입니다. 결과를 참고용으로만 사용해 주세요.</p>
       <h3 class="tools-group">외부감사·내부회계</h3>
       <div class="grid">
@@ -267,6 +274,11 @@
           <h3><a href="succession.html">가업상속공제 요건 확인</a></h3>
           <p>중소·중견기업, 10년 이상 경영 요건과 공제 한도(300억·400억·600억원), 상속 후 5년 사후관리를 확인합니다.</p>
         </div>
+        <div class="card">
+          <span class="tag tag-beta">베타</span>
+          <h3><a href="tax-penalty.html">가산세 계산기 (무신고·과소신고·납부지연)</a></h3>
+          <p>무신고 20%·과소신고 10%·납부지연 1일 0.022% 가산세와 기한 후 신고·수정신고 시기별 감면율을 계산합니다.</p>
+        </div>
       </div>
       <h3 class="tools-group">세액공제·감면</h3>
       <div class="grid">
@@ -373,6 +385,11 @@
           <h3><a href="pf-feasibility.html">부동산 PF 사업성 간이 계산</a></h3>
           <p>분양률·토지비·공사비·PF 대출 조건으로 사업이익, 손익분기 분양률, 분양률별 민감도를 계산합니다.</p>
         </div>
+        <div class="card">
+          <span class="tag tag-beta">베타</span>
+          <h3><a href="qualified-reorg.html">적격합병·적격분할 요건 진단</a></h3>
+          <p>사업기간, 주식 대가 80%·100%, 사업 계속, 근로자 80% 승계 요건으로 합병·분할 양도손익 과세이연 가능성을 점검합니다.</p>
+        </div>
       </div>
       <h3 class="tools-group">재무분석</h3>
       <div class="grid">
@@ -385,6 +402,11 @@
           <span class="tag">이용 가능</span>
           <h3><a href="capital-impairment.html">자본잠식·채무초과 진단</a></h3>
           <p>자본금과 자본총계로 자본잠식률, 부분·전액잠식, 채무초과 여부를 계산합니다. 투자계약 위반 사유와 관리종목 요건 점검의 출발점입니다.</p>
+        </div>
+        <div class="card">
+          <span class="tag">이용 가능</span>
+          <h3><a href="distributable-profit.html">배당가능이익·자기주식 취득 한도</a></h3>
+          <p>순자산·자본금·준비금으로 상법상 배당가능이익, 이익준비금 적립을 반영한 최대 현금배당, 자기주식 취득 한도를 계산합니다.</p>
         </div>
       </div>
     </section>
@@ -440,6 +462,7 @@
   </footer>
   <script src="assets/audit-schedule.js"></script>
   <script src="assets/home-deadlines.js"></script>
+  <script src="assets/tool-search.js"></script>
   <script src="assets/nav.js"></script>
   <!-- Cloudflare Web Analytics (쿠키 없음, 개인정보처리방침 9항) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3d07e2284bc1440994f639ea79477e36"}'></script>
 </body>
