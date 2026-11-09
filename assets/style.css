@@ -162,6 +162,11 @@ h3 { font-size: 17px; margin: 0 0 8px; }
 .btn:hover { filter: brightness(1.08); }
 .btn.secondary { background: var(--card); color: var(--accent); border: 1px solid var(--accent); }
 .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-ghost { background: var(--card); color: var(--accent); border: 1px dashed var(--accent); padding: 8px 14px; font-size: 14px; }
+table[data-rows] { table-layout: fixed; }
+table.input-table[data-rows] [data-col] { width: 100%; min-width: 0; box-sizing: border-box; padding-left: 8px; padding-right: 8px; }
+table[data-rows] th { font-size: 13px; padding: 4px 6px; }
+table[data-rows] td { padding: 4px 3px; }
 
 .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
 .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
