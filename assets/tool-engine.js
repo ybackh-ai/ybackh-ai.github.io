@@ -32,8 +32,8 @@
         return '<div class="two"' + when + ' data-fid="' + esc(f.id || '') + '">' + f.items.map(fieldHtml).join('') + '</div>';
       case 'html':
         return '<div' + when + ' data-fid="' + esc(f.id || '') + '">' + f.html + '</div>';
-      case 'number': case 'text':
-        return '<div class="field"' + when + ' data-fid="' + f.id + '"><label for="' + f.id + '">' + esc(f.label) + (f.unit ? ' (' + esc(f.unit) + ')' : '') + '</label><input id="' + f.id + '" type="' + (f.type === 'number' ? 'number' : 'text') + '"' +
+      case 'number': case 'text': case 'date':
+        return '<div class="field"' + when + ' data-fid="' + f.id + '"><label for="' + f.id + '">' + esc(f.label) + (f.unit ? ' (' + esc(f.unit) + ')' : '') + '</label><input id="' + f.id + '" type="' + f.type + '"' +
           (f.type === 'number' ? ' inputmode="decimal" step="' + (f.step || 'any') + '"' + (f.allowNeg ? '' : ' min="0"') : '') + (f.placeholder !== undefined ? ' placeholder="' + esc(f.placeholder) + '"' : '') + (f.value !== undefined ? ' value="' + esc(f.value) + '"' : '') + '>' + hint + '</div>';
       case 'select':
         return '<div class="field"' + when + ' data-fid="' + f.id + '"><label for="' + f.id + '">' + esc(f.label) + '</label><select id="' + f.id + '">' + f.options.map(function (o) { return '<option value="' + esc(o[0]) + '"' + (o[0] === f.value ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select>' + hint + '</div>';
@@ -70,7 +70,7 @@
     var v = {};
     walk(cfg.fields, function (f) {
       if (!f.id) return;
-      if (f.type === 'number' || f.type === 'text' || f.type === 'select') { var el = form.querySelector('#' + f.id); v[f.id] = el ? el.value.trim() : ''; }
+      if (f.type === 'number' || f.type === 'text' || f.type === 'date' || f.type === 'select') { var el = form.querySelector('#' + f.id); v[f.id] = el ? el.value.trim() : ''; }
       else if (f.type === 'radio') { var c = form.querySelector('input[name="' + f.id + '"]:checked'); v[f.id] = c ? c.value : ''; }
       else if (f.type === 'check') { var cb = form.querySelector('#' + f.id); v[f.id] = !!(cb && cb.checked); }
       else if (f.type === 'checks') v[f.id] = Array.prototype.map.call(form.querySelectorAll('input[name="' + f.id + '"]:checked'), function (x) { return x.value; });

@@ -388,6 +388,93 @@
     }
   });
 
+  // ── 20. 적격합병·적격분할 요건 (베타) ──
+  E.register('qualified-reorg', {
+    submit: '진단하기',
+    fields: [
+      { type: 'radio', id: 'mode', label: '거래 유형', options: [['merger', '합병'], ['split', '인적분할·분할합병']] },
+      { type: 'check', id: 'whollyOwned', label: '발행주식 100%를 가진 회사 간 합병입니다 (모자회사 또는 같은 모회사의 100% 자회사끼리)', when: function (v) { return v.mode === 'merger'; } },
+      { type: 'fieldset', id: 'fs-m', legend: '합병 요건', when: function (v) { return v.mode === 'merger' && !v.whollyOwned; }, items: [
+        { type: 'check', id: 'over1y', label: '두 회사 모두 합병등기일 현재 1년 이상 사업을 해 온 내국법인입니다' }] },
+      { type: 'fieldset', id: 'fs-s', legend: '분할 요건', when: function (v) { return v.mode === 'split'; }, items: [
+        { type: 'check', id: 'splitMerger', label: '분할합병입니다 (분할한 사업부문을 다른 회사와 합침)' },
+        { type: 'check', id: 'counterpartOver1y', label: '분할합병 상대방 법인이 1년 이상 사업을 해 왔습니다', when: function (v) { return v.splitMerger; } },
+        { type: 'check', id: 'over5y', label: '분할하는 회사가 분할등기일 현재 5년 이상 사업을 해 왔습니다' },
+        { type: 'check', id: 'independent', label: '따로 떼어 사업할 수 있는 독립된 사업부문을 분할합니다' },
+        { type: 'check', id: 'comprehensive', label: '그 사업부문의 자산·부채를 포괄적으로 넘깁니다' },
+        { type: 'check', id: 'ownContribution', label: '분할하는 회사만의 출자로 분할합니다' },
+        { type: 'check', id: 'realEstate', label: '부동산임대업이 주업인 사업부문 등을 분할합니다' }] },
+      { type: 'fieldset', id: 'fs-common', legend: '대가·사업·고용 요건', when: function (v) { return !(v.mode === 'merger' && v.whollyOwned); }, items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'stockPct', label: '주주가 받는 대가 중 주식 비율', unit: '%', placeholder: '예: 100' },
+          { type: 'number', id: 'employeePct', label: '1개월 전 근로자 중 승계 비율', unit: '%', placeholder: '예: 90' }] },
+        { type: 'check', id: 'holdShares', label: '지배주주 등이 받은 주식을 그 사업연도 말까지 보유합니다' },
+        { type: 'check', id: 'continueBiz', label: '넘겨받은 사업을 그 사업연도 말까지 계속합니다' },
+        { type: 'check', id: 'keepEmployees', label: '승계한 근로자 비율을 그 사업연도 말까지 유지합니다' }] }
+    ],
+    run: function (v) {
+      var r = window.CorpLawRules.reorg(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = r.checks.length ? grid(['요건', '충족'], r.checks.map(function (c) { return [c.label, c.ok ? '충족' : '미충족']; })) : '';
+      return { r: r, cls: r.qualified ? 'not-target' : 'target', title: r.qualified ? '적격' + (v.mode === 'split' ? '분할' : '합병') + ' 요건을 갖춘 것으로 보입니다' : '적격 요건 ' + r.failed + '개를 충족하지 못했습니다',
+        sub: r.qualified ? '양도손익 과세이연 가능(사후관리 필요)' : '비적격이면 양도손익 과세, 의제배당 등 검토 필요', body: body, topic: 'fdd', label: '합병·분할 세무 검토 상담 신청' };
+    }
+  });
+
+  // ── 21. 배당가능이익·자기주식 취득 한도 ──
+  E.register('distributable-profit', {
+    fields: [
+      { type: 'fieldset', legend: '직전 결산기 재무상태표 (같은 단위로)', items: [{ type: 'two', items: [
+        { type: 'number', id: 'netAssets', label: '순자산액(자본총계)', unit: '백만원', placeholder: '예: 10000' },
+        { type: 'number', id: 'capital', label: '자본금', unit: '백만원' },
+        { type: 'number', id: 'capitalReserve', label: '자본준비금(주식발행초과금 등)', unit: '백만원' },
+        { type: 'number', id: 'earnedReserve', label: '이익준비금', unit: '백만원' },
+        { type: 'number', id: 'unrealized', label: '미실현이익(평가이익)', unit: '백만원', hint: '공정가치 평가 등으로 늘어난 순자산' }] }] },
+      { type: 'fieldset', legend: '계획 (선택)', items: [{ type: 'two', items: [
+        { type: 'number', id: 'dividend', label: '현금배당 예정액', unit: '백만원' },
+        { type: 'number', id: 'treasury', label: '자기주식 취득 예정액', unit: '백만원' }] }] }
+    ],
+    run: function (v) {
+      var r = window.CorpLawRules.distributable(v);
+      if (r.status === 'INVALID') return { r: r };
+      var M = function (x) { return n(x) + ' 백만원'; };
+      var body = table([['배당가능이익(이번 적립분 제외)', M(r.baseAmount), true], ['이익준비금 추가 적립 여지', M(r.reserveRoom)], ['최대 현금배당(적립분 반영)', M(r.maxCashDividend), true], ['자기주식 취득 한도', M(r.treasuryLimit), true],
+        r.reserveToSet !== undefined ? ['예정 배당 시 적립할 이익준비금', M(r.reserveToSet)] : null, r.dividendLimit !== undefined ? ['예정 배당 가능 여부', r.dividendOk ? '한도 안 (' + M(r.dividendLimit) + ')' : '한도 초과 (' + M(r.dividendLimit) + ')'] : null,
+        r.treasuryOk !== undefined ? ['예정 자기주식 취득 가능 여부', r.treasuryOk ? '한도 안' : '한도 초과'] : null]);
+      var bad = r.dividendOk === false || r.treasuryOk === false;
+      return { r: r, cls: r.baseAmount <= 0 || bad ? 'target' : 'not-target', title: r.baseAmount > 0 ? '배당가능이익 ' + M(r.baseAmount) : '배당가능이익이 없습니다', sub: '최대 현금배당 ' + M(r.maxCashDividend) + ' · 자기주식 한도 ' + M(r.treasuryLimit), body: body, topic: 'ifrs', label: '배당·자기주식 검토 상담 신청' };
+    }
+  });
+
+  // ── 22. 가산세 계산 (베타) ──
+  E.register('tax-penalty', {
+    fields: [
+      { type: 'radio', id: 'kind', label: '어떤 경우인가요?', options: [['none', '기한까지 신고하지 않았습니다 (무신고)'], ['under', '신고했지만 세액을 적게 신고했습니다 (과소신고)']] },
+      { type: 'two', items: [
+        { type: 'number', id: 'tax', label: '무신고·과소신고한 납부세액', unit: '원', placeholder: '예: 10000000' },
+        { type: 'number', id: 'fraudTax', label: '그중 부정행위(장부 조작 등)로 인한 세액', unit: '원', when: function (v) { return v.kind === 'under'; } }] },
+      { type: 'check', id: 'fraud', label: '부정행위로 신고하지 않았습니다', when: function (v) { return v.kind === 'none'; } },
+      { type: 'check', id: 'offshore', label: '역외거래에서 발생한 부정행위입니다 (60%)' },
+      { type: 'check', id: 'bookkeeper', label: '법인 또는 복식부기의무자이며 법인세·소득세 신고입니다 (수입금액 기준 비교)' },
+      { type: 'two', items: [
+        { type: 'number', id: 'revenue', label: '수입금액(매출액)', unit: '원', when: function (v) { return v.bookkeeper && v.kind === 'none'; } },
+        { type: 'number', id: 'fraudRevenue', label: '부정 과소신고 수입금액', unit: '원', when: function (v) { return v.bookkeeper && v.kind === 'under'; } },
+        { type: 'number', id: 'zeroRateBase', label: '부가세 영세율 과세표준(무신고·과소신고분)', unit: '원', placeholder: '없으면 비움' }] },
+      { type: 'fieldset', legend: '날짜 (감면·납부지연 계산)', items: [{ type: 'two', items: [
+        { type: 'date', id: 'deadline', label: '법정신고·납부기한' },
+        { type: 'date', id: 'filedOn', label: '기한 후 신고·수정신고한(할) 날', hint: '신고 시기에 따라 가산세 감면' },
+        { type: 'number', id: 'unpaid', label: '기한까지 내지 않은 세액', unit: '원' },
+        { type: 'date', id: 'paidOn', label: '실제 납부한(할) 날' }] }] },
+      { type: 'check', id: 'noticed', label: '세무서가 경정(결정)할 것을 알고 신고합니다 (감면 없음)' }
+    ],
+    run: function (v) {
+      var r = window.CorpLawRules.penalty(v);
+      if (r.status === 'INVALID') return { r: r };
+      return { r: r, cls: r.total ? 'target' : 'not-target', title: '가산세 합계 ' + won(r.total), sub: (v.kind === 'under' ? '과소신고' : '무신고') + '가산세 ' + won(r.filingPenalty) + (r.reductionPct ? ' (' + r.reductionPct + '% 감면 후)' : '') + ' · 납부지연 ' + won(r.latePenalty),
+        body: table([[(v.kind === 'under' ? '과소신고' : '무신고') + '가산세(감면 전)', won(r.basePenalty)], ['감면율', r.reductionPct + '%'], ['신고 관련 가산세', won(r.filingPenalty), true], ['납부지연 일수', r.lateDays + '일'], ['납부지연가산세', won(r.latePenalty), true], ['합계', won(r.total), true]]), topic: 'tax', label: '수정신고·가산세 상담 신청' };
+    }
+  });
+
   // ── 19. 원천징수 계산 ──
   E.register('withholding', {
     fields: function () { return [

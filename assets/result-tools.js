@@ -55,6 +55,9 @@
     'deferred-tax': [['corp-tax.html', '법인세 간이 계산기'], ['allowance.html', '대손충당금 연령분석'], ['depreciation.html', '감가상각 계산기']],
     'revenue-check': [['audit-prep.html', '첫 외부감사 준비 체크리스트'], ['lease.html', '리스 회계 계산기'], ['ipo-prep.html', 'IPO 준비 회계 체크리스트']],
     'corp-tax': [['deferred-tax.html', '이연법인세 간이 계산'], ['rnd-credit.html', '연구·인력개발비 세액공제'], ['tax-calendar.html', '법인 세무 신고 일정표']],
+    'qualified-reorg': [['merger-price.html', '상장사 합병가액'], ['external-valuation.html', '자본시장법 외부평가 대상'], ['equity-bridge.html', '기업가치→지분가치 환산']],
+    'distributable-profit': [['capital-impairment.html', '자본잠식·채무초과 진단'], ['withholding.html', '배당 원천징수 계산'], ['fin-ratio.html', '재무비율 간이 진단']],
+    'tax-penalty': [['tax-calendar.html', '법인 세무 신고 일정표'], ['corp-tax.html', '법인세 간이 계산기'], ['withholding.html', '원천징수 세액 계산기']],
     'withholding': [['tax-calendar.html', '법인 세무 신고 일정표'], ['corp-vs-personal.html', '법인 vs 개인사업자 세금 비교']],
   };
 
