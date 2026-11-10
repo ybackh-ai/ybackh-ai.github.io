@@ -22,6 +22,9 @@
   <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
   <link rel="stylesheet" href="assets/style.css">
+    <!-- jsonld:start -->
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"연결재무제표 작성 대상 확인","url":"https://cpatool.co.kr/consolidation.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","inLanguage":"ko-KR","isAccessibleForFree":true,"description":"종속회사가 있으면 연결재무제표를 작성해야 하는지, 외감법과 회계기준의 지배력 판단 요소로 확인합니다.","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"기업 회계 도구","url":"https://cpatool.co.kr/","description":"공인회계사가 운영하는 무료 회계·세무 계산기"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"회계 도구","item":"https://cpatool.co.kr/"},{"@type":"ListItem","position":2,"name":"연결재무제표 작성 대상 확인","item":"https://cpatool.co.kr/consolidation.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"지분이 30%인데 연결 대상이 될 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"다른 주주와의 약정, 이사 선임권 등으로 실질적으로 지배하면 될 수 있습니다. 지배력 판단은 계약 내용을 함께 봐야 합니다."}}]}]}</script>
+  <!-- jsonld:end -->
 </head>
 <body>
   <header class="site-header">
@@ -72,6 +75,16 @@
       </form>
       <div id="result" class="result hidden" aria-live="polite"></div>
     </section>
+<!-- guide:start -->
+    <section class="guide" aria-labelledby="guide-h">
+      <h2 id="guide-h">연결재무제표는 언제 작성하나요</h2>
+      <p>다른 회사를 지배하는 회사(지배회사)는 원칙적으로 종속회사를 합친 연결재무제표를 작성합니다. 지분율 50% 초과가 대표적이지만, 지분이 그보다 적어도 이사회 구성이나 계약으로 사실상 지배하면 종속회사가 될 수 있습니다.</p>
+      <p>이 도구는 지분율과 지배 요소로 연결 대상, 지분법 대상 여부를 1차로 점검합니다. 회계기준(K-IFRS, 일반기업회계기준)에 따라 면제 요건이 달라 베타로 운영합니다.</p>
+      <h3>자주 묻는 질문</h3>
+      <details><summary>지분이 30%인데 연결 대상이 될 수 있나요?</summary><p>다른 주주와의 약정, 이사 선임권 등으로 실질적으로 지배하면 될 수 있습니다. 지배력 판단은 계약 내용을 함께 봐야 합니다.</p></details>
+      <p class="hint">근거 조문과 확인일은 <a href="basis.html">기준일·변경 이력</a>에서, 실제 사례 검토는 <a href="contact.html">상담 신청</a>으로 문의하실 수 있습니다.</p>
+    </section>
+    <!-- guide:end -->
   </main>
 
   <footer class="site-footer">

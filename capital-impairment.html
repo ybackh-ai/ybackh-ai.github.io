@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="naver-site-verification" content="60d698d04287e09c54d415c82df5f87193e1fc03">
   <meta name="google-site-verification" content="WEVGAcfT1LM_DTxTOfXPEoC7WTuA0JpTw47BiNw0DFQ">
-  <title>자본잠식·채무초과 진단 | 기업 회계 도구</title>
+  <title>자본잠식률 계산 — 부분잠식·완전잠식·채무초과 진단 | 기업 회계 도구</title>
   <meta name="description" content="자본금과 자본총계로 자본잠식률, 부분·전액잠식, 채무초과 여부를 계산합니다.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="기업 회계 도구">
   <meta property="og:locale" content="ko_KR">
-  <meta property="og:title" content="자본잠식·채무초과 진단 | 기업 회계 도구">
+  <meta property="og:title" content="자본잠식률 계산 — 부분잠식·완전잠식·채무초과 진단 | 기업 회계 도구">
   <meta property="og:description" content="자본금과 자본총계로 자본잠식률, 부분·전액잠식, 채무초과 여부를 계산합니다.">
   <meta property="og:url" content="https://cpatool.co.kr/capital-impairment.html">
   <link rel="canonical" href="https://cpatool.co.kr/capital-impairment.html">
@@ -22,6 +22,9 @@
   <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
   <link rel="stylesheet" href="assets/style.css">
+    <!-- jsonld:start -->
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"자본잠식·채무초과 진단","url":"https://cpatool.co.kr/capital-impairment.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","inLanguage":"ko-KR","isAccessibleForFree":true,"description":"자본금과 자본총계로 자본잠식률, 부분·전액잠식, 채무초과 여부를 계산합니다.","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"기업 회계 도구","url":"https://cpatool.co.kr/","description":"공인회계사가 운영하는 무료 회계·세무 계산기"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"회계 도구","item":"https://cpatool.co.kr/"},{"@type":"ListItem","position":2,"name":"자본잠식·채무초과 진단","item":"https://cpatool.co.kr/capital-impairment.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"자본잠식이면 배당할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"순자산이 자본금과 준비금 합계보다 적으면 상법상 배당가능이익이 없습니다. 배당가능이익 도구를 함께 보세요."}}]}]}</script>
+  <!-- jsonld:end -->
 </head>
 <body>
   <header class="site-header">
@@ -58,6 +61,16 @@
       </form>
       <div id="result" class="result hidden" aria-live="polite"></div>
     </section>
+<!-- guide:start -->
+    <section class="guide" aria-labelledby="guide-h">
+      <h2 id="guide-h">자본잠식이란</h2>
+      <p>자본총계가 자본금보다 작으면 자본잠식, 자본총계가 0보다 작으면(부채가 자산보다 많으면) 완전자본잠식·채무초과입니다. 자본잠식률 = (자본금 − 자본총계) ÷ 자본금입니다.</p>
+      <p>자본잠식은 투자계약의 위반 사유, 상장회사 관리종목 요건, 금융기관 여신 심사에 영향을 줍니다.</p>
+      <h3>자주 묻는 질문</h3>
+      <details><summary>자본잠식이면 배당할 수 있나요?</summary><p>순자산이 자본금과 준비금 합계보다 적으면 상법상 배당가능이익이 없습니다. 배당가능이익 도구를 함께 보세요.</p></details>
+      <p class="hint">근거 조문과 확인일은 <a href="basis.html">기준일·변경 이력</a>에서, 실제 사례 검토는 <a href="contact.html">상담 신청</a>으로 문의하실 수 있습니다.</p>
+    </section>
+    <!-- guide:end -->
   </main>
 
   <footer class="site-footer">
