@@ -194,6 +194,18 @@ textarea { min-height: 140px; resize: vertical; }
 .tool-search .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 .tool-search .chips button { font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line); background: var(--card); color: var(--ink-soft); cursor: pointer; }
 .tool-search .chips button:hover { border-color: var(--accent); color: var(--accent); }
+.guide { margin-top: 44px; padding-top: 28px; border-top: 1px solid var(--line); }
+.guide h2 { font-size: 21px; }
+.guide p { color: var(--ink-soft); line-height: 1.75; }
+.guide h3 { margin-top: 24px; }
+.guide details { border: 1px solid var(--line); border-radius: 8px; background: var(--card); padding: 12px 14px; margin: 0 0 8px; }
+.guide summary { cursor: pointer; font-weight: 600; }
+.guide details p { margin: 10px 0 0; }
+.article { max-width: 760px; }
+.article h2 { margin-top: 32px; }
+.article p, .article li { line-height: 1.8; }
+.article .meta { color: var(--muted); font-size: 14px; }
+.columns-list li { margin-bottom: 6px; }
 mark.hl { background: var(--warn-bg); color: inherit; padding: 0 1px; border-radius: 3px; }
 .input-unit { display: flex; align-items: center; gap: 8px; }
 .input-unit span { color: var(--muted); white-space: nowrap; }
