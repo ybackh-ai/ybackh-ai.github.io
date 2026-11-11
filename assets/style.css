@@ -245,6 +245,7 @@ table { width: 100%; border-collapse: collapse; font-size: 15px; }
 th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
 th { color: var(--muted); font-weight: 600; font-size: 13px; }
 td.num { text-align: right; white-space: nowrap; }
+th.num { text-align: right; }
 tr.row-total td { font-weight: 700; color: var(--ink); }
 .mark-yes { color: var(--warn); font-weight: 700; }
 .mark-no { color: var(--muted); }
