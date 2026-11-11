@@ -5,6 +5,8 @@
  */
 (function () {
   'use strict';
+  // 카카오톡 채널 1:1 채팅 (2026-11-11 개설, 채널명 CPA TOOL). 일반 링크만 쓰고 카카오 스크립트는 넣지 않는다.
+  var KAKAO_CHAT = 'https://pf.kakao.com/_xgxfENX/chat';
   var RELATED = {
     'audit-check': [['icfr-check.html', '내부회계관리제도 적용 대상'], ['audit-schedule.html', '외부감사 일정 계산기'], ['audit-prep.html', '첫 외부감사 준비 체크리스트'], ['consolidation.html', '연결재무제표 작성 대상']],
     'audit-schedule': [['audit-prep.html', '첫 외부감사 준비 체크리스트'], ['audit-fee.html', '감사보수는 어떻게 정해지나'], ['icfr-check.html', '내부회계관리제도 적용 대상']],
@@ -87,7 +89,7 @@
     if (box.classList.contains('hidden') || !box.innerHTML.trim() || box.querySelector('.result-tools')) return;
     var host = box.querySelector('.result-body') || box;
     var html = '<div class="result-tools">' +
-      '<div class="btn-row"><button type="button" class="btn secondary small" data-copy>결과 복사</button><span class="hint copy-state" aria-live="polite">복사한 내용을 카카오톡·메일에 붙여 넣어 공유할 수 있습니다.</span></div>';
+      '<div class="btn-row"><button type="button" class="btn secondary small" data-copy>결과 복사</button><a class="btn kakao small" href="' + KAKAO_CHAT + '" target="_blank" rel="noopener">카카오톡으로 문의</a><span class="hint copy-state" aria-live="polite">결과를 복사해 카카오톡 문의나 메일에 붙여 넣을 수 있습니다.</span></div>';
     if (related.length) {
       html += '<p class="related-title">함께 보면 좋은 도구</p><ul class="related">' + related.map(function (r) { return '<li><a href="' + r[0] + '">' + esc(r[1]) + '</a></li>'; }).join('') + '</ul>';
     }
