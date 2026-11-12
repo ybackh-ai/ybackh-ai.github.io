@@ -7,7 +7,7 @@
   'use strict';
   var TOOLS = [
     { group: '외부감사·내부회계', items: [
-      ['audit-check.html', '외부감사 대상 판정기'], ['audit-schedule.html', '외부감사 일정 계산기', 1], ['audit-prep.html', '첫 외부감사 준비 체크리스트', 1], ['icfr-check.html', '내부회계관리제도 적용 대상'], ['consolidation.html', '연결재무제표 작성 대상', 1], ['audit-designation.html', '감사인 지정 대상 확인'], ['audit-fee.html', '감사보수는 어떻게 정해지나'], ['ipo-prep.html', 'IPO 준비 회계 체크리스트', 1], ['governance.html', '감사위원회·상근감사 설치 의무'],
+      ['audit-check.html', '외부감사 대상 판정기'], ['audit-schedule.html', '외부감사 일정 계산기'], ['audit-prep.html', '첫 외부감사 준비 체크리스트', 1], ['icfr-check.html', '내부회계관리제도 적용 대상'], ['consolidation.html', '연결재무제표 작성 대상', 1], ['audit-designation.html', '감사인 지정 대상 확인'], ['audit-fee.html', '감사보수는 어떻게 정해지나'], ['ipo-prep.html', 'IPO 준비 회계 체크리스트', 1], ['governance.html', '감사위원회·상근감사 설치 의무'],
     ] },
     { group: '결산·회계처리', items: [
       ['lease.html', '리스 회계 (사용권자산·리스부채)', 1], ['depreciation.html', '감가상각 (세법 상각범위액)'], ['allowance.html', '대손충당금 연령분석', 1], ['retirement.html', '퇴직급여충당부채', 1], ['deferred-tax.html', '이연법인세 간이 계산', 1], ['revenue-check.html', '수익인식 쟁점 진단', 1],
