@@ -24,7 +24,7 @@
       ['employment-credit.html', '통합고용세액공제', 1], ['rnd-credit.html', '연구·인력개발비 세액공제', 1], ['investment-credit.html', '통합투자세액공제'], ['startup-relief.html', '창업중소기업 세액감면', 1], ['angel-deduction.html', '엔젤투자 소득공제'],
     ] },
     { group: '가치평가·M&A', items: [
-      ['valuation-needs.html', '어떤 평가가 필요한가요?'], ['stock-valuation.html', '비상장주식 상증법 약식 평가', 1], ['dcf.html', 'DCF·WACC 간이 계산기'], ['dilution.html', '투자 유치 지분 희석'],
+      ['valuation-needs.html', '어떤 평가가 필요한가요?'], ['stock-valuation.html', '비상장주식 상증법 약식 평가'], ['dcf.html', 'DCF·WACC 간이 계산기'], ['dilution.html', '투자 유치 지분 희석'],
       ['ppa.html', 'PPA 영업권 간이 계산기', 1], ['impairment.html', '손상검사 간이 진단', 1], ['external-valuation.html', '자본시장법 외부평가 대상', 1], ['merger-price.html', '상장사 합병가액', 1], ['stock-option.html', '스톡옵션 공정가치'], ['option-limit.html', '스톡옵션 부여 한도'], ['rcps-cb.html', 'RCPS·CB 평가 필요 여부', 1],
       ['safe-conversion.html', 'SAFE·전환사채 전환 주식수'], ['equity-bridge.html', '기업가치→지분가치 환산'], ['multiples.html', '유사기업 멀티플 평가'], ['pf-feasibility.html', '부동산 PF 사업성', 1], ['qualified-reorg.html', '적격합병·적격분할 요건', 1],
     ] },
