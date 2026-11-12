@@ -45,7 +45,7 @@
     </div>
     <p class="basis-date">법령·기준 확인일 2026년 11월 4일 (법제처 현행 법령 기준). 개정이 반영되면 이 날짜를 갱신합니다.</p>
 
-    <div class="notice beta-notice"><span class="tag tag-beta">베타</span> 이 도구는 검증이 끝나지 않은 부분이 있습니다. 순자산가액·순손익액을 직접 입력하는 약식 계산이며, 부동산과다보유법인 판단 등 일부 해석을 확인하지 못했습니다. 결과는 참고용으로만 사용하시고, 중요한 결정 전에는 상담을 받으시기 바랍니다.</div>
+    <div class="notice">순자산가액과 각 연도 순손익액을 상증법 기준으로 계산해 넣는 약식 계산입니다. 계산기는 가중평균·80% 하한·최대주주 할증만 적용하며, 자산 평가와 세무조정은 반영하지 않습니다.</div>
 
     <section>
       <form id="sv-form" novalidate>
@@ -81,7 +81,7 @@
           <legend>4. 법인 특성</legend>
           <div class="two">
             <div class="field"><label for="realEstatePct">자산총액 중 부동산등 비율 <span class="hint" style="display:inline">(선택)</span></label><div class="input-unit"><input id="realEstatePct" type="number" inputmode="numeric" step="1" min="0" max="100" placeholder="예: 30"><span>%</span></div>
-              <span class="hint">50% 이상이면 부동산과다보유법인(가중치 2:3), 80% 이상이면 순자산가치 평가가 될 수 있습니다.</span></div>
+              <span class="hint">50% 이상이면 부동산과다보유법인(가중치 2:3), 80% 이상이면 순자산가치 평가가 될 수 있습니다. 비율은 장부가액 기준(토지·건물은 기준시가가 더 크면 기준시가)이며, 다른 법인을 통해 간접 보유한 부동산도 포함합니다(소득세법 시행령 제158조).</span></div>
             <div class="field"><label for="stockPct">자산총액 중 주식등 비율 <span class="hint" style="display:inline">(선택)</span></label><div class="input-unit"><input id="stockPct" type="number" inputmode="numeric" step="1" min="0" max="100"><span>%</span></div></div>
           </div>
           <label class="choice"><input type="checkbox" name="underThreeYears"><span>사업개시 전이거나 사업개시 후 3년 미만, 또는 휴업·폐업 중입니다.</span></label>
@@ -118,7 +118,7 @@
     <section class="guide" aria-labelledby="guide-h">
       <h2 id="guide-h">비상장주식 상증법 평가</h2>
       <p>매매사례가액 등 시가가 없으면 비상장주식은 1주당 순손익가치와 순자산가치를 가중평균해 평가합니다(상증법 보충적 평가방법).</p>
-      <p>최근 3년 순손익액과 순자산가액을 넣으면 1주당 가액을 약식으로 계산합니다. 부동산 과다 법인, 적자 법인 등은 가중치가 달라질 수 있어 베타로 운영합니다.</p>
+      <p>최근 3년 순손익액과 순자산가액을 넣으면 1주당 가액을 약식으로 계산합니다. 부동산 비율이 50% 이상인 법인은 가중치가 2:3으로 바뀌고, 사업 3년 미만·청산 중 법인 등은 순자산가치로만 평가합니다.</p>
       <h3>자주 묻는 질문</h3>
       <details><summary>어디에 쓰이나요?</summary><p>증여·상속세 신고, 특수관계인 주식 거래 시가 판단 등에 쓰입니다.</p></details>
       <p class="hint">근거 조문과 확인일은 <a href="basis.html">기준일·변경 이력</a>에서, 실제 사례 검토는 <a href="contact.html">상담 신청</a>으로 문의하실 수 있습니다.</p>
