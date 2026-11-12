@@ -78,3 +78,26 @@
   document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) setOpen(false); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && wrap.classList.contains('open')) { setOpen(false); link.focus(); } });
 })();
+
+// 방문자 수 (Cloudflare Worker cpatool-counter, 2026-11-12). 같은 브라우저는 하루 한 번만 셉니다.
+// 숫자(오늘·누적)만 저장하며 IP·쿠키 등 개인 정보는 저장하지 않습니다. 날짜 표시만 로컬 저장소에 둡니다.
+(function () {
+  var API = 'https://cpatool-counter.ybackh.workers.dev/';
+  var foot = document.querySelector('.site-footer .wrap');
+  if (!foot || !window.fetch) return;
+  var today = new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10); // 한국 시간 기준 날짜
+  var key = 'cpt_visit_day', counted = false;
+  try { counted = localStorage.getItem(key) === today; } catch (e) {}
+  var live = location.hostname === 'cpatool.co.kr' || location.hostname === 'www.cpatool.co.kr';
+  fetch(API, { method: live && !counted ? 'POST' : 'GET', cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (!d || typeof d.total !== 'number') return;
+      if (live) { try { localStorage.setItem(key, today); } catch (e) {} }
+      var p = document.createElement('p');
+      p.className = 'visit-count';
+      p.textContent = '오늘 방문 ' + d.today.toLocaleString('ko-KR') + ' · 누적 방문 ' + d.total.toLocaleString('ko-KR');
+      foot.appendChild(p);
+    })
+    .catch(function () {});
+})();
