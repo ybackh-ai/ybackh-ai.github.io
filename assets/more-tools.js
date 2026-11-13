@@ -489,4 +489,102 @@
         body: table([['세전 지급액', won(r.gross), true], ['소득금액', won(r.incomeAmount)], ['소득세', won(r.tax)], ['지방소득세', won(r.localTax)], ['실지급액', won(r.net), true]]), topic: 'tax', label: '원천세 상담 신청' };
     }
   });
+
+  // ── 22. 임원 퇴직금 한도 (2026-11-13, docs/49) ──
+  E.register('exec-retirement', {
+    fields: [
+      { type: 'number', id: 'pay', label: '임원 퇴직금 지급액', unit: '만원', placeholder: '예: 50000' },
+      { type: 'radio', id: 'hasRule', label: '정관(또는 정관에서 위임한 퇴직급여지급규정)에 임원 퇴직금 금액이나 계산 기준이 있나요?', options: [['yes', '예'], ['no', '아니오']] },
+      { type: 'number', id: 'ruleAmount', label: '정관·규정에 따라 계산한 금액', unit: '만원', when: function (v) { return v.hasRule === 'yes'; }, hint: '예: 퇴직 전 월급 × 근속연수 × 지급배수' },
+      { type: 'number', id: 'salary1y', label: '퇴직 전 1년 동안 받은 총급여(봉급·상여, 비과세 제외)', unit: '만원', when: function (v) { return v.hasRule !== 'yes'; } },
+      { type: 'two', items: [
+        { type: 'date', id: 'start', label: '임원 취임일' },
+        { type: 'date', id: 'end', label: '퇴직일' }] },
+      { type: 'date', id: 'empStart', label: '직원 입사일 (선택)', when: function (v) { return v.hasRule !== 'yes'; }, hint: '직원에서 임원이 될 때 퇴직금을 받지 않았다면 직원 기간도 근속연수에 넣을 수 있습니다' },
+      { type: 'fieldset', legend: '소득세법 한도용 연평균 총급여', intro: '3년 미만 근무했다면 그 기간의 총급여를 연 단위로 환산한 금액을 넣습니다.', items: [{ type: 'two', items: [
+        { type: 'number', id: 'avg2019', label: '2019년 말부터 거꾸로 3년 연평균 총급여', unit: '만원', hint: '2019년 이전 근무가 없으면 비움' },
+        { type: 'number', id: 'avgRetire', label: '퇴직일부터 거꾸로 3년 연평균 총급여', unit: '만원' }] }] }
+    ],
+    run: function (v) {
+      var r = window.OwnerTaxRules.execRetire(v);
+      if (r.status === 'INVALID') return { r: r };
+      var mo = function (m) { return Math.floor(m / 12) + '년 ' + (m % 12) + '개월'; };
+      var body = '<h3>법인세 — 손금 한도</h3>' + table([
+        ['근속기간(1개월 미만 버림)', mo(r.corpMonths)],
+        ['손금 한도', won(r.corpLimit), true],
+        ['한도 초과 → 손금불산입(상여)', won(r.corpExcess), true]]) +
+        '<h3>소득세 — 임원 퇴직소득 한도</h3>' + table([
+        ['퇴직소득 대상 금액', won(r.retireBase)],
+        r.pre2012 ? ['2011년 이전 근무분(한도 적용 제외)', won(r.pre2012) + ' (' + r.monthsC + '/' + r.totalMonths + '개월)'] : null,
+        r.monthsA ? ['2012~2019 근무분 한도 (×3)', won(r.limitA) + ' (' + r.monthsA + '개월)'] : null,
+        r.monthsB ? ['2020년 이후 근무분 한도 (×2)', won(r.limitB) + ' (' + r.monthsB + '개월)'] : null,
+        ['한도 합계', won(r.taxLimit), true],
+        ['한도 초과 → 근로소득', won(r.taxExcess), true],
+        ['퇴직소득으로 남는 금액', won(r.finalRetire), true]]);
+      return { r: r, cls: r.wageTotal ? 'target' : 'not-target', title: r.wageTotal ? '퇴직금 중 ' + won(r.wageTotal) + '이 한도를 넘는 것으로 계산됩니다' : '퇴직금이 두 한도 안에 있는 것으로 계산됩니다',
+        sub: '법인세 손금불산입 ' + won(r.corpExcess) + ' · 소득세 한도 초과 ' + won(r.taxExcess), body: body, topic: 'tax', label: '임원 퇴직금·정관 정비 상담 신청' };
+    }
+  });
+
+  // ── 23. 불공정 증자·감자 증여이익 (2026-11-13, docs/49) ──
+  var CG_MODES = [['issue-low', '저가 증자 — 실권주 재배정·제3자 배정·초과 배정'], ['issue-forfeit', '저가 증자 — 실권 처리 후 특수관계인이 인수'], ['cut-low', '저가 감자 — 시가보다 낮은 대가로 일부 주주 주식 소각'], ['cut-high', '고가 감자 — 시가보다 높은 대가로 일부 주주 주식 소각']];
+  function isMode() { var ms = arguments; return function (v) { return Array.prototype.indexOf.call(ms, v.mode) >= 0; }; }
+  E.register('capital-gift', {
+    fields: [
+      { type: 'select', id: 'mode', label: '거래 유형', options: CG_MODES },
+      { type: 'fieldset', id: 'fs-issue', legend: '증자 정보 (1주당 금액은 원)', when: isMode('issue-low', 'issue-forfeit'), items: [{ type: 'two', items: [
+        { type: 'number', id: 'preValue', label: '증자 전 1주당 평가액(시가)', unit: '원', placeholder: '예: 10000', hint: '비상장주식은 상증법 보충적 평가액' },
+        { type: 'number', id: 'issuePrice', label: '신주 1주당 인수가액', unit: '원', placeholder: '예: 5000' },
+        { type: 'number', id: 'preShares', label: '증자 전 발행주식총수', unit: '주' },
+        { type: 'number', id: 'newShares', label: '증자로 늘어난 주식수', unit: '주', when: isMode('issue-low') },
+        { type: 'number', id: 'gotShares', label: '이익을 본 사람이 배정받은 실권주·신주 수', unit: '주', when: isMode('issue-low'), hint: '기존 주주가 지분율보다 더 받았다면 초과분만' },
+        { type: 'number', id: 'equalNew', label: '지분율대로 균등 증자했을 때 늘어날 주식수', unit: '주', when: isMode('issue-forfeit'), hint: '보통 당초 발행 예정 신주 수' },
+        { type: 'number', id: 'forfeitTotal', label: '실권주 총수', unit: '주', when: isMode('issue-forfeit') },
+        { type: 'number', id: 'relatedForfeit', label: '그중 신주인수자의 특수관계인이 포기한 주식수', unit: '주', when: isMode('issue-forfeit') },
+        { type: 'number', id: 'acqPostShares', label: '신주인수자의 증자 후 주식수', unit: '주', when: isMode('issue-forfeit') },
+        { type: 'number', id: 'postTotalShares', label: '증자 후 발행주식총수', unit: '주', when: isMode('issue-forfeit') }] }] },
+      { type: 'fieldset', id: 'fs-cut', legend: '감자 정보 (1주당 금액은 원)', when: isMode('cut-low', 'cut-high'), items: [{ type: 'two', items: [
+        { type: 'number', id: 'value', label: '감자한 주식 1주당 평가액(시가)', unit: '원', placeholder: '예: 20000' },
+        { type: 'number', id: 'paid', label: '소각 때 지급한 1주당 금액', unit: '원', placeholder: '예: 5000' },
+        { type: 'number', id: 'cutTotal', label: '총감자 주식수', unit: '주', when: isMode('cut-low') },
+        { type: 'number', id: 'relatedCut', label: '그중 대주주의 특수관계인이 감자한 주식수', unit: '주', when: isMode('cut-low') },
+        { type: 'number', id: 'majorPostShares', label: '대주주의 감자 후 주식수', unit: '주', when: isMode('cut-low') },
+        { type: 'number', id: 'cutPostTotal', label: '감자 후 발행주식총수', unit: '주', when: isMode('cut-low') },
+        { type: 'number', id: 'face', label: '1주당 액면가액', unit: '원', when: isMode('cut-high') },
+        { type: 'number', id: 'holderCut', label: '이익을 본 주주(대주주의 특수관계인)의 감자 주식수', unit: '주', when: isMode('cut-high') }] }] }
+    ],
+    run: function (v) {
+      var input = {}; Object.keys(v).forEach(function (k) { input[k] = v[k]; });
+      if (v.mode === 'cut-low') input.postTotalShares = v.cutPostTotal;
+      var r = window.OwnerTaxRules.capitalGift(input);
+      if (r.status === 'INVALID') return { r: r };
+      var issue = v.mode === 'issue-low' || v.mode === 'issue-forfeit';
+      var rows = issue ? [['증자 후 1주당 가액(산식)', won(r.postValue)], ['1주당 차이(증자 후 가액 − 인수가액)', won(r.diff)]] : [['1주당 차이', won(Math.abs(r.diff))]];
+      if (r.diffPct !== null && r.diffPct !== undefined && v.mode !== 'issue-low') rows.push(['차이 비율', n(r.diffPct) + '% (30% 이상이면 금액 기준 없음)']);
+      if (v.mode === 'cut-high') rows.push(['적용 조건(평가액 < 액면가액·대가 중 작은 금액)', r.applies ? '충족' : '충족 안 함']);
+      rows.push(['계산한 증여이익', won(r.gain), true]);
+      if (v.mode !== 'issue-low') rows.push(['과세 기준(3억원 또는 30%)', r.taxable ? '충족' : '미달 → 과세 제외']);
+      var title = !r.applies ? '이 규정의 계산 대상이 아닌 것으로 보입니다' : r.taxable ? '증여이익 약 ' + won(r.gain) + '이 과세될 수 있습니다' : '증여이익이 과세 기준에 못 미치는 것으로 보입니다';
+      return { r: r, cls: r.taxable ? 'target' : 'not-target', title: title, sub: CG_MODES.filter(function (m) { return m[0] === v.mode; })[0][1], body: table(rows), topic: 'tax', label: '증자·감자 세무 검토 상담 신청' };
+    }
+  });
+
+  // ── 24. 성실신고확인 대상 판정 (2026-11-13, docs/49) ──
+  E.register('sincere-filing', {
+    submit: '판정하기',
+    fields: function () { var SF = window.OwnerTaxRules.SF; return [
+      { type: 'fieldset', legend: '업종별 해당 연도 수입금액(매출)', intro: '해당하는 칸만 입력합니다. 사업장이 여러 곳이면 업종별로 합칩니다. 사업용 유형자산 양도 수입은 뺍니다.', items: [
+        { type: 'number', id: 'g1', label: '1군: ' + SF[1].label + ' (기준 15억원)', unit: '만원', placeholder: '예: 100000' },
+        { type: 'number', id: 'g2', label: '2군: ' + SF[2].label + ' (기준 7억5천만원)', unit: '만원' },
+        { type: 'number', id: 'g3', label: '3군: ' + SF[3].label + ' (기준 5억원)', unit: '만원', hint: '1·2군 업종이라도 소득세법 시행령 별표 3의3 사업서비스업이면 여기에 넣습니다' }] }
+    ]; },
+    run: function (v) {
+      var r = window.OwnerTaxRules.sincereFiling(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = grid(['업종군', '수입금액', '기준금액'], r.groups.filter(function (g) { return g.revenue; }).map(function (g) { return [g.key + '군' + (g.key === r.main ? ' (주업종)' : ''), won(g.revenue), won(g.limit)]; })) +
+        table([['주업종 기준으로 환산한 수입금액', won(r.converted), true], ['성실신고확인 기준', won(r.limit)], ['복식부기의무 기준(참고)', won(r.bookLimit) + ' → ' + (r.bookkeeping ? '이상' : '미만')]]);
+      return { r: r, cls: r.target ? 'target' : 'not-target', title: r.target ? '성실신고확인 대상으로 판단됩니다' : '성실신고확인 대상이 아닌 것으로 보입니다',
+        sub: r.target ? '종합소득세 확정신고 기한이 다음 해 6월 30일로 늘어나고, 세무사 등의 확인서가 필요합니다' : '환산 수입금액이 기준보다 ' + won(r.limit - r.converted) + ' 적습니다', body: body, topic: 'tax', label: '법인 전환·성실신고 상담 신청' };
+    }
+  });
 })();

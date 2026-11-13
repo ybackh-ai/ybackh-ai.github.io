@@ -19,6 +19,7 @@
       ['inherit-gift.html', '상속·증여세 간이 계산'], ['loan-interest.html', '가지급금 인정이자 계산기', 1], ['stock-option-tax.html', '스톡옵션 행사 세금'], ['corp-vs-personal.html', '법인 vs 개인사업자 세금 비교'], ['tax-calendar.html', '법인 세무 신고 일정표'],
       ['corp-tax.html', '법인세 간이 계산기'], ['withholding.html', '원천징수 세액 계산기'], ['entertainment.html', '기업업무추진비(접대비) 한도'], ['business-car.html', '업무용승용차 비용 한도'], ['share-transfer-tax.html', '비상장주식 양도소득세'],
       ['related-price.html', '특수관계인 주식 거래 시가 판정'], ['related-party.html', '특수관계인 범위 확인', 1], ['succession.html', '가업상속공제 요건 확인', 1], ['tax-penalty.html', '가산세 계산기', 1],
+      ['exec-retirement.html', '임원 퇴직금 한도'], ['capital-gift.html', '불공정 증자·감자 증여이익'], ['sincere-filing.html', '성실신고확인 대상 판정'],
     ] },
     { group: '세액공제·감면', items: [
       ['employment-credit.html', '통합고용세액공제', 1], ['rnd-credit.html', '연구·인력개발비 세액공제', 1], ['investment-credit.html', '통합투자세액공제'], ['startup-relief.html', '창업중소기업 세액감면', 1], ['angel-deduction.html', '엔젤투자 소득공제'],
