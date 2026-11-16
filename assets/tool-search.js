@@ -32,6 +32,7 @@
   var cards = Array.prototype.slice.call(tools.querySelectorAll('.card'));
   var items = cards.map(function (c) {
     var grid = c.parentNode, group = grid.previousElementSibling;
+    // 그룹 이름(summary.tools-group)의 "N개" 숫자는 검색 대상에서 빼도 무방(숫자 검색은 거의 없음)
     return { el: c, grid: grid, group: group && group.classList.contains('tools-group') ? group : null,
       text: norm(c.textContent + ' ' + (group ? group.textContent : '') + ' ' + (c.querySelector('a') ? c.querySelector('a').getAttribute('href') : '')) };
   });
@@ -45,22 +46,42 @@
     return !!alts && alts.some(function (a) { return text.indexOf(norm(a)) >= 0; });
   }
 
+  // (2026-11-16) 첫 화면 개편: 검색창은 맨 위, 결과는 바로 아래 #tool-q-results에 목록으로. 도구 묶음은 <details>로 접혀 있고 검색하면 맞는 묶음만 펼친다.
+  var resultsEl = document.getElementById('tool-q-results');
+  var searched = false;
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function apply() {
     var raw = input.value.trim();
     var terms = raw.toLowerCase().split(/\s+/).map(norm).filter(Boolean);
-    var shown = 0;
+    var shown = 0, hits = [];
     items.forEach(function (it) {
       var ok = !terms.length || terms.every(function (t) { return termMatches(it.text, t); });
       it.el.classList.toggle('hidden', !ok);
-      if (ok) shown++;
+      if (ok) { shown++; hits.push(it); }
     });
     groups.forEach(function (g) {
       var any = Array.prototype.some.call(g.children, function (c) { return !c.classList.contains('hidden'); });
-      g.classList.toggle('hidden', !any);
-      var h = g.previousElementSibling;
-      if (h && h.classList.contains('tools-group')) h.classList.toggle('hidden', !any);
+      var box = g.parentNode && g.parentNode.tagName === 'DETAILS' ? g.parentNode : null;
+      if (box) {
+        box.classList.toggle('hidden', !any);
+        if (terms.length) box.open = any; else if (searched) box.open = false;
+      } else {
+        g.classList.toggle('hidden', !any);
+        var h = g.previousElementSibling;
+        if (h && h.classList.contains('tools-group')) h.classList.toggle('hidden', !any);
+      }
     });
-    countEl.textContent = terms.length ? '"' + raw + '" 검색 결과 ' + shown + '개 / 전체 ' + items.length + '개' : '전체 도구 ' + items.length + '개 — 이름이나 하고 싶은 일로 검색해 보세요.';
+    if (resultsEl) {
+      if (terms.length) {
+        resultsEl.innerHTML = hits.slice(0, 8).map(function (it) {
+          var a = it.el.querySelector('h3 a') || it.el.querySelector('a');
+          return a ? '<li><a href="' + esc(a.getAttribute('href')) + '">' + esc(a.textContent) + '</a>' + (it.group ? '<span>' + esc(it.group.firstChild.textContent.trim()) + '</span>' : '') + '</li>' : '';
+        }).join('') + (shown > 8 ? '<li class="more"><a href="#tools">검색 결과 ' + shown + '개 모두 보기</a></li>' : '');
+        resultsEl.classList.toggle('hidden', !shown);
+      } else { resultsEl.innerHTML = ''; resultsEl.classList.add('hidden'); }
+    }
+    searched = terms.length > 0;
+    countEl.textContent = terms.length ? (shown ? '"' + raw + '" 검색 결과 ' + shown + '개' : '"' + raw + '"에 맞는 도구가 없습니다. 다른 말로 검색하시거나 상담 신청으로 문의해 주세요.') : '전체 도구 ' + items.length + '개 중에서 이름이나 하고 싶은 일로 찾아보세요.';
     emptyEl.classList.toggle('hidden', !(terms.length && !shown));
   }
 
@@ -68,9 +89,9 @@
   input.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(apply, 80); });
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') { input.value = ''; apply(); }
-    if (e.key === 'Enter') { e.preventDefault(); var first = items.filter(function (it) { return !it.el.classList.contains('hidden'); })[0]; if (first && input.value.trim()) { var a = first.el.querySelector('a'); if (a) a.focus(); } }
+    if (e.key === 'Enter') { e.preventDefault(); var a = resultsEl && resultsEl.querySelector('a'); if (!a) { var first = items.filter(function (it) { return !it.el.classList.contains('hidden'); })[0]; a = first && first.el.querySelector('a'); } if (a && input.value.trim()) a.focus(); }
   });
-  var chips = tools.querySelectorAll('.tool-search .chips button');
+  var chips = document.querySelectorAll('.tool-search .chips button');
   Array.prototype.forEach.call(chips, function (b) { b.addEventListener('click', function () { input.value = b.textContent; apply(); input.focus(); }); });
 
   try { var q = new URLSearchParams(location.search).get('q'); if (q) input.value = q; } catch (e) { /* 오래된 브라우저 무시 */ }

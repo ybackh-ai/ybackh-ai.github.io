@@ -291,3 +291,69 @@ ul.basis { padding-left: 20px; margin: 4px 0 0; }
   .card, .doc { padding: 16px; }
   th, td { padding: 8px 4px; font-size: 14px; }
 }
+
+/* ===== 2026-11-16 첫 화면 개편 + 가독성 ===== */
+/* 읽기 편하게: 본문 글자·줄 간격·여백을 조금 키움 (모든 페이지 공통) */
+body { font-size: 16px; line-height: 1.75; }
+.card p { font-size: 15.5px; line-height: 1.75; }
+.hint { font-size: 13.5px; line-height: 1.6; }
+section { padding: 32px 0; }
+h2 { font-size: 23px; margin: 0 0 16px; }
+.card h3 { line-height: 1.45; }
+.grid { gap: 18px; }
+
+/* 첫 화면 위쪽: 검색 중심 */
+.home-hero { padding: 52px 0 28px; text-align: left; }
+.home-hero .eyebrow { margin: 0 0 8px; font-size: 14px; font-weight: 700; color: var(--accent); letter-spacing: 0.02em; }
+.home-hero h1 { font-size: clamp(30px, 6vw, 44px); margin: 0 0 12px; }
+.home-hero .lead { color: var(--ink-soft); font-size: 17.5px; line-height: 1.7; margin: 0 0 22px; max-width: 680px; }
+.home-search { position: relative; max-width: 720px; margin: 0 0 14px; }
+.home-search input[type='search'] { font-size: 18px; padding: 16px 16px 16px 46px; border-radius: 12px; background-position: 15px center; background-size: 20px;
+  box-shadow: 0 6px 20px rgba(20, 33, 61, 0.08); }
+.search-results { list-style: none; margin: 8px 0 0; padding: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(20, 33, 61, 0.12); }
+.search-results li a { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 8px; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 16px; }
+.search-results li { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-radius: 8px; }
+.search-results li span { flex: none; font-size: 12.5px; color: var(--muted); padding-right: 12px; }
+.search-results li:hover, .search-results li:focus-within { background: var(--info-bg); }
+.search-results li.more a { color: var(--accent); font-weight: 700; font-size: 14.5px; }
+.quick-tools { display: flex; flex-wrap: wrap; gap: 8px; max-width: 720px; margin: 4px 0 14px; }
+.quick-tools a { display: inline-block; padding: 8px 14px; border: 1px solid var(--line); border-radius: 99px; background: var(--card);
+  color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 600; }
+.quick-tools a:hover { border-color: var(--accent); color: var(--accent); }
+.quick-tools a.more { color: var(--accent); border-style: dashed; }
+.hero-contact { margin: 0; font-size: 15px; color: var(--ink-soft); }
+
+/* 기한 + 뉴스 두 카드 */
+.home-row { display: grid; gap: 18px; grid-template-columns: 1fr; margin-top: 8px; }
+@media (min-width: 760px) { .home-row { grid-template-columns: 1fr 1fr; } }
+.home-row #home-deadlines { margin-top: 0; }
+.home-news h3 { margin: 0 0 10px; font-size: 17px; }
+.news-list { list-style: none; margin: 0 0 10px; padding: 0; }
+.news-list li { padding: 9px 0; border-top: 1px solid var(--line); }
+.news-list li:first-child { border-top: 0; }
+.news-list a { font-weight: 600; text-decoration: none; color: var(--ink); line-height: 1.5; }
+.news-list a:hover { color: var(--accent); text-decoration: underline; }
+.news-list .hint { margin-top: 2px; }
+
+/* 대상별 찾기: 줄 간격을 넓혀 읽기 쉽게 */
+.audience .basis li { font-size: 15px; line-height: 1.7; margin-bottom: 4px; }
+
+/* 도구 묶음 접기 */
+.tool-group-box { border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); margin: 0 0 10px; }
+.tool-group-box > summary.tools-group { list-style: none; cursor: pointer; margin: 0; padding: 15px 18px; border: 0; font-size: 17px; color: var(--ink);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.tool-group-box > summary.tools-group::-webkit-details-marker { display: none; }
+.tool-group-box > summary.tools-group::after { content: '+'; font-size: 22px; line-height: 1; color: var(--accent); font-weight: 400; }
+.tool-group-box[open] > summary.tools-group::after { content: '−'; }
+.tool-group-box > summary .count { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--muted); }
+.tool-group-box > summary:hover { background: var(--bg); border-radius: var(--radius); }
+.tool-group-box > .grid { padding: 4px 16px 18px; }
+.tool-group-box > .grid .card { background: var(--bg); }
+
+@media (max-width: 560px) {
+  .home-hero { padding: 32px 0 18px; }
+  .home-search input[type='search'] { font-size: 17px; padding: 14px 14px 14px 42px; }
+  .quick-tools a { font-size: 14px; padding: 7px 12px; }
+  .tool-group-box > .grid { padding: 2px 10px 12px; }
+}
