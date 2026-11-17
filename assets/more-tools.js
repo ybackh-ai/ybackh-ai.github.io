@@ -228,14 +228,21 @@
         { type: 'number', id: 'avgSales', label: '직전 3년 평균 매출액', unit: '억원', when: function (v) { return v.size === 'mid'; } },
         { type: 'number', id: 'years', label: '피상속인의 계속 경영기간', unit: '년', placeholder: '예: 25' },
         { type: 'number', id: 'assetValue', label: '가업상속재산가액(추정)', unit: '억원', placeholder: '예: 300' }] },
-      { type: 'check', id: 'fraud', label: '피상속인·상속인이 가업 관련 조세포탈·회계부정으로 형이 확정됐습니다' }
+      { type: 'check', id: 'fraud', label: '피상속인·상속인이 가업 관련 조세포탈·회계부정으로 형이 확정됐습니다' },
+      { type: 'fieldset', legend: '세부 요건 (시행령 제15조제3항) — 모르면 비워 두세요', items: [
+        { type: 'radio', id: 'ownerShare', label: '피상속인이 최대주주이고, 특수관계인과 합쳐 지분 40%(상장법인 20%) 이상을 10년 이상 계속 보유했나요?', options: [['unknown', '모르겠음'], ['yes', '예'], ['no', '아니오']] },
+        { type: 'radio', id: 'ceoTenure', label: '피상속인이 대표이사로 ① 가업 기간의 50% 이상, ② 10년 이상(상속인이 그 자리를 이어받아 계속 재직), ③ 상속 전 10년 중 5년 이상 중 하나를 채웠나요?', options: [['unknown', '모르겠음'], ['yes', '예'], ['no', '아니오']] },
+        { type: 'radio', id: 'heirReq', label: '상속인(또는 배우자)이 18세 이상이고, 상속 전 2년 이상 가업에 종사했고, 신고기한까지 임원·그 후 2년 안에 대표이사로 취임하나요?', options: [['unknown', '모르겠음'], ['yes', '예'], ['no', '아니오']] }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'otherAssets', label: '상속인이 받는 가업 외 상속재산(채무 차감)', unit: '억원', when: function (v) { return v.size === 'mid'; } },
+        { type: 'number', id: 'heirTax', label: '그 상속인이 낼 상속세(가업상속공제 전)', unit: '억원', when: function (v) { return v.size === 'mid'; } }] }
     ],
     run: function (v) {
       var r = window.GainsSuccessionRules.succession(v);
       if (r.status === 'INVALID') return { r: r };
-      var body = grid(['기본 요건', '충족'], r.checks.map(function (c) { return [c.label, c.ok ? '충족' : '미충족']; })) +
+      var body = grid(['요건', '결과'], r.checks.map(function (c) { return [c.label, c.ok === null ? '확인 필요' : c.ok ? '충족' : '미충족']; })) +
         table([['공제 한도', r.limit ? r.limit + '억원' : '-'], ['예상 공제액', r.deduction + '억원', true]]);
-      return { r: r, cls: r.eligible ? 'target' : 'not-target', title: r.eligible ? '기본 요건을 충족하는 것으로 보입니다 (최대 ' + r.deduction + '억원 공제)' : '기본 요건을 충족하지 못하는 것으로 보입니다', sub: '시행령 세부 요건은 별도 확인 필요', body: body, topic: 'tax', label: '가업승계 상담 신청' };
+      return { r: r, cls: r.eligible ? 'target' : 'not-target', title: r.eligible ? (r.pending ? '입력한 요건은 충족합니다 (최대 ' + r.deduction + '억원 공제, ' + r.pending + '개 요건 확인 필요)' : '가업상속공제 요건을 충족하는 것으로 보입니다 (최대 ' + r.deduction + '억원 공제)') : '가업상속공제 요건을 충족하지 못하는 것으로 보입니다', sub: r.pending ? '"확인 필요" 요건을 하나라도 못 채우면 공제를 받을 수 없습니다' : '사후관리 5년 요건을 지켜야 추징되지 않습니다', body: body, topic: 'tax', label: '가업승계 상담 신청' };
     }
   });
 
