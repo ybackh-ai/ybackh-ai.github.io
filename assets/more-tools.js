@@ -587,4 +587,89 @@
         sub: r.target ? '종합소득세 확정신고 기한이 다음 해 6월 30일로 늘어나고, 세무사 등의 확인서가 필요합니다' : '환산 수입금액이 기준보다 ' + won(r.limit - r.converted) + ' 적습니다', body: body, topic: 'tax', label: '법인 전환·성실신고 상담 신청' };
     }
   });
+
+  // ── 25~27. 재무분석 추가 (2026-11-17, docs/51) ──
+  function days(x) { return n(x) + '일'; }
+  function times(x) { return x === null ? '계산 불가' : n(x) + '배'; }
+  E.register('working-capital', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'revenue', label: '연 매출액', unit: '만원', placeholder: '예: 365000' },
+        { type: 'number', id: 'cogs', label: '연 매출원가', unit: '만원', placeholder: '예: 292000', hint: '서비스업처럼 재고가 없으면 0' }] },
+      { type: 'fieldset', legend: '재무상태표 잔액 (기말 또는 기초·기말 평균)', items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'ar', label: '매출채권(외상매출금·받을어음)', unit: '만원', placeholder: '예: 60000' },
+          { type: 'number', id: 'inv', label: '재고자산', unit: '만원', placeholder: '예: 40000' }] },
+        { type: 'number', id: 'ap', label: '매입채무(외상매입금·지급어음)', unit: '만원', placeholder: '예: 32000' }] }
+    ],
+    run: function (v) {
+      var r = window.FinAnalysisRules.workingCapital(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([
+        ['매출채권 회수 기간', days(r.arDays)],
+        ['재고자산 보유 기간', days(r.invDays)],
+        ['매입채무 지급 기간', days(r.apDays)],
+        ['현금전환주기(CCC)', days(r.ccc), true],
+        ['순운전자본(매출채권 + 재고 − 매입채무)', won(r.nwc)],
+        ['하루 매출액', won(r.perDay)],
+        ['현금전환주기만큼 묶인 돈(추정)', won(r.cashTied), true],
+        ['회수 기간을 10일 줄이면 늘어나는 현금(추정)', won(r.perDay * 10)]]);
+      var neg = r.ccc < 0;
+      return { r: r, cls: neg ? 'not-target' : 'target', title: neg ? '매입 대금을 치르기 전에 판매 대금이 먼저 들어오는 구조입니다' : '물건을 사서 현금으로 돌아오기까지 약 ' + days(r.ccc) + '이 걸립니다',
+        sub: '현금전환주기 ' + days(r.ccc) + ' · 묶인 돈(추정) ' + won(r.cashTied), body: body, topic: 'ifrs', label: '운전자본·자금 계획 상담 신청' };
+    }
+  });
+
+  E.register('break-even', {
+    fields: [
+      { type: 'number', id: 'revenue', label: '연 매출액', unit: '만원', placeholder: '예: 100000' },
+      { type: 'two', items: [
+        { type: 'number', id: 'variable', label: '변동비 합계', unit: '만원', placeholder: '예: 60000', hint: '재료비·외주비·판매수수료처럼 매출에 비례하는 비용' },
+        { type: 'number', id: 'fixed', label: '고정비 합계', unit: '만원', placeholder: '예: 30000', hint: '임차료·정규직 급여·감가상각비처럼 매출과 관계없는 비용' }] },
+      { type: 'number', id: 'target', label: '목표 영업이익 (선택)', unit: '만원', hint: '넣으면 그 이익을 내는 데 필요한 매출액도 계산합니다' }
+    ],
+    run: function (v) {
+      var r = window.FinAnalysisRules.breakEven(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([
+        ['공헌이익률', n(r.cmRatio) + '%'],
+        ['손익분기점 매출액', won(r.bep), true],
+        ['안전한계율 (매출이 몇 % 줄면 적자인지)', n(r.safety) + '%', true],
+        ['현재 영업이익', won(r.opIncome)],
+        ['영업레버리지도(DOL)', r.dol === null ? '적자라 계산하지 않음' : n(r.dol) + '배 (매출 1% 변동 → 영업이익 ' + n(r.dol) + '% 변동)'],
+        r.targetSales === null ? null : ['목표 영업이익을 위한 매출액', won(r.targetSales), true]]);
+      var loss = r.safety < 0;
+      return { r: r, cls: loss ? 'target' : 'not-target', title: loss ? '현재 매출은 손익분기점보다 ' + n(-r.safety) + '% 모자랍니다' : '매출이 ' + n(r.safety) + '% 넘게 줄면 적자로 돌아섭니다',
+        sub: '손익분기점 매출액 ' + won(r.bep) + ' · 공헌이익률 ' + n(r.cmRatio) + '%', body: body, topic: 'etc', label: '사업계획·원가 구조 상담 신청' };
+    }
+  });
+
+  E.register('debt-capacity', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'op', label: '영업이익 (적자면 음수)', unit: '만원', placeholder: '예: 50000', allowNeg: true },
+        { type: 'number', id: 'dep', label: '감가상각비 + 무형자산상각비', unit: '만원', placeholder: '예: 20000' }] },
+      { type: 'number', id: 'interest', label: '연 이자비용', unit: '만원', placeholder: '예: 10000' },
+      { type: 'two', items: [
+        { type: 'number', id: 'debt', label: '총차입금 (단기·장기차입금·사채)', unit: '만원', placeholder: '예: 300000', hint: '리스부채를 넣을지는 대출 약정 기준을 따릅니다' },
+        { type: 'number', id: 'cash', label: '현금성자산', unit: '만원', placeholder: '예: 50000' }] }
+    ],
+    run: function (v) {
+      var r = window.FinAnalysisRules.debtCapacity(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([
+        ['EBITDA', won(r.ebitda), true],
+        [r.netCash ? '순현금 (현금 − 차입금)' : '순차입금 (차입금 − 현금)', won(Math.abs(r.netDebt))],
+        ['순차입금 / EBITDA', r.netCash ? '순현금 상태' : times(r.ndEbitda), true],
+        ['이자보상배율 (영업이익 ÷ 이자)', r.icr === null ? '이자비용 없음' : times(r.icr), true],
+        ['EBITDA 이자보상배율', r.ebitdaIcr === null ? '이자비용 없음' : times(r.ebitdaIcr)]]);
+      var weak = r.icr !== null && r.icr < 1;
+      var title = weak ? '영업이익으로 이자를 다 갚지 못하는 상태입니다'
+        : r.netCash ? '현금이 차입금보다 많은 순현금 상태입니다'
+        : r.ndEbitda === null ? 'EBITDA가 0 이하라 상환 기간을 계산할 수 없습니다'
+        : '지금 EBITDA로 순차입금을 갚는 데 약 ' + n(r.ndEbitda) + '년이 걸리는 수준입니다';
+      return { r: r, cls: weak || r.ndEbitda === null && !r.netCash ? 'target' : 'not-target', title: title,
+        sub: 'EBITDA ' + won(r.ebitda) + (r.icr === null ? '' : ' · 이자보상배율 ' + times(r.icr)), body: body, topic: 'fdd', label: '차입·재무구조 상담 신청' };
+    }
+  });
 })();
