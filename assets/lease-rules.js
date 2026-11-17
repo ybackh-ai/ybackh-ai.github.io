@@ -2,11 +2,11 @@
  * 리스 회계(리스이용자) 간이 계산 로직 (순수 함수, 브라우저·Node 공용). 근거: docs/34_리스_로직.md
  * K-IFRS 제1116호의 일반 원칙 요약: 리스부채 = 리스료의 현재가치(내재이자율 또는 증분차입이자율),
  * 사용권자산 = 리스부채 + 리스개설직접원가 + 선급 리스료, 사용권자산은 리스기간에 걸쳐 정액 상각.
- * 기준서 원문 문단은 대조하지 않음 → 베타.
+ * 2026-11-17 K-IFRS 1116 문단 5~8, 23~28, 31~33 원문 대조(kifrs.com). 기초 지급의 개시일 지급분을 리스부채에서 제외하도록 수정.
  */
 (function (root) {
   'use strict';
-  var VERSION = '2026-11-09';
+  var VERSION = '2026-11-17';
   function r2(n) { return Math.round(n * 100) / 100; }
   function blank(v) { return v === undefined || v === null || v === ''; }
 
@@ -34,11 +34,13 @@
     // 현재가치
     var pv = 0;
     for (var k = 1; k <= n; k++) { var t = timing === 'advance' ? k - 1 : k; pv += pay / Math.pow(1 + i, t); }
-    var liability = pv;
-    var rou = pv + idc + pre;
+    // 문단 26: 리스개시일 현재 지급되지 않은 리스료만 리스부채. 기초 지급의 첫 리스료(개시일 지급)는 문단 24(2)에 따라 사용권자산에 포함
+    var paidAtStart = timing === 'advance' ? pay : 0;
+    var liability = pv - paidAtStart;
+    var rou = liability + paidAtStart + idc + pre;
 
     // 상각표 (반올림은 표시 단계에서만)
-    var bal = liability, sched = [], totalInterest = 0, prevInterest = 0;
+    var bal = pv, sched = [], totalInterest = 0, prevInterest = 0; // 상각표는 개시일 지급분까지 포함해 1회차부터 표시
     for (var p = 1; p <= n; p++) {
       var opening = bal, interest, principal;
       if (timing === 'advance') {
@@ -71,7 +73,8 @@
     r.liability = r2(liability);
     r.rouAsset = r2(rou);
     r.totalPayments = r2(pay * n);
-    r.totalInterest = r2(pay * n - liability);
+    r.totalInterest = r2(pay * n - pv);
+    r.paidAtStart = r2(paidAtStart);
     r.schedule = sched;
     r.termMonths = freq === 'monthly' ? n : n * 12;
     r.shortTerm = r.termMonths <= 12;
@@ -82,10 +85,11 @@
     r.firstYearDiff = r2(fyInterest + fyDep - fyRent);
     r.status = 'OK';
 
-    r.basis.push('리스부채 = 리스기간 동안 지급할 리스료를 할인율로 할인한 현재가치입니다. 할인율은 리스의 내재이자율을 쉽게 산정할 수 없으면 리스이용자의 증분차입이자율을 씁니다.');
-    r.basis.push('사용권자산 = 리스부채 최초 측정액 + 리스개설직접원가 + 개시일 전 지급 리스료(받은 리스 인센티브 차감)이며, 리스기간(또는 내용연수 중 짧은 기간)에 걸쳐 상각합니다.');
-    r.basis.push('매기 이자비용 = 기초 리스부채 × 기간 이자율, 리스료 중 나머지가 원금 상환입니다. 그래서 리스 초기에는 비용(이자+상각)이 기존 임차료보다 크고 후기로 갈수록 작아집니다.');
-    r.basis.push('근거: K-IFRS 제1116호 「리스」의 일반 원칙(기준서 원문 문단은 이 사이트에서 대조하지 않음 — 확실하지 않음). 일반기업회계기준 적용 회사는 운용리스를 임차료 비용으로 처리하는 등 처리가 다릅니다.');
+    r.basis.push('K-IFRS 제1116호 문단 26 — 리스부채 = 리스개시일 현재 지급되지 않은 리스료의 현재가치. 내재이자율을 쉽게 산정할 수 없으면 리스이용자의 증분차입이자율로 할인' + (timing === 'advance' ? ' (기초 지급이라 개시일에 내는 첫 리스료는 리스부채에서 제외)' : ''));
+    r.basis.push('같은 기준서 문단 23·24 — 사용권자산 원가 = 리스부채 최초 측정금액 + 리스개시일이나 그 전에 지급한 리스료(받은 리스 인센티브 차감) + 리스개설직접원가 + 복구원가 추정치');
+    r.basis.push('같은 기준서 문단 31·32 — 사용권자산은 리스기간 종료일과 내용연수 종료일 중 이른 날까지 상각(소유권 이전·매수선택권 행사가 확실하면 내용연수까지). 이 계산은 리스기간 정액 상각');
+    r.basis.push('매기 이자비용 = 기초 리스부채 × 기간 이자율, 리스료 중 나머지가 원금 상환입니다. 그래서 리스 초기에는 비용(이자+상각)이 기존 임차료보다 크고 후기로 갈수록 작아집니다. (기준서 원문 2026-11-17 대조)');
+    r.notes.push('일반기업회계기준 적용 회사는 운용리스를 임차료 비용으로 처리하는 등 처리가 다릅니다. 복구원가 추정치(문단 24(4))는 입력 항목이 없어 반영하지 않았습니다.');
     if (r.shortTerm) r.notes.push('리스기간이 12개월 이하인 단기리스입니다. 인식 면제를 선택하면 사용권자산·리스부채를 인식하지 않고 리스료를 비용으로 처리할 수 있습니다(구매선택권이 있으면 단기리스가 아닙니다).');
     r.notes.push('기초자산이 소액(예: 노트북, 사무용 가구 등)이면 인식 면제를 선택할 수 있습니다. 소액 기준 금액은 기준서가 정하지 않아 회사 정책으로 정합니다.');
     r.notes.push('연장선택권·종료선택권, 변동리스료, 보증잔존가치, 리스 변경은 반영하지 않은 간이 계산입니다. 월 지급이면 연 할인율을 12로 나눈 월 이율을 썼습니다.');

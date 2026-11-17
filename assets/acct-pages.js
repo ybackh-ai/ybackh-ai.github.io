@@ -38,6 +38,7 @@
     var body = '<table><tbody>' +
       '<tr class="row-total"><td>리스부채 (최초 인식)</td><td class="num">' + n(r.liability, 0) + '</td></tr>' +
       '<tr class="row-total"><td>사용권자산 (최초 인식)</td><td class="num">' + n(r.rouAsset, 0) + '</td></tr>' +
+      (r.paidAtStart ? '<tr><td>개시일에 지급한 첫 리스료 (리스부채 제외, 사용권자산 포함)</td><td class="num">' + n(r.paidAtStart, 0) + '</td></tr>' : '') +
       '<tr><td>리스료 총액</td><td class="num">' + n(r.totalPayments, 0) + '</td></tr>' +
       '<tr><td>총 이자비용</td><td class="num">' + n(r.totalInterest, 0) + '</td></tr>' +
       '<tr><td>첫 1년: 이자비용 + 사용권자산 상각비</td><td class="num">' + n(r.firstYearExpense, 0) + '</td></tr>' +
