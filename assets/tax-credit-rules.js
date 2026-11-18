@@ -109,8 +109,11 @@
   }
 
   // ── 최저한세 §132①: 감면 전 과세표준 × 세율 ──
-  function minimumTax(base, sme) {
+  function minimumTax(base, sme, grad) {
     if (sme) return pct(base, 7);
+    // 중소기업 졸업 유예: 졸업 과세연도 개시일부터 3년 이내 8%, 그다음 2년 이내 9% (§132①)
+    if (grad === 'g1') return pct(base, 8);
+    if (grad === 'g2') return pct(base, 9);
     var a = Math.min(base, 100 * EOK), b = Math.min(Math.max(base - 100 * EOK, 0), 900 * EOK), c = Math.max(base - 1000 * EOK, 0);
     return pct(a, 10) + pct(b, 12) + pct(c, 17);
   }
@@ -148,26 +151,30 @@
     r.curRate = Math.round(curRate * 1000) / 1000; r.curCredit = curCredit; r.incCredit = incCredit; r.incAvailable = incOk;
     r.method = incCredit > curCredit ? 'increase' : 'current';
     r.generalCredit = Math.max(curCredit, incCredit);
-    // 신성장·국가전략 기본 공제율 (가산율 제외)
-    var ngRate = sme ? 30 : grad === 'g1' ? 25 : 20, stRate = sme ? 40 : grad === 'g1' ? 35 : 30;
+    // 신성장·국가전략: 기업유형 비율(가목) + 수입금액 대비 비율 × 3배(나목, 10% 한도, 시행령 제9조제5항)
+    var ngBase = sme ? 30 : grad === 'g1' ? 25 : 20, stBase = sme ? 40 : grad === 'g1' ? 35 : 30;
+    function plus(x) { return revenue > 0 && x > 0 ? Math.min(10, Math.round(x / revenue * 100 * 3 * 1000) / 1000) : 0; }
+    var ngPlus = plus(ng), stPlus = plus(st);
+    var ngRate = ngBase + ngPlus, stRate = stBase + stPlus;
+    r.ngRate = ngRate; r.stRate = stRate;
     r.newGrowthCredit = pct(ng, ngRate); r.strategicCredit = pct(st, stRate);
     r.credit = r.generalCredit + r.newGrowthCredit + r.strategicCredit;
 
     r.basis.push('「조세특례제한법」 제10조제1항제3호 — 일반 연구·인력개발비: 당기분 ' + (sme ? '25%' : grad === 'g1' ? '20%(중소기업 졸업 3년 이내)' : grad === 'g2' ? '15%(졸업 후 그다음 2년)' : size === 'mid' ? '8%(중견기업)' : '수입금액 대비 비율 × 1/2 (2% 한도) → ' + r.curRate + '%') +
       ', 증가분 ' + incRate + '% 중 선택 (직전 발생액이 4년 연평균보다 적으면 당기분만)');
-    if (ng || st) r.basis.push('같은 항 제1호·제2호 — 신성장·원천기술 기본 ' + ngRate + '%, 국가전략기술 기본 ' + stRate + '% (수입금액 비중에 따른 가산율은 미반영)');
+    if (ng || st) r.basis.push('같은 항 제1호·제2호 — ' + (ng ? '신성장·원천기술 ' + ngBase + '% + 가산 ' + ngPlus + '% = ' + ngRate + '%' : '') + (ng && st ? ', ' : '') + (st ? '국가전략기술 ' + stBase + '% + 가산 ' + stPlus + '% = ' + stRate + '%' : '') + ' (가산 = 수입금액 중 해당 연구개발비 비율 × 3배, 10% 한도, 「조세특례제한법 시행령」 제9조제5항)' + (!(revenue > 0) ? ' — 수입금액을 넣지 않아 가산율 0%로 계산' : ''));
 
     if (taxBase !== null) {
       r.grossTax = TT.corpTax(taxBase, false);
-      r.minTax = minimumTax(taxBase, sme);
+      r.minTax = minimumTax(taxBase, sme, grad);
       // 중소기업의 §10 공제는 최저한세 배제 (§132①), 그 외는 산출세액 − 최저한세 범위까지
       var room = sme ? r.grossTax : Math.max(0, r.grossTax - r.minTax);
       r.allowed = Math.min(r.credit, room);
       r.carry = r.credit - r.allowed;
-      r.basis.push('「법인세법」 제55조 산출세액 ' + r.grossTax.toLocaleString('ko-KR') + '원, 「조세특례제한법」 제132조제1항 최저한세 ' + r.minTax.toLocaleString('ko-KR') + '원 (' + (sme ? '중소기업 7%, 연구·인력개발비 공제는 최저한세 적용 제외' : '과세표준 100억 이하 10%, 100억~1천억 12%, 1천억 초과 17%') + ')');
+      r.basis.push('「법인세법」 제55조 산출세액 ' + r.grossTax.toLocaleString('ko-KR') + '원, 「조세특례제한법」 제132조제1항 최저한세 ' + r.minTax.toLocaleString('ko-KR') + '원 (' + (sme ? '중소기업 7%, 연구·인력개발비 공제는 최저한세 적용 제외' : grad === 'g1' ? '중소기업 졸업 후 3년 이내 8%' : grad === 'g2' ? '중소기업 졸업 후 그다음 2년 9%' : '과세표준 100억 이하 10%, 100억~1천억 12%, 1천억 초과 17%') + ')');
     }
-    r.notes.push('신성장·국가전략기술 가산율(수입금액 대비 비율 × 시행령 일정배수, 10% 한도)과 대상 기술 범위는 시행령 원문 대조 전이라 반영하지 않았습니다(확실하지 않음). 실제 공제액은 더 클 수 있습니다.');
-    r.notes.push('최저한세 계산은 이 공제만 있다고 가정했습니다. 다른 감면·공제, 중소기업 졸업 유예 세율(8%·9%), 지방소득세는 반영하지 않았습니다. 공제받지 못한 금액은 이월공제(같은 법 제144조) 대상입니다.');
+    if (ng || st) r.notes.push('신성장·원천기술(시행령 별표 7)과 국가전략기술(별표 7의2) 해당 여부는 연구개발세액공제기술심의위원회 심의 대상이고, 일반 연구개발비와 구분경리해야 합니다(시행령 제9조제12항·제15항). 한 기술이 두 범주에 모두 해당하면 하나만 선택합니다(법 제10조제1항). 2029년(국가전략 반도체는 2031년) 12월 31일까지 발생분에 적용합니다.');
+    r.notes.push('최저한세 계산은 이 공제만 있다고 가정했습니다(최저한세 대상 감면이 여럿이면 같은 조 제3항 순서와 납세자 선택에 따라 달라짐). 지방소득세는 반영하지 않았습니다. 공제받지 못한 금액은 이월공제(같은 법 제144조) 대상입니다. 근거 원문 확인: 「조세특례제한법」 제10조·제132조, 시행령 제9조(2026-11-18).');
     r.status = r.credit > 0 ? 'CREDIT' : 'NONE';
     return r;
   }

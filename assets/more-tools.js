@@ -94,7 +94,7 @@
       var r = window.TaxCreditRules.rnd(v);
       if (r.status === 'INVALID') return { r: r };
       var body = table([['당기분 (' + n(r.curRate, 3) + '%)', won(r.curCredit)], ['증가분', r.incAvailable ? won(r.incCredit) : '적용 불가'], ['일반 연구·인력개발비 공제(유리한 방식)', won(r.generalCredit), true],
-        r.newGrowthCredit ? ['신성장·원천기술 (가산율 제외)', won(r.newGrowthCredit)] : null, r.strategicCredit ? ['국가전략기술 (가산율 제외)', won(r.strategicCredit)] : null, ['공제액 합계', won(r.credit), true],
+        r.newGrowthCredit ? ['신성장·원천기술 (' + r.ngRate + '%)', won(r.newGrowthCredit)] : null, r.strategicCredit ? ['국가전략기술 (' + r.stRate + '%)', won(r.strategicCredit)] : null, ['공제액 합계', won(r.credit), true],
         r.grossTax !== undefined ? ['산출세액', won(r.grossTax)] : null, r.minTax !== undefined ? ['최저한세', won(r.minTax)] : null,
         r.allowed !== undefined ? ['당기 공제 가능액', won(r.allowed), true] : null, r.carry ? ['이월되는 금액', won(r.carry)] : null]);
       return { r: r, cls: 'target', title: '연구·인력개발비 세액공제 약 ' + won(r.allowed !== undefined ? r.allowed : r.credit), sub: (r.method === 'increase' ? '증가분 방식이 유리' : '당기분 방식') + (r.carry ? ' · 이월 ' + won(r.carry) : ''), body: body, topic: 'tax', label: '연구개발 세액공제 상담 신청' };

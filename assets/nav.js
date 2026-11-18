@@ -7,10 +7,10 @@
   'use strict';
   var TOOLS = [
     { group: '외부감사·내부회계', items: [
-      ['audit-check.html', '외부감사 대상 판정기'], ['audit-schedule.html', '외부감사 일정 계산기'], ['audit-prep.html', '첫 외부감사 준비 체크리스트'], ['icfr-check.html', '내부회계관리제도 적용 대상'], ['consolidation.html', '연결재무제표 작성 대상'], ['audit-designation.html', '감사인 지정 대상 확인'], ['audit-fee.html', '감사보수는 어떻게 정해지나'], ['ipo-prep.html', 'IPO 준비 회계 체크리스트', 1], ['governance.html', '감사위원회·상근감사 설치 의무'],
+      ['audit-check.html', '외부감사 대상 판정기'], ['audit-schedule.html', '외부감사 일정 계산기'], ['audit-prep.html', '첫 외부감사 준비 체크리스트'], ['icfr-check.html', '내부회계관리제도 적용 대상'], ['consolidation.html', '연결재무제표 작성 대상'], ['audit-designation.html', '감사인 지정 대상 확인'], ['audit-fee.html', '감사보수는 어떻게 정해지나'], ['ipo-prep.html', 'IPO 준비 회계 체크리스트'], ['governance.html', '감사위원회·상근감사 설치 의무'],
     ] },
     { group: '결산·회계처리', items: [
-      ['lease.html', '리스 회계 (사용권자산·리스부채)'], ['depreciation.html', '감가상각 (세법 상각범위액)'], ['allowance.html', '대손충당금 연령분석'], ['retirement.html', '퇴직급여충당부채', 1], ['deferred-tax.html', '이연법인세 간이 계산'], ['revenue-check.html', '수익인식 쟁점 진단'],
+      ['lease.html', '리스 회계 (사용권자산·리스부채)'], ['depreciation.html', '감가상각 (세법 상각범위액)'], ['allowance.html', '대손충당금 연령분석'], ['retirement.html', '퇴직급여충당부채'], ['deferred-tax.html', '이연법인세 간이 계산'], ['revenue-check.html', '수익인식 쟁점 진단'],
     ] },
     { group: '중소기업·벤처', items: [
       ['sme-check.html', '중소기업 해당 여부 판정기'], ['tax-sme.html', '세법상 중소기업 판정기'], ['venture-check.html', '벤처기업 확인 요건 진단'],
@@ -22,7 +22,7 @@
       ['exec-retirement.html', '임원 퇴직금 한도'], ['capital-gift.html', '불공정 증자·감자 증여이익'], ['sincere-filing.html', '성실신고확인 대상 판정'],
     ] },
     { group: '세액공제·감면', items: [
-      ['employment-credit.html', '통합고용세액공제', 1], ['rnd-credit.html', '연구·인력개발비 세액공제', 1], ['investment-credit.html', '통합투자세액공제'], ['startup-relief.html', '창업중소기업 세액감면'], ['angel-deduction.html', '엔젤투자 소득공제'],
+      ['employment-credit.html', '통합고용세액공제', 1], ['rnd-credit.html', '연구·인력개발비 세액공제'], ['investment-credit.html', '통합투자세액공제'], ['startup-relief.html', '창업중소기업 세액감면'], ['angel-deduction.html', '엔젤투자 소득공제'],
     ] },
     { group: '가치평가·M&A', items: [
       ['valuation-needs.html', '어떤 평가가 필요한가요?'], ['stock-valuation.html', '비상장주식 상증법 약식 평가'], ['dcf.html', 'DCF·WACC 간이 계산기'], ['dilution.html', '투자 유치 지분 희석'],
