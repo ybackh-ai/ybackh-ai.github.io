@@ -1,6 +1,6 @@
 /*
  * RCPS·CB 평가 필요 여부 안내 로직 (순수 함수, 브라우저·Node 공용)
- * 근거: docs/21_RCPS_CB_로직.md — K-IFRS 제1032호·제1109호·제1113호 일반 원칙 요약(문단 미인용, 원문 미확인)
+ * 근거: docs/21_RCPS_CB_로직.md — K-IFRS 제1032호 문단 16·18·19·28~32, 제1109호 문단 4.3.3·4.3.5 (2026-11-18 kifrs.com 원문 대조)
  */
 (function (root) {
   'use strict';
@@ -35,14 +35,14 @@
 
     // 1) 분류와 전환권
     if (pref) {
-      if (liabilityFeature) P.push({ key: 'liability_feature', title: '현금 지급 의무', text: (input.holderRedemption ? '투자자가 상환을 청구할 수 있어' : '배당을 회피할 수 없어') + ' 회사가 현금 지급 의무를 피할 수 없습니다. 이 부분은 금융부채일 수 있습니다.' });
+      if (liabilityFeature) P.push({ key: 'liability_feature', title: '현금 지급 의무', text: (input.holderRedemption ? '투자자가 상환을 청구할 수 있어' : '배당을 회피할 수 없어') + ' 회사가 현금 지급 의무를 피할 수 없습니다. 이 부분은 금융부채일 수 있습니다(K-IFRS 제1032호 문단 18(1)·19: 보유자가 상환을 청구할 수 있는 우선주는 금융부채).' });
       else P.push({ key: 'no_liability_feature', title: '현금 지급 의무', text: '투자자 상환청구권이나 회피할 수 없는 배당 의무가 없으면 현금 지급 의무가 없어 자본으로 볼 여지가 있습니다.' });
       if (t === 'rps') {
         r.classification = liabilityFeature ? 'liability' : 'equity';
       } else if (variable) {
         r.classification = 'liability';
         r.derivative = 'separate';
-        P.push({ key: 'fixed_for_fixed', title: '전환권 (고정 대 고정)', text: (input.refixing ? '리픽싱 조건으로' : '조건에 따라') + ' 전환할 주식 수가 바뀌어 "확정 금액 대 확정 수량" 조건을 충족하지 못할 수 있습니다. 이 경우 전환권을 파생상품부채로 분리하고 매 결산일 공정가치로 평가해야 할 수 있으며, 변동 수량의 주식을 인도할 의무 때문에 상품 전체가 부채로 분류될 수도 있습니다.' });
+        P.push({ key: 'fixed_for_fixed', title: '전환권 (고정 대 고정)', text: (input.refixing ? '리픽싱 조건으로' : '조건에 따라') + ' 전환할 주식 수가 바뀌어 "확정 금액 대 확정 수량" 조건을 충족하지 못할 수 있습니다. 이 경우 전환권을 파생상품부채로 분리하고 매 결산일 공정가치로 평가해야 할 수 있으며, 변동 수량의 주식을 인도할 의무 때문에 상품 전체가 부채로 분류될 수도 있습니다(제1032호 문단 16(2): 변동 수량을 인도할 의무가 없거나, 확정 금액 대 확정 수량으로만 결제되어야 지분상품).' });
       } else {
         r.classification = liabilityFeature ? 'compound' : 'equity';
         if (liabilityFeature) r.derivative = 'equity_component';
@@ -62,14 +62,14 @@
       } else {
         r.classification = 'compound';
         r.derivative = 'equity_component';
-        P.push({ key: 'fixed_for_fixed', title: (t === 'bw' ? '신주인수권' : t === 'eb' ? '교환권' : '전환권') + ' (고정 대 고정)', text: '행사가격과 주식 수가 고정되어 있으면 자본요소로 보고, 발행금액을 부채요소(공정가치)와 자본요소(나머지)로 나눌 수 있습니다.' });
+        P.push({ key: 'fixed_for_fixed', title: (t === 'bw' ? '신주인수권' : t === 'eb' ? '교환권' : '전환권') + ' (고정 대 고정)', text: '행사가격과 주식 수가 고정되어 있으면 자본요소로 보고, 발행금액을 부채요소(비슷한 사채의 공정가치)와 자본요소(나머지)로 나눕니다(제1032호 문단 28·29·31·32).' });
       }
     }
 
     // 2) 내재파생상품
     if (input.holderPut || input.callOption) {
       r.embedded = true;
-      P.push({ key: 'embedded', title: '조기상환청구권·매도청구권', text: (input.holderPut ? '투자자의 조기상환청구권(풋)' : '') + (input.holderPut && input.callOption ? '과 ' : '') + (input.callOption ? '발행회사·대주주의 매도청구권(콜)' : '') + '이 주계약과 밀접하게 관련되지 않으면 내재파생상품으로 분리해 공정가치로 평가해야 할 수 있습니다. 대주주가 권리·의무를 갖는 조건은 회사의 회계처리 대상인지부터 검토합니다.' });
+      P.push({ key: 'embedded', title: '조기상환청구권·매도청구권', text: (input.holderPut ? '투자자의 조기상환청구권(풋)' : '') + (input.holderPut && input.callOption ? '과 ' : '') + (input.callOption ? '발행회사·대주주의 매도청구권(콜)' : '') + '이 주계약과 밀접하게 관련되지 않으면 내재파생상품으로 분리해 공정가치로 평가해야 할 수 있습니다(제1109호 문단 4.3.3: 밀접 관련 없음, 별도 파생상품 정의 충족, 복합계약을 당기손익-공정가치로 측정하지 않음 세 조건을 모두 충족할 때).대주주가 권리·의무를 갖는 조건은 회사의 회계처리 대상인지부터 검토합니다.' });
     }
 
     // 3) 평가 필요
@@ -79,14 +79,14 @@
       P.push({ key: 'valuation', title: '평가가 필요한 시점', text: r.remeasure
         ? '발행일에 부채요소·파생상품을 공정가치로 나누어 측정하고, 분리한 파생상품은 매 결산일 공정가치로 다시 평가해 변동액을 당기손익으로 인식할 수 있습니다. 리픽싱·상환 조건이 있으면 블랙-숄즈보다 이항모형이나 몬테카를로 모형이 주로 쓰입니다.'
         : '발행일에 부채요소를 공정가치로 측정해 발행금액을 나눌 수 있습니다. 이후 부채요소는 유효이자율법으로 상각합니다.' });
-      P.push({ key: 'fvpl_option', title: '대안: 전체 공정가치 지정', text: '파생상품을 분리하는 대신 복합계약 전체를 당기손익-공정가치 측정 항목으로 지정하는 방법을 검토할 수 있습니다(요건 충족 시).' });
+      P.push({ key: 'fvpl_option', title: '대안: 전체 공정가치 지정', text: '파생상품을 분리하는 대신 복합계약 전체를 당기손익-공정가치 측정 항목으로 지정하는 방법을 검토할 수 있습니다(제1109호 문단 4.3.5, 내재파생상품이 현금흐름을 유의적으로 바꾸지 않는 경우 등은 제외).' });
     }
 
     if (input.gaap === 'kgaap') {
       r.classification = 'review';
       r.notes.push('위 내용은 K-IFRS 원칙 기준입니다. 일반기업회계기준은 상환우선주·전환권 등의 분류 기준이 달라 같은 조건이라도 결과가 다를 수 있으므로 별도 검토가 필요합니다.');
     }
-    r.notes.push('투자계약서의 실제 문구(상환 주체, 상환 조건의 통제 가능성, 리픽싱 하한, 우선배당 조건)에 따라 판단이 달라집니다. 이 안내는 일반 원칙을 요약한 것이며 기준서 문단을 인용한 것이 아닙니다.');
+    r.notes.push('투자계약서의 실제 문구(상환 주체, 상환 조건의 통제 가능성, 리픽싱 하한, 우선배당 조건)에 따라 판단이 달라집니다. 이 안내는 K-IFRS 제1032호 문단 16·18·19·28~32, 제1109호 문단 4.3.3·4.3.5(2026-11-18 원문 대조)를 바탕으로 쟁점을 짚는 것이며, 최종 분류는 계약 전체를 검토해 정해야 합니다.');
     r.status = 'OK';
     return r;
   }

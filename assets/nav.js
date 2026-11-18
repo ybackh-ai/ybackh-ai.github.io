@@ -7,7 +7,7 @@
   'use strict';
   var TOOLS = [
     { group: '외부감사·내부회계', items: [
-      ['audit-check.html', '외부감사 대상 판정기'], ['audit-schedule.html', '외부감사 일정 계산기'], ['audit-prep.html', '첫 외부감사 준비 체크리스트'], ['icfr-check.html', '내부회계관리제도 적용 대상'], ['consolidation.html', '연결재무제표 작성 대상', 1], ['audit-designation.html', '감사인 지정 대상 확인'], ['audit-fee.html', '감사보수는 어떻게 정해지나'], ['ipo-prep.html', 'IPO 준비 회계 체크리스트', 1], ['governance.html', '감사위원회·상근감사 설치 의무'],
+      ['audit-check.html', '외부감사 대상 판정기'], ['audit-schedule.html', '외부감사 일정 계산기'], ['audit-prep.html', '첫 외부감사 준비 체크리스트'], ['icfr-check.html', '내부회계관리제도 적용 대상'], ['consolidation.html', '연결재무제표 작성 대상'], ['audit-designation.html', '감사인 지정 대상 확인'], ['audit-fee.html', '감사보수는 어떻게 정해지나'], ['ipo-prep.html', 'IPO 준비 회계 체크리스트', 1], ['governance.html', '감사위원회·상근감사 설치 의무'],
     ] },
     { group: '결산·회계처리', items: [
       ['lease.html', '리스 회계 (사용권자산·리스부채)'], ['depreciation.html', '감가상각 (세법 상각범위액)'], ['allowance.html', '대손충당금 연령분석'], ['retirement.html', '퇴직급여충당부채', 1], ['deferred-tax.html', '이연법인세 간이 계산'], ['revenue-check.html', '수익인식 쟁점 진단'],
@@ -22,12 +22,12 @@
       ['exec-retirement.html', '임원 퇴직금 한도'], ['capital-gift.html', '불공정 증자·감자 증여이익'], ['sincere-filing.html', '성실신고확인 대상 판정'],
     ] },
     { group: '세액공제·감면', items: [
-      ['employment-credit.html', '통합고용세액공제', 1], ['rnd-credit.html', '연구·인력개발비 세액공제', 1], ['investment-credit.html', '통합투자세액공제'], ['startup-relief.html', '창업중소기업 세액감면', 1], ['angel-deduction.html', '엔젤투자 소득공제'],
+      ['employment-credit.html', '통합고용세액공제', 1], ['rnd-credit.html', '연구·인력개발비 세액공제', 1], ['investment-credit.html', '통합투자세액공제'], ['startup-relief.html', '창업중소기업 세액감면'], ['angel-deduction.html', '엔젤투자 소득공제'],
     ] },
     { group: '가치평가·M&A', items: [
       ['valuation-needs.html', '어떤 평가가 필요한가요?'], ['stock-valuation.html', '비상장주식 상증법 약식 평가'], ['dcf.html', 'DCF·WACC 간이 계산기'], ['dilution.html', '투자 유치 지분 희석'],
-      ['ppa.html', 'PPA 영업권 간이 계산기'], ['impairment.html', '손상검사 간이 진단'], ['external-valuation.html', '자본시장법 외부평가 대상', 1], ['merger-price.html', '상장사 합병가액', 1], ['stock-option.html', '스톡옵션 공정가치'], ['option-limit.html', '스톡옵션 부여 한도'], ['rcps-cb.html', 'RCPS·CB 평가 필요 여부', 1],
-      ['safe-conversion.html', 'SAFE·전환사채 전환 주식수'], ['equity-bridge.html', '기업가치→지분가치 환산'], ['multiples.html', '유사기업 멀티플 평가'], ['pf-feasibility.html', '부동산 PF 사업성', 1], ['qualified-reorg.html', '적격합병·적격분할 요건', 1],
+      ['ppa.html', 'PPA 영업권 간이 계산기'], ['impairment.html', '손상검사 간이 진단'], ['external-valuation.html', '자본시장법 외부평가 대상', 1], ['merger-price.html', '상장사 합병가액', 1], ['stock-option.html', '스톡옵션 공정가치'], ['option-limit.html', '스톡옵션 부여 한도'], ['rcps-cb.html', 'RCPS·CB 평가 필요 여부'],
+      ['safe-conversion.html', 'SAFE·전환사채 전환 주식수'], ['equity-bridge.html', '기업가치→지분가치 환산'], ['multiples.html', '유사기업 멀티플 평가'], ['pf-feasibility.html', '부동산 PF 사업성'], ['qualified-reorg.html', '적격합병·적격분할 요건'],
     ] },
     { group: '재무분석·자료', items: [
       ['fin-ratio.html', '재무비율 간이 진단'], ['capital-impairment.html', '자본잠식·채무초과 진단'], ['distributable-profit.html', '배당가능이익·자기주식 한도'], ['working-capital.html', '운전자본·현금전환주기'], ['break-even.html', '손익분기점(BEP)'], ['debt-capacity.html', 'EBITDA·순차입금 상환능력'],['qna.html', '외부감사·회계 Q&A'], ['cases.html', '수행 사례'], ['basis.html', '기준일·변경 이력'],

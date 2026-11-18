@@ -62,7 +62,7 @@
       { type: 'fieldset', legend: '청년등 상시근로자 수 (청년 정규직·장애인·60세 이상·경력단절)', intro: '2024년 이전에 시작한 과세연도는 비교에서 빠지므로 비워 두세요. 2026년 과세연도라면 보통 직전(2025)만 입력합니다.', items: [empRow('y', '청년등')] },
       { type: 'fieldset', legend: '청년등외 상시근로자 수', items: [empRow('o', '청년등외')] },
       { type: 'two', items: [
-        { type: 'number', id: 'minIncrease', label: '최소고용증가인원수', unit: '명', when: function (v) { return v.size !== 'sme'; }, hint: '시행령 기준 — 세무대리인에게 확인' },
+        { type: 'number', id: 'minIncrease', label: '최소고용증가인원수', unit: '명', when: function (v) { return v.size !== 'sme'; }, hint: '비워 두면 시행령 기준(중견기업 5명, 그 밖의 기업 10명)으로 계산' },
         { type: 'number', id: 'returners', label: '육아휴직 복귀자 수(2026년 복직)', unit: '명', placeholder: '없으면 비움', when: function (v) { return v.size !== 'large'; } }] }
     ],
     run: function (v) {
@@ -410,12 +410,12 @@
         { type: 'check', id: 'independent', label: '따로 떼어 사업할 수 있는 독립된 사업부문을 분할합니다' },
         { type: 'check', id: 'comprehensive', label: '그 사업부문의 자산·부채를 포괄적으로 넘깁니다' },
         { type: 'check', id: 'ownContribution', label: '분할하는 회사만의 출자로 분할합니다' },
-        { type: 'check', id: 'realEstate', label: '부동산임대업이 주업인 사업부문 등을 분할합니다' }] },
+        { type: 'check', id: 'realEstate', label: '부동산임대업이 주업인 사업부문이거나, 넘기는 사업용 자산 중 토지·건물 등 부동산이 80% 이상입니다' }] },
       { type: 'fieldset', id: 'fs-common', legend: '대가·사업·고용 요건', when: function (v) { return !(v.mode === 'merger' && v.whollyOwned); }, items: [
         { type: 'two', items: [
           { type: 'number', id: 'stockPct', label: '주주가 받는 대가 중 주식 비율', unit: '%', placeholder: '예: 100' },
           { type: 'number', id: 'employeePct', label: '1개월 전 근로자 중 승계 비율', unit: '%', placeholder: '예: 90' }] },
-        { type: 'check', id: 'holdShares', label: '지배주주 등이 받은 주식을 그 사업연도 말까지 보유합니다' },
+        { type: 'check', id: 'holdShares', label: '지배주주 등에게 지분비율 이상으로 주식을 배정하고, 그 주식을 사업연도 말까지 보유합니다 (4촌 혈족, 지분 1% 미만이면서 10억원 미만인 주주는 제외)' },
         { type: 'check', id: 'continueBiz', label: '넘겨받은 사업을 그 사업연도 말까지 계속합니다' },
         { type: 'check', id: 'keepEmployees', label: '승계한 근로자 비율을 그 사업연도 말까지 유지합니다' }] }
     ],
