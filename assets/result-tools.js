@@ -228,11 +228,30 @@
     return '[' + document.title.split('|')[0].trim() + ']\n' + text + '\n\n' + location.href + '\n※ 참고용 계산 결과이며 법률·회계 자문을 대신하지 않습니다.';
   }
 
+  // ── 이 결과로 상담 신청(2026-11-18): 결과 요약을 이 브라우저의 sessionStorage에만 담아 상담 신청서로 넘긴다.
+  // 서버로 보내지 않으며, 방문자가 상담 신청서에서 내용을 확인·수정한 뒤 직접 보낼 때만 전달된다.
+  var TOPIC_OF = {
+    audit: 'audit-check audit-schedule audit-prep audit-designation audit-fee governance consolidation ipo-prep',
+    icfr: 'icfr-check',
+    ifrs: 'lease depreciation allowance retirement deferred-tax revenue-check impairment rcps-cb stock-option fin-ratio capital-impairment working-capital break-even debt-capacity distributable-profit',
+    fdd: 'valuation-needs stock-valuation dcf dilution external-valuation merger-price option-limit safe-conversion equity-bridge multiples pf-feasibility qualified-reorg',
+    ppa: 'ppa'
+  };
+  function topicOf(p) { for (var k in TOPIC_OF) { if ((' ' + TOPIC_OF[k] + ' ').indexOf(' ' + p + ' ') >= 0) return k; } return 'tax'; }
+  function toConsult() {
+    var text = resultText();
+    if (text.length > 1800) text = text.slice(0, 1800) + '\n…(이하 생략)';
+    try { sessionStorage.setItem('cptConsult', JSON.stringify({ tool: document.title.split('|')[0].trim(), page: page, text: text })); } catch (e) { /* 저장소 사용 불가: 빈 신청서로 이동 */ }
+    location.href = 'contact.html?topic=' + topicOf(page) + '&from=' + encodeURIComponent(page);
+  }
+
   function attach() {
     if (box.classList.contains('hidden') || !box.innerHTML.trim() || box.querySelector('.result-tools')) return;
     var host = box.querySelector('.result-body') || box;
     var canShare = !!theForm();
     var html = '<div class="result-tools">' +
+      '<div class="consult-cta"><p><b>이 결과, 우리 회사에 맞는지 궁금하신가요?</b> 계산 결과를 상담 신청서에 미리 넣어 드립니다. 보내기 전에 내용을 확인하고 고칠 수 있습니다.</p>' +
+      '<button type="button" class="btn small" data-consult>이 결과로 상담 신청</button></div>' +
       '<div class="btn-row"><button type="button" class="btn secondary small" data-copy>결과 복사</button>' +
       (canShare ? '<button type="button" class="btn secondary small" data-share>결과 링크 복사</button>' : '') +
       '<button type="button" class="btn secondary small" data-print>인쇄·PDF 저장</button>' +
@@ -248,6 +267,7 @@
     host.insertAdjacentHTML('beforeend', html);
     var btn = host.querySelector('[data-copy]'), state = host.querySelector('.copy-state');
     host.querySelector('[data-print]').addEventListener('click', printResult);
+    host.querySelector('[data-consult]').addEventListener('click', toConsult);
     var sb = host.querySelector('[data-share]');
     if (sb) sb.addEventListener('click', function () {
       var url = shareUrl();

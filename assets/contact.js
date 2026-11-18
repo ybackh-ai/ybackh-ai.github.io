@@ -17,6 +17,17 @@
     var summary = sessionStorage.getItem('auditCheckSummary');
     if (summary && topic && !form.message.value) form.message.value = summary + '\n\n[추가 문의 내용]\n';
   } catch (e) { /* 저장소 사용 불가 시 무시 */ }
+  // 계산 결과 화면의 "이 결과로 상담 신청"에서 넘어온 경우(result-tools.js, 2026-11-18)
+  try {
+    var c = JSON.parse(sessionStorage.getItem('cptConsult') || 'null');
+    if (c && c.text && params.get('from') === c.page) {
+      form.message.value = '[계산 결과]\n' + c.text + '\n\n[추가 문의 내용]\n';
+      var note = document.createElement('p');
+      note.className = 'notice consult-note';
+      note.innerHTML = '<b>' + esc(c.tool) + '</b> 계산 결과를 문의 내용에 넣었습니다. 회사 숫자를 드러내고 싶지 않으면 지우거나 고친 뒤 보내 주세요. 이 내용은 직접 보내기 전까지 이 브라우저 밖으로 나가지 않습니다.';
+      form.message.closest('.field').insertAdjacentElement('beforebegin', note);
+    }
+  } catch (e) { /* 무시 */ }
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
@@ -58,7 +69,7 @@
     form.classList.add('hidden');
     if (text) document.getElementById('done-text').textContent = text;
     done.classList.remove('hidden');
-    try { sessionStorage.removeItem('auditCheckSummary'); } catch (e) { /* ignore */ }
+    try { sessionStorage.removeItem('auditCheckSummary'); sessionStorage.removeItem('cptConsult'); } catch (e) { /* ignore */ }
   }
 
   form.addEventListener('submit', function (e) {
