@@ -30,7 +30,7 @@
       ['safe-conversion.html', 'SAFE·전환사채 전환 주식수'], ['equity-bridge.html', '기업가치→지분가치 환산'], ['multiples.html', '유사기업 멀티플 평가'], ['pf-feasibility.html', '부동산 PF 사업성'], ['qualified-reorg.html', '적격합병·적격분할 요건'],
     ] },
     { group: '재무분석·자료', items: [
-      ['fin-ratio.html', '재무비율 간이 진단'], ['capital-impairment.html', '자본잠식·채무초과 진단'], ['distributable-profit.html', '배당가능이익·자기주식 한도'], ['working-capital.html', '운전자본·현금전환주기'], ['break-even.html', '손익분기점(BEP)'], ['debt-capacity.html', 'EBITDA·순차입금 상환능력'],['qna.html', '외부감사·회계 Q&A'], ['cases.html', '수행 사례'], ['basis.html', '기준일·변경 이력'],
+      ['fin-ratio.html', '재무비율 간이 진단'], ['capital-impairment.html', '자본잠식·채무초과 진단'], ['distributable-profit.html', '배당가능이익·자기주식 한도'], ['working-capital.html', '운전자본·현금전환주기'], ['break-even.html', '손익분기점(BEP)'], ['debt-capacity.html', 'EBITDA·순차입금 상환능력'],['closing-checklist.html', '12월 결산 체크리스트'], ['glossary.html', '회계·세무 용어 사전'], ['videos.html', '영상으로 배우기'], ['qna.html', '외부감사·회계 Q&A'], ['cases.html', '수행 사례'], ['basis.html', '기준일·변경 이력'],
     ] },
   ];
 
