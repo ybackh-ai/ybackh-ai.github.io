@@ -99,7 +99,8 @@
 
         <div id="contact-errors" aria-live="polite"></div>
         <button type="submit" class="btn">상담 신청하기</button>
-        <p id="mailto-hint" class="hint hidden">전송 버튼을 누르면 메일 앱이 열립니다. 메일 앱에서 보내기를 눌러야 접수가 완료됩니다.</p>
+        <p id="mailto-hint" class="hint hidden">전송 버튼을 누르면 메일 앱이 열립니다. 메일 앱에서 보내기를 눌러야 접수가 완료됩니다. <b>메일 앱을 쓰지 않으시면</b> 아래 버튼으로 내용을 복사해 카카오톡으로 보내 주셔도 됩니다.</p>
+        <div id="kakao-alt" class="btn-row hidden" style="margin-top:8px"><button type="button" class="btn kakao" id="copy-kakao">내용 복사하고 카카오톡으로 보내기</button><span class="hint" id="kakao-state" aria-live="polite"></span></div>
       </form>
 
       <div id="contact-done" class="result exempt hidden" aria-live="polite">
@@ -108,7 +109,8 @@
           <p style="margin:0 0 8px">메일 앱이 열리지 않았다면 아래 내용을 복사해 <b class="selectable" id="mail-to"></b> 로 보내 주세요.</p>
           <label for="mail-body">보낼 내용</label>
           <textarea id="mail-body" readonly></textarea>
-          <div class="btn-row" style="margin-top:10px"><button type="button" class="btn secondary" id="copy-mail">내용 복사</button><span class="hint" id="copy-state" aria-live="polite"></span></div>
+          <div class="btn-row" style="margin-top:10px"><button type="button" class="btn secondary" id="copy-mail">내용 복사</button><a class="btn kakao" href="https://pf.kakao.com/_xgxfENX/chat" target="_blank" rel="noopener">복사한 내용을 카카오톡으로 보내기</a><span class="hint" id="copy-state" aria-live="polite"></span></div>
+          <p class="hint" style="margin-top:8px">메일 앱이 없거나 열리지 않으면 "내용 복사"를 누른 뒤 카카오톡 채팅창에 붙여 넣어 보내 주셔도 접수됩니다.</p>
         </div>
       </div>
     </section>
