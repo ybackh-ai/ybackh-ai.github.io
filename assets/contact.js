@@ -7,7 +7,29 @@
   var done = document.getElementById('contact-done');
   var useMailto = !cfg.FORM_ENDPOINT;
 
-  if (useMailto) document.getElementById('mailto-hint').classList.remove('hidden');
+  if (useMailto) {
+    document.getElementById('mailto-hint').classList.remove('hidden');
+    var ka = document.getElementById('kakao-alt');
+    if (ka) {
+      ka.classList.remove('hidden');
+      // 메일 앱 없이: 신청서 내용을 복사하고 카카오톡 채팅을 연다(개인정보 동의 체크는 그대로 요구)
+      document.getElementById('copy-kakao').addEventListener('click', function () {
+        var st = document.getElementById('kakao-state');
+        var errs = validate();
+        if (errs.length) { st.textContent = errs[0]; return; }
+        var d = data();
+        var text = '[상담 신청] 회사명: ' + d.company + ' / 담당자: ' + d.name + ' / 연락처: ' + d.phone + (d.email ? ' / 이메일: ' + d.email : '') + '\n상담 분야: ' + d.topic + '\n\n' + d.message;
+        // 새 창을 열기 전에 먼저 복사한다(창이 열리면 이 페이지가 포커스를 잃어 복사가 막힐 수 있음)
+        var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-9999px'; document.body.appendChild(ta); ta.select();
+        var copied = false; try { copied = document.execCommand('copy'); } catch (e) { /* 무시 */ }
+        document.body.removeChild(ta);
+        if (!copied && navigator.clipboard) { try { navigator.clipboard.writeText(text); copied = true; } catch (e) { /* 무시 */ } }
+        var win = window.open('https://pf.kakao.com/_xgxfENX/chat', '_blank');
+        st.textContent = copied ? '복사했습니다. 열린 카카오톡 채팅창에 붙여 넣고 보내 주세요.' : '복사가 지원되지 않는 환경입니다. 문의 내용을 직접 복사해 주세요.';
+        if (!win) st.textContent += ' 창이 열리지 않았다면 위쪽 "카카오톡으로 문의" 버튼을 눌러 주세요.';
+      });
+    }
+  }
 
   // 판정기에서 넘어온 경우: 상담 분야와 결과 요약 미리 채우기
   var params = new URLSearchParams(location.search);
