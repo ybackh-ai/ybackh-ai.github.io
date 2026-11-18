@@ -87,6 +87,19 @@ img { max-width: 100%; }
 .related a { display: inline-block; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px; text-decoration: none; color: var(--ink-soft); background: var(--card); }
 .related a:hover { border-color: var(--accent); color: var(--accent); }
 .in-frame .result-tools [data-copy] { display: inline-block; }
+.result-tools .kakao-add { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+.result-tools .kakao-add a { font-weight: 700; }
+.print-head, .print-foot { display: none; }
+@media print {
+  body.print-result * { visibility: hidden; }
+  body.print-result #result, body.print-result #result * { visibility: visible; }
+  body.print-result #result { position: absolute; left: 0; top: 0; width: 100%; border: 0; box-shadow: none; }
+  body.print-result #result .result-tools { display: none; }
+  body.print-result .print-head, body.print-result .print-foot { display: block; }
+  .print-title { font-size: 18px; font-weight: 700; margin: 0 0 4px; }
+  .print-meta { font-size: 12px; margin: 0 0 14px; }
+  .print-foot p { font-size: 11px; margin-top: 18px; border-top: 1px solid #999; padding-top: 6px; }
+}
 
 /* 첫 화면 대상별 찾기 */
 .audience .card h3 { margin-top: 0; }
