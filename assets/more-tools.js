@@ -1128,4 +1128,122 @@
       return { r: r, cls: 'target', title: '받을 수 있는 혜택이 ' + r.count + '가지로 보입니다', sub: r.startupVenture ? '창업벤처중소기업 세액감면 대상일 수 있습니다' : '창업벤처 세액감면은 요건에 맞지 않습니다', body: body, topic: 'tax', label: '벤처 확인·세액감면 상담 신청' };
     }
   });
+
+  // ── 47~52. 부가세·인건비·퇴직금·대표 보수·법인전환·실수령액 (2026-11-19, docs/60) ──
+  function BT() { return window.BizTaxRules; }
+
+  E.register('vat-calc', {
+    fields: function () { return [
+      { type: 'radio', id: 'type', label: '과세 유형', options: [['general', '일반과세자 (법인 포함)'], ['simple', '간이과세자']] },
+      { type: 'select', id: 'industry', label: '업종 (간이과세 부가가치율)', options: Object.keys(BT().VAT_RATE_LABEL).map(function (k) { return [k, BT().VAT_RATE_LABEL[k]]; }), when: function (v) { return v.type === 'simple'; } },
+      { type: 'two', items: [
+        { type: 'number', id: 'sales', label: '매출 (일반: 공급가액 / 간이: 부가세 포함 공급대가)', unit: '만원', placeholder: '예: 10000' },
+        { type: 'number', id: 'purchases', label: '매입 (일반: 공제 가능한 공급가액 / 간이: 세금계산서 등 받은 공급대가)', unit: '만원', placeholder: '예: 6000' }] },
+      { type: 'number', id: 'cardSales', label: '신용카드·현금영수증 발행금액 (선택)', unit: '만원', hint: '개인 소매·음식점 등만 공제. 법인은 비움' },
+      { type: 'number', id: 'prevYearSupply', label: '직전 연도 공급대가 합계 (선택: 간이과세 가능 여부 확인)', unit: '만원', placeholder: '예: 9000' }
+    ]; },
+    run: function (v) {
+      var r = BT().vatCalc(v);
+      if (r.status === 'INVALID') return { r: r };
+      var rows = r.type === 'general' ? [['매출세액(10%)', won(r.outputTax)], ['매입세액(10%)', won(r.inputTax)], ['신용카드 발행세액공제', won(r.cardCredit)]]
+        : [['부가가치율', r.rateLabel], ['납부세액(공급대가 × 부가가치율 × 10%)', won(r.grossTax)], ['세금계산서 등 수취 공제(0.5%)', won(r.invoiceCredit)], ['신용카드 발행세액공제', won(r.cardCredit)]];
+      rows.push([r.payable < 0 ? '환급세액' : '납부할 세액', won(Math.abs(r.payable)), true]);
+      if (r.simpleEligible !== undefined) rows.push(['간이과세 금액 기준(1억4백만원 미만)', r.simpleEligible ? '충족' : '넘음']);
+      var title = r.status === 'EXEMPT' ? '납부의무가 면제됩니다' : r.status === 'REFUND' ? '부가세 ' + won(-r.payable) + '을 환급받습니다' : '부가세 ' + won(r.payable) + '을 냅니다';
+      return { r: r, cls: r.status === 'PAY' ? 'target' : 'not-target', title: title, sub: r.type === 'general' ? '일반과세자' : '간이과세자', body: table(rows), topic: 'tax', label: '부가세 신고 상담 신청' };
+    }
+  });
+
+  E.register('labor-cost', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'monthly', label: '월 급여 (세전)', unit: '만원', placeholder: '예: 300' },
+        { type: 'number', id: 'nonTaxable', label: '그중 비과세 수당 (식대 등)', unit: '만원', placeholder: '예: 20' }] },
+      { type: 'select', id: 'band', label: '회사 상시근로자 수 (고용안정 보험료율)', options: [['u150', '150명 미만 (0.25%)'], ['prio', '150명 이상 우선지원대상기업 (0.45%)'], ['u1000', '150명 이상 1천명 미만 (0.65%)'], ['over1000', '1천명 이상 (0.85%)']] },
+      { type: 'number', id: 'accidentPct', label: '산재보험료율 (업종별 고시)', unit: '%', placeholder: '예: 0.7', step: '0.01', hint: '근로복지공단 고지서의 요율, 모르면 비움' },
+      { type: 'check', id: 'noSeverance', label: '퇴직금 적립액은 빼고 봅니다' }
+    ],
+    run: function (v) {
+      var r = BT().laborCost(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['국민연금 (4.75%)', won(r.pension)], ['건강보험 (3.595%)', won(r.health)], ['장기요양 (0.4724%)', won(r.ltc)], ['고용보험', won(r.employment)], ['산재보험', won(r.accident)], ['회사 부담 4대보험 (월)', won(r.monthlyEmployer), true]]) +
+        table([['연 급여', won(r.annualSalary)], ['연 4대보험 회사 부담', won(r.annualEmployer)], ['퇴직금 적립 (연, 추정)', won(r.severanceReserve)], ['연간 총 인건비', won(r.annualTotal), true]]);
+      return { r: r, cls: 'not-target', title: '이 직원 1명에게 1년에 약 ' + won(r.annualTotal) + '이 듭니다', sub: '연봉의 ' + n(r.ratio) + '% · 4대보험 회사 부담 월 ' + won(r.monthlyEmployer), body: body, topic: 'tax', label: '급여·인건비 상담 신청' };
+    }
+  });
+
+  E.register('severance-pay', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'date', id: 'startDate', label: '입사일' },
+        { type: 'date', id: 'lastDate', label: '마지막 근무일' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'wage3m', label: '퇴직 전 3개월 임금 총액 (세전)', unit: '만원', placeholder: '예: 900' },
+        { type: 'number', id: 'days3m', label: '그 3개월의 총일수', unit: '일', placeholder: '예: 92', hint: '퇴직일 전날부터 거꾸로 3개월의 달력 일수(89~92일)' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'annualBonus', label: '직전 1년 상여금 (선택)', unit: '만원' },
+        { type: 'number', id: 'leavePay', label: '직전 1년 연차수당 (선택)', unit: '만원' }] }
+    ],
+    run: function (v) {
+      var r = BT().severancePay(v);
+      if (r.status === 'INVALID') return { r: r };
+      if (r.status === 'NOT_ELIGIBLE') return { r: r, cls: 'not-target', title: '1년 미만 근무라 법정 퇴직금 대상이 아닙니다', sub: '재직 ' + n(r.servedDays) + '일', body: '', topic: 'tax', label: '퇴직금 상담 신청' };
+      var body = table([['1일 평균임금', won(r.avgDaily)], ['재직 일수', n(r.servedDays) + '일 (근속연수 ' + r.years + '년)'], ['퇴직금', won(r.severance), true], ['환산급여', won(r.convPay)], ['퇴직소득 과세표준', won(r.taxBase)], ['퇴직소득세', won(r.tax)], ['지방소득세', won(r.localTax)], ['세후 수령액', won(r.net), true]]);
+      return { r: r, cls: 'target', title: '퇴직금 약 ' + won(r.severance) + ', 세후 ' + won(r.net), sub: '퇴직소득세 ' + won(r.tax) + ' + 지방소득세 ' + won(r.localTax), body: body, topic: 'tax', label: '퇴직금·퇴직소득세 상담 신청' };
+    }
+  });
+
+  E.register('owner-pay', {
+    fields: [
+      { type: 'number', id: 'profit', label: '대표 보수 지급 전 법인 세전이익 (연)', unit: '만원', placeholder: '예: 20000' },
+      { type: 'two', items: [
+        { type: 'number', id: 'salary', label: '대표 급여 (연)', unit: '만원', placeholder: '예: 10000' },
+        { type: 'number', id: 'payoutPct', label: '남은 세후이익 중 배당 비율', unit: '%', placeholder: '예: 50' }] }
+    ],
+    run: function (v) {
+      var r = BT().ownerPay(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = grid(['안', '대표 급여', '배당', '법인세', '대표 소득세', '세금 합계', '대표 손에 남는 돈', '법인에 남는 돈'], r.scenarios.map(function (s) { var x = s.v; return [s.name, won(x.salary), won(x.dividend), won(x.corpTax), won(x.personalTax), won(x.totalTax), won(x.netToOwner), won(x.retained)]; }));
+      var best = r.scenarios.slice().sort(function (a, b) { return a.v.totalTax - b.v.totalTax; })[0];
+      return { r: r, cls: 'target', title: '입력한 안의 세금 합계는 ' + won(r.totalTax) + '입니다', sub: '세 가지 안 중 세금 합계가 가장 적은 것: ' + best.name + ' (' + won(best.v.totalTax) + ')', body: body, topic: 'tax', label: '대표 보수·배당 설계 상담 신청' };
+    }
+  });
+
+  E.register('incorporation', {
+    submit: '점검하기',
+    fields: [
+      { type: 'radio', id: 'method', label: '전환 방법', options: [['inkind', '현물출자 (사업용 자산을 출자해 법인 설립)'], ['transfer', '사업양수도 (먼저 법인을 세우고 사업을 넘김)']] },
+      { type: 'check', id: 'within3m', label: '법인설립일부터 3개월 이내에 사업을 포괄적으로 넘깁니다', when: function (v) { return v.method === 'transfer'; } },
+      { type: 'two', items: [
+        { type: 'number', id: 'netAssets', label: '개인사업 순자산가액 (시가 자산 − 부채)', unit: '만원', placeholder: '예: 50000' },
+        { type: 'number', id: 'capital', label: '새 법인 자본금', unit: '만원', placeholder: '예: 50000' }] },
+      { type: 'number', id: 'acqTax', label: '감면 전 예상 취득세 (부동산 등, 선택)', unit: '만원', placeholder: '예: 2000' },
+      { type: 'check', id: 'realEstateLease', label: '부동산 임대 및 공급업입니다' },
+      { type: 'check', id: 'consumption', label: '호텔·여관업, 유흥주점업 등 소비성서비스업입니다' },
+      { type: 'check', id: 'housing', label: '넘기는 자산에 주택이 있습니다' }
+    ],
+    run: function (v) {
+      var r = BT().incorporation(v);
+      if (r.status === 'INVALID') return { r: r };
+      var ok = r.status === 'ELIGIBLE';
+      var body = ok ? table([['양도소득세 이월과세', '대상으로 판단'], ['취득세 50% 감면액', v.realEstateLease ? '부동산 임대·공급업 제외' : won(r.acqReduction), true], ['사후관리', '설립등기일부터 5년']])
+        : '<ul class="basis">' + r.fails.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+      return { r: r, cls: ok ? 'target' : 'not-target', title: ok ? '이월과세 요건을 갖춘 것으로 보입니다' : '이월과세 요건에 맞지 않는 부분이 있습니다', sub: ok && r.acqReduction ? '취득세 약 ' + won(r.acqReduction) + ' 감면' : '', body: body, topic: 'tax', label: '법인전환 상담 신청' };
+    }
+  });
+
+  E.register('net-salary', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'monthly', label: '월 급여 (세전)', unit: '만원', placeholder: '예: 300', hint: '연봉이면 12로 나눠 넣습니다' },
+        { type: 'number', id: 'nonTaxable', label: '그중 비과세 수당 (식대 등)', unit: '만원', placeholder: '예: 20' }] },
+      { type: 'number', id: 'dependents', label: '기본공제 인원 (본인 포함)', unit: '명', placeholder: '1' }
+    ],
+    run: function (v) {
+      var r = BT().netSalary(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['국민연금', won(r.pension)], ['건강보험', won(r.health)], ['장기요양', won(r.ltc)], ['고용보험', won(r.employment)], ['소득세 + 지방소득세 (월 평균)', won(r.monthlyTax)], ['월 실수령액', won(r.monthlyNet), true], ['연 실수령액', won(r.annualNet)]]);
+      return { r: r, cls: 'not-target', title: '월 실수령액은 약 ' + won(r.monthlyNet) + '입니다', sub: '4대보험 ' + won(r.monthlyInsurance) + ' · 세금 ' + won(r.monthlyTax) + ' (월)', body: body, topic: 'tax', label: '급여 상담 신청' };
+    }
+  });
 })();

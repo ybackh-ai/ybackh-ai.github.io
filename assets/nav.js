@@ -21,6 +21,7 @@
       ['corp-tax.html', '법인세 간이 계산기'], ['withholding.html', '원천징수 세액 계산기'], ['entertainment.html', '기업업무추진비(접대비) 한도'], ['business-car.html', '업무용승용차 비용 한도'], ['share-transfer-tax.html', '비상장주식 양도소득세'],
       ['related-price.html', '특수관계인 주식 거래 시가 판정'], ['related-party.html', '특수관계인 범위 확인'], ['succession.html', '가업상속공제 요건 확인'], ['tax-penalty.html', '가산세 계산기'],
       ['exec-retirement.html', '임원 퇴직금 한도'], ['capital-gift.html', '불공정 증자·감자 증여이익'], ['sincere-filing.html', '성실신고확인 대상 판정'],
+      ['vat-calc.html', '부가가치세 계산기'], ['labor-cost.html', '직원 인건비 총액(4대보험)'], ['net-salary.html', '연봉 실수령액'], ['severance-pay.html', '퇴직금·퇴직소득세'], ['owner-pay.html', '대표 보수 설계(급여 vs 배당)'], ['incorporation.html', '법인전환 이월과세·취득세'],
     ] },
     { group: '세액공제·감면', items: [
       ['employment-credit.html', '통합고용세액공제', 1], ['rnd-credit.html', '연구·인력개발비 세액공제'], ['investment-credit.html', '통합투자세액공제'], ['startup-relief.html', '창업중소기업 세액감면'], ['angel-deduction.html', '엔젤투자 소득공제'],
