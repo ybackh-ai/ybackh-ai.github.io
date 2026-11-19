@@ -1246,4 +1246,142 @@
       return { r: r, cls: 'not-target', title: '월 실수령액은 약 ' + won(r.monthlyNet) + '입니다', sub: '4대보험 ' + won(r.monthlyInsurance) + ' · 세금 ' + won(r.monthlyTax) + ' (월)', body: body, topic: 'tax', label: '급여 상담 신청' };
     }
   });
+
+  // ── 53~58. 개인 세금 6종 (2026-11-19, docs/61) ──
+  function PT() { return window.PersonalTaxRules; }
+
+  E.register('pension-credit', {
+    fields: [
+      { type: 'radio', id: 'incomeType', label: '소득 종류', options: [['wage', '근로소득만 있음 (총급여 기준)'], ['other', '사업·기타 종합소득 있음 (종합소득금액 기준)']] },
+      { type: 'number', id: 'income', label: '총급여 또는 종합소득금액 (연)', unit: '만원', placeholder: '예: 5000' },
+      { type: 'two', items: [
+        { type: 'number', id: 'savings', label: '올해 연금저축 납입액', unit: '만원', placeholder: '예: 300' },
+        { type: 'number', id: 'irp', label: '올해 IRP 등 퇴직연금 납입액', unit: '만원', placeholder: '예: 0' }] }
+    ],
+    run: function (v) {
+      var r = PT().pensionCredit(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['공제율', r.rate + '% (지방소득세 포함 ' + (r.rate * 1.1).toFixed(1) + '%)'], ['공제 대상 납입액', won(r.eligible)], ['세액공제 (소득세)', won(r.credit), true], ['지방소득세 공제', won(r.localCredit)], ['연말까지 더 넣을 수 있는 금액', won(r.room)], ['더 넣으면 늘어나는 공제', won(r.extraCredit + Math.floor(r.extraCredit * 0.1)), true]]);
+      return { r: r, cls: 'target', title: '연금계좌로 세금 ' + won(r.credit + r.localCredit) + '을 돌려받습니다', sub: r.room > 0 ? won(r.room) + ' 더 넣으면 ' + won(r.extraCredit + Math.floor(r.extraCredit * 0.1)) + ' 더 줄어듭니다' : '공제 한도 900만원을 다 채웠습니다', body: body, topic: 'tax', label: '절세 상담 신청' };
+    }
+  });
+
+  E.register('year-end-tax', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'salary', label: '올해 총급여 (비과세 제외)', unit: '만원', placeholder: '예: 5000' },
+        { type: 'number', id: 'prepaid', label: '매달 떼인 소득세 합계 (기납부세액)', unit: '만원', placeholder: '예: 200', hint: '급여명세서의 소득세 합계(지방소득세 제외)' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'dependents', label: '기본공제 인원 (본인 포함)', unit: '명', placeholder: '1' },
+        { type: 'number', id: 'children', label: '그중 8세 이상 자녀 수', unit: '명', placeholder: '0' }] },
+      { type: 'fieldset', legend: '카드 사용액 (연)', items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'credit', label: '신용카드', unit: '만원' },
+          { type: 'number', id: 'debit', label: '체크카드·현금영수증', unit: '만원' }] },
+        { type: 'two', items: [
+          { type: 'number', id: 'market', label: '전통시장·대중교통', unit: '만원' },
+          { type: 'number', id: 'culture', label: '도서·공연·영화·박물관·체육시설', unit: '만원', hint: '총급여 7천만원 이하만 별도 공제' }] }] },
+      { type: 'fieldset', legend: '세액공제 지출 (연, 해당하는 것만)', items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'medical', label: '의료비 (부양가족 일반)', unit: '만원' },
+          { type: 'number', id: 'medicalSelf', label: '의료비 (본인·65세 이상·장애인)', unit: '만원' }] },
+        { type: 'two', items: [
+          { type: 'number', id: 'education', label: '교육비 (공제 대상 금액)', unit: '만원' },
+          { type: 'number', id: 'insurancePremium', label: '보장성 보험료', unit: '만원' }] },
+        { type: 'two', items: [
+          { type: 'number', id: 'rent', label: '월세 (연, 무주택 세대주)', unit: '만원' },
+          { type: 'number', id: 'donation', label: '기부금', unit: '만원' }] },
+        { type: 'number', id: 'pension', label: '연금저축·IRP 납입액 합계 (연금저축은 600만원까지)', unit: '만원' }] },
+      { type: 'number', id: 'insurance', label: '본인 부담 4대보험료 (연, 선택)', unit: '만원', hint: '비우면 2026년 요율로 추정' }
+    ],
+    run: function (v) {
+      var r = PT().yearEndTax(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['카드 소득공제', won(r.cardDeduction)], ['과세표준', won(r.taxBase)], ['산출세액', won(r.calcTax)], ['근로소득세액공제', won(r.earnedCredit)], ['자녀세액공제', won(r.childCredit)], ['연금계좌세액공제', won(r.pensionCredit)], [r.useStandard ? '표준세액공제' : '특별세액공제 (의료·교육·보험·기부·월세)', won(r.specialCredit)], ['결정세액 (소득세)', won(r.determinedTax), true], [r.refund >= 0 ? '돌려받을 소득세' : '더 낼 소득세', won(Math.abs(r.refund)), true], ['지방소득세 ' + (r.localRefund >= 0 ? '환급' : '추가'), won(Math.abs(r.localRefund))]]);
+      var total = r.refund + r.localRefund;
+      return { r: r, cls: total >= 0 ? 'target' : 'not-target', title: total >= 0 ? '약 ' + won(total) + '을 돌려받을 것으로 보입니다' : '약 ' + won(-total) + '을 더 낼 것으로 보입니다', sub: '지방소득세 포함 · 결정세액 ' + won(r.determinedTax), body: body, topic: 'tax', label: '연말정산 상담 신청' };
+    }
+  });
+
+  E.register('freelancer-tax', {
+    fields: [
+      { type: 'number', id: 'revenue', label: '연 수입금액 (3.3% 떼기 전)', unit: '만원', placeholder: '예: 3000' },
+      { type: 'radio', id: 'method', label: '경비 계산 방법', options: [['simple', '단순경비율 (소규모·신규)'], ['standard', '기준경비율 (증빙 있는 주요경비 + 기준경비율)'], ['books', '장부 (실제 경비)']] },
+      { type: 'number', id: 'simpleRate', label: '단순경비율 (업종코드별 국세청 고시)', unit: '%', placeholder: '예: 64.1', step: '0.1', when: function (v) { return v.method === 'simple'; } },
+      { type: 'two', id: 'stdBox', when: function (v) { return v.method === 'standard'; }, items: [
+        { type: 'number', id: 'majorExpenses', label: '증빙 있는 주요경비 (매입·임차료·인건비)', unit: '만원' },
+        { type: 'number', id: 'standardRate', label: '기준경비율', unit: '%', step: '0.1' }] },
+      { type: 'number', id: 'expenses', label: '장부상 필요경비', unit: '만원', when: function (v) { return v.method === 'books'; } },
+      { type: 'two', items: [
+        { type: 'number', id: 'dependents', label: '기본공제 인원 (본인 포함)', unit: '명', placeholder: '1' },
+        { type: 'number', id: 'pensionPaid', label: '올해 낸 국민연금 (지역가입)', unit: '만원' }] },
+      { type: 'fieldset', legend: '단순경비율 대상 확인 (선택)', items: [
+        { type: 'two', items: [
+          { type: 'select', id: 'group', label: '업종 구분', options: [['c', '전문·과학·기술, 교육, 예술·스포츠, 인적용역 아닌 개인서비스 등 (2,400만원)'], ['b', '제조, 음식·숙박, 정보통신, 운수, 인적용역(강사·작가 등) 등 (3,600만원)'], ['a', '도소매, 농림어업 등 (6,000만원)']] },
+          { type: 'number', id: 'prevRevenue', label: '직전 연도 수입금액', unit: '만원', hint: '올해 처음 시작했으면 비움' }] }] }
+    ],
+    run: function (v) {
+      var r = PT().freelancerTax(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['사업소득금액', won(r.income)], ['과세표준', won(r.taxBase)], ['종합소득세 (표준세액공제 7만원 반영)', won(r.tax)], ['지방소득세', won(r.localTax)], ['이미 떼인 3.3%', won(r.prepaidTotal)], [r.refund >= 0 ? '돌려받을 금액' : '더 낼 금액', won(Math.abs(r.refund)), true], r.simpleEligible !== undefined ? ['단순경비율 대상', r.simpleEligible ? '해당 (직전 수입 기준 미만)' : '아님 → 기준경비율 또는 장부'] : null]);
+      return { r: r, cls: r.refund >= 0 ? 'target' : 'not-target', title: r.refund >= 0 ? '5월 신고로 약 ' + won(r.refund) + '을 돌려받을 수 있습니다' : '5월 신고 때 약 ' + won(-r.refund) + '을 더 내야 합니다', sub: '다른 소득이 없을 때 기준', body: body, topic: 'tax', label: '종합소득세 신고 상담 신청' };
+    }
+  });
+
+  E.register('foreign-stock-tax', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'gain', label: '올해 이익 본 종목의 양도차익 합계', unit: '만원', placeholder: '예: 1500', hint: '원화 기준(매도가 − 매수가 − 수수료)' },
+        { type: 'number', id: 'loss', label: '올해 손실 본 종목의 손실 합계', unit: '만원', placeholder: '예: 300' }] },
+      { type: 'fieldset', legend: '배우자 증여 후 양도 비교 (선택)', items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'giftValue', label: '증여할 주식의 현재 시가', unit: '만원', placeholder: '예: 30000' },
+          { type: 'number', id: 'donorCost', label: '그 주식의 원래 취득가액', unit: '만원', placeholder: '예: 10000' }] },
+        { type: 'number', id: 'monthsAfterGift', label: '증여 후 양도까지 기간', unit: '개월', placeholder: '13' }] }
+    ],
+    run: function (v) {
+      var r = PT().foreignStockTax(v);
+      if (r.status === 'INVALID') return { r: r };
+      var rows = [['손익 통산 후 양도차익', won(r.netGain)], ['기본공제 후 과세표준', won(r.taxBase)], ['양도소득세 (20%)', won(r.tax)], ['지방소득세 (2%)', won(r.localTax)], ['합계', won(r.total), true]];
+      if (r.directTotal !== undefined) rows.push(['[비교] 그 주식을 직접 팔 때 세금', won(r.directTotal)], ['[비교] 배우자 증여 후 팔 때 세금', won(r.giftTotal)], ['절세 효과', won(r.giftSaving), true]);
+      return { r: r, cls: r.total > 0 ? 'target' : 'not-target', title: r.total > 0 ? '해외주식 양도세 약 ' + won(r.total) + '(지방세 포함)' : '기본공제 250만원 안이라 낼 세금이 없습니다', sub: '다음 해 5월 확정신고', body: table(rows), topic: 'tax', label: '해외주식 세금 상담 신청' };
+    }
+  });
+
+  E.register('home-sale-tax', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'salePrice', label: '양도가액', unit: '만원', placeholder: '예: 150000' },
+        { type: 'number', id: 'acqPrice', label: '취득가액', unit: '만원', placeholder: '예: 50000' }] },
+      { type: 'number', id: 'expenses', label: '필요경비 (취득세·중개수수료·확장공사 등)', unit: '만원' },
+      { type: 'two', items: [
+        { type: 'number', id: 'holdYears', label: '보유기간', unit: '년', placeholder: '예: 10', step: '0.1' },
+        { type: 'number', id: 'liveYears', label: '거주기간', unit: '년', placeholder: '예: 10', step: '0.1' }] },
+      { type: 'check', id: 'oneHouse', label: '양도일 현재 세대 전체가 이 주택 1채만 갖고 있습니다', value: true },
+      { type: 'check', id: 'adjustedAtAcq', label: '취득할 때 조정대상지역이었습니다 (거주 2년 필요)' }
+    ],
+    run: function (v) {
+      var r = PT().homeSaleTax(v);
+      if (r.status === 'INVALID') return { r: r };
+      if (r.status === 'EXEMPT') return { r: r, cls: 'not-target', title: '1세대 1주택 비과세로 양도세가 없습니다', sub: '양도가액 12억원 이하 · 보유(거주) 요건 충족', body: '', topic: 'tax', label: '양도세 상담 신청' };
+      if (r.status === 'NONE') return { r: r, cls: 'not-target', title: '양도차익이 없습니다', sub: '', body: '', topic: 'tax', label: '양도세 상담 신청' };
+      var body = table([['비과세 요건', r.exemptRequirement ? '충족 (12억원 초과분만 과세)' : '충족 안 함'], ['과세 대상 양도차익', won(r.taxableGain)], ['장기보유특별공제율', r.ltcgRate + '%'], ['과세표준', won(r.taxBase)], ['양도소득세', won(r.tax)], ['지방소득세', won(r.localTax)], ['합계', won(r.total), true]]);
+      return { r: r, cls: 'target', title: '양도세 약 ' + won(r.total) + '(지방세 포함)', sub: r.exemptRequirement ? '고가주택 12억원 초과분 과세' : '1세대 1주택 비과세 대상 아님', body: body, topic: 'tax', label: '양도세 상담 신청' };
+    }
+  });
+
+  E.register('acquisition-tax', {
+    fields: [
+      { type: 'number', id: 'price', label: '취득가액 (매매가)', unit: '만원', placeholder: '예: 50000' },
+      { type: 'number', id: 'houses', label: '이번 주택을 포함한 세대의 주택 수', unit: '채', placeholder: '1' },
+      { type: 'check', id: 'adjusted', label: '취득하는 주택이 조정대상지역에 있습니다' },
+      { type: 'check', id: 'isCorp', label: '법인이 취득합니다' }
+    ],
+    run: function (v) {
+      var r = PT().acquisitionTax(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['적용 세율', n(r.ratePct) + '%'], ['적용 근거', r.reason], ['취득세 (본세)', won(r.tax), true]]);
+      return { r: r, cls: r.status === 'HEAVY' ? 'target' : 'not-target', title: '취득세 약 ' + won(r.tax) + ' (' + n(r.ratePct) + '%)', sub: r.status === 'HEAVY' ? '중과세율 적용' : '지방교육세·농어촌특별세 별도', body: body, topic: 'tax', label: '부동산 세금 상담 신청' };
+    }
+  });
 })();
