@@ -995,4 +995,137 @@
         sub: '신용평가에 자주 쓰이는 지표입니다. 등급은 추정하지 않습니다', body: body, topic: 'fdd', label: '신용·재무구조 상담 신청' };
     }
   });
+
+  // ── 41~46. 중소기업·벤처 추가 6종 (2026-11-19, docs/59) ──
+  function SX() { return window.SmeExtraRules; }
+  function yn(b) { return b ? '해당' : '해당 안 함'; }
+
+  E.register('startup-check', {
+    submit: '판정하기',
+    fields: [
+      { type: 'two', items: [
+        { type: 'date', id: 'startDate', label: '사업 개시일', hint: '법인은 설립등기일, 개인은 사업자등록증 개업일' },
+        { type: 'date', id: 'baseDate', label: '판단 기준일', hint: '지원사업 공고의 기준일 또는 신청일' }] },
+      { type: 'number', id: 'ceoAge', label: '대표자 나이 (선택)', unit: '세', placeholder: '청년창업기업 여부 확인용' },
+      { type: 'select', id: 'exclusion', label: '창업 경위', options: [['none', '새로 사업을 시작했습니다'], ['reopen_after_1y', '폐업하고 1년 넘게 지나 같은 업종을 다시 시작했습니다'], ['reopen_within_1y', '폐업 후 1년이 안 돼 같은 업종을 다시 시작했습니다'], ['inherit', '상속·증여받은 사업을 개인으로 이어서 합니다'], ['personal_new_person', '기존 개인사업을 하면서 개인사업자를 하나 더 냈습니다'], ['personal_new_corp', '기존 개인사업을 하면서 50% 넘게(또는 최대) 지분을 가진 법인으로 같은 업종을 시작했습니다'], ['corp_subsidiary', '기존 법인(임원 지분 포함)이 50% 넘게 출자한 법인입니다'], ['oligopoly', '기존 법인의 과점주주가 새 법인의 과점주주입니다'], ['conversion', '회사 형태만 바꿨습니다(예: 유한회사 → 주식회사)']] }
+    ],
+    run: function (v) {
+      var r = SX().startupCheck(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['창업기업 기간 끝(7년)', r.endDate, true], ['초기창업기업 기간 끝(3년)', r.earlyEndDate], ['기준일 현재 초기창업기업', yn(r.early && r.status === 'STARTUP')], ['청년창업기업(대표 39세 이하)', v.ceoAge === '' ? '나이 미입력' : yn(r.youth)], r.exclusionText ? ['창업 제외 사유', r.exclusionText] : null]);
+      var title = r.status === 'STARTUP' ? '창업기업에 해당하는 것으로 판단됩니다' : r.status === 'EXCLUDED' ? '법령상 창업으로 보지 않는 경우에 해당할 수 있습니다' : '사업 개시일부터 7년이 지나 창업기업이 아닙니다';
+      return { r: r, cls: r.status === 'STARTUP' ? 'target' : 'not-target', title: title, sub: '창업기업 기간 ' + v.startDate + ' ~ ' + r.endDate, body: body, topic: 'tax', label: '창업 지원·세무 상담 신청' };
+    }
+  });
+
+  E.register('small-biz-check', {
+    submit: '판정하기',
+    fields: [
+      { type: 'check', id: 'isSmall', label: '「중소기업기본법」상 소기업입니다 (중소기업 판정기에서 확인)', value: true },
+      { type: 'radio', id: 'industry', label: '주된 업종', options: [['other', '그 밖의 업종 (도소매, 음식점, 서비스 등) — 5명 미만'], ['mfg', '광업·제조업·건설업·운수업 — 10명 미만']] },
+      { type: 'two', items: [
+        { type: 'number', id: 'fullTime', label: '상시 근로자 수 (직전 연도 월평균)', unit: '명', placeholder: '예: 4', hint: '임원·일용직·3개월 이내 기간제·연구전담요원 제외' },
+        { type: 'number', id: 'partTime', label: '월 60시간 이상 단시간근로자 수', unit: '명', placeholder: '없으면 비움', hint: '1명을 0.5명으로 셉니다' }] },
+      { type: 'fieldset', legend: '규모가 커져 기준을 넘은 적이 있다면 (선택)', items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'exceededYear', label: '기준을 넘은 연도', unit: '년', placeholder: '예: 2025' },
+          { type: 'number', id: 'baseYear', label: '판단 연도', unit: '년', placeholder: '예: 2027' }] }] }
+    ],
+    run: function (v) {
+      var r = SX().smallBizCheck(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['상시 근로자 수(단시간 0.5명 환산)', n(r.employees) + '명', true], ['업종 기준', r.limit + '명 미만'], r.graceEnd ? ['소상공인으로 보는 유예 기간', (Number(v.exceededYear) + 1) + '년 ~ ' + r.graceEnd + '년'] : null]);
+      var title = r.status === 'SMALLBIZ' ? '소상공인에 해당하는 것으로 판단됩니다' : r.status === 'GRACE' ? '유예 기간이라 소상공인으로 봅니다' : '소상공인에 해당하지 않는 것으로 보입니다';
+      return { r: r, cls: r.status === 'NOT' ? 'not-target' : 'target', title: title, sub: '상시 근로자 ' + n(r.employees) + '명 / 기준 ' + r.limit + '명 미만', body: body, topic: 'tax', label: '소상공인 지원·세무 상담 신청' };
+    }
+  });
+
+  E.register('rnd-lab-check', {
+    submit: '진단하기',
+    fields: [
+      { type: 'radio', id: 'type', label: '무엇을 만들려고 하나요?', options: [['lab', '기업부설연구소'], ['dept', '연구개발전담부서']] },
+      { type: 'select', id: 'size', label: '기업 규모', options: [['small', '소기업'], ['medium', '중기업'], ['midsize', '중견기업'], ['large', '그 밖의 기업(대기업 등)']] },
+      { type: 'check', id: 'venture', label: '벤처기업 확인을 받았습니다 (또는 연구기관 연구원·대학 교원이 창업한 연구개발형 중소기업)' },
+      { type: 'check', id: 'startup3y', label: '창업일부터 3년이 지나지 않았습니다 (소기업)' },
+      { type: 'check', id: 'mediumWithin1y', label: '소기업에서 중기업이 된 지 1년이 안 됐습니다' },
+      { type: 'check', id: 'overseas', label: '국외에 세우는 연구소입니다' },
+      { type: 'number', id: 'researchers', label: '확보한(확보 예정) 연구전담요원 수', unit: '명', placeholder: '예: 2' }
+    ],
+    run: function (v) {
+      var r = SX().rndLabCheck(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['적용 기준', r.reason], ['필요한 연구전담요원', r.required + '명 이상', true], ['확보 인원', n(r.researchers) + '명'], ['부족 인원', r.shortfall + '명', true]]);
+      return { r: r, cls: r.status === 'MEETS' ? 'target' : 'not-target', title: r.status === 'MEETS' ? '인력 요건을 충족하는 것으로 보입니다' : '연구전담요원이 ' + r.shortfall + '명 부족합니다', sub: r.reason + ' 기준 ' + r.required + '명 이상', body: body, topic: 'tax', label: '연구소 설립·R&D 세액공제 상담 신청' };
+    }
+  });
+
+  E.register('midsize-check', {
+    submit: '판정하기',
+    fields: [
+      { type: 'check', id: 'isSme', label: '현재 「중소기업기본법」상 중소기업 기준 안에 있습니다' },
+      { type: 'fieldset', legend: '해당하는 항목이 있으면 체크 (중견기업 제외 요건)', items: [
+        { type: 'check', id: 'publicInst', label: '공공기관 또는 지방공기업입니다' },
+        { type: 'check', id: 'bigGroup', label: '상호출자제한기업집단에 속합니다' },
+        { type: 'check', id: 'bigOwner', label: '상호출자제한기업집단 지정기준 이상 자산을 가진 회사가 30% 이상 소유한 최다출자자입니다' },
+        { type: 'check', id: 'finance', label: '금융업·보험업·금융 관련 서비스업을 합니다(일반지주회사 제외)' }] },
+      { type: 'check', id: 'exceeded', label: '규모가 커져 중소기업 기준을 넘었습니다 (유예 기간 계산)' },
+      { type: 'fieldset', id: 'msGraceBox', legend: '졸업 유예', when: function (v) { return v.exceeded; }, items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'exceededYear', label: '처음 기준을 넘은 연도', unit: '년', placeholder: '예: 2025' },
+          { type: 'number', id: 'baseYear', label: '판단 연도', unit: '년', placeholder: '예: 2027' }] },
+        { type: 'check', id: 'listed', label: '유가증권시장·코스닥 상장사입니다' },
+        { type: 'check', id: 'graceExcluded', label: '중소기업이 아닌 기업과 합병했거나, 유예 후 다시 기준을 넘은 경우입니다' }] }
+    ],
+    run: function (v) {
+      var r = SX().midsizeCheck(v);
+      if (r.status === 'INVALID') return { r: r };
+      var rows = [];
+      if (r.fails && r.fails.length) rows.push(['중견기업 제외 사유', r.fails.join(', ')]);
+      if (v.exceeded) {
+        rows.push(['중소기업기본법상 유예', r.smeGraceEnd === null ? '적용 안 됨' : r.smeGraceStart + '년 ~ ' + r.smeGraceEnd + '년', true]);
+        rows.push(['세법(조특법)상 유예', r.taxGraceEnd === null ? '적용 안 됨' : v.exceededYear + '년 ~ ' + r.taxGraceEnd + '년 과세연도', true]);
+      }
+      var title = { SME: '중소기업이라 중견기업이 아닙니다', GRACE: '유예 기간이라 중소기업으로 봅니다', MIDSIZE: '중견기업에 해당하는 것으로 판단됩니다', NOT_MIDSIZE: '중견기업 요건에 맞지 않습니다' }[r.status];
+      return { r: r, cls: r.status === 'MIDSIZE' || r.status === 'GRACE' ? 'target' : 'not-target', title: title, sub: v.exceeded && r.smeGraceEnd ? '중기법 유예 ' + r.smeGraceEnd + '년까지 · 세법 유예 ' + r.taxGraceEnd + '년까지' : '', body: rows.length ? table(rows) : '', topic: 'tax', label: '중견기업 진입·세무 상담 신청' };
+    }
+  });
+
+  E.register('sme-employee-tax', {
+    fields: [
+      { type: 'radio', id: 'type', label: '직원 유형', options: [['youth', '청년 (15~34세, 병역 기간 최대 6년 차감)'], ['senior', '60세 이상'], ['disabled', '장애인'], ['career', '경력단절 근로자']] },
+      { type: 'two', items: [
+        { type: 'number', id: 'age', label: '근로계약 체결일 현재 나이', unit: '세', placeholder: '예: 32' },
+        { type: 'number', id: 'militaryYears', label: '병역 이행 기간 (청년)', unit: '년', placeholder: '예: 2', step: '0.1' }] },
+      { type: 'two', items: [
+        { type: 'date', id: 'hireDate', label: '취업일' },
+        { type: 'number', id: 'annualTax', label: '연간 근로소득 산출세액(예상)', unit: '만원', placeholder: '예: 150', hint: '연말정산 결정세액 계산 전 산출세액' }] },
+      { type: 'check', id: 'excluded', label: '임원이거나 최대주주와 그 배우자·친족, 일용근로자입니다' },
+      { type: 'check', id: 'industryNotEligible', label: '회사의 주된 업종이 감면 업종이 아닙니다 (예: 부동산 임대업, 주점, 금융업, 전문직 사무소)' }
+    ],
+    run: function (v) {
+      var r = SX().smeEmployeeTax(v);
+      if (r.status === 'INVALID') return { r: r };
+      var ok = r.status === 'ELIGIBLE';
+      var body = ok ? table([['감면율', r.rate + '%'], ['감면 기간', r.years + '년 (' + r.periodEnd + '까지)'], ['연간 감면세액(한도 200만원)', won(r.annualExempt), true], r.adjustedAge !== undefined ? ['병역 차감 후 나이', r.adjustedAge + '세'] : null])
+        : '<ul class="basis">' + r.reasons.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+      return { r: r, cls: ok ? 'target' : 'not-target', title: ok ? '소득세 ' + r.rate + '% 감면 대상으로 판단됩니다' : '감면 대상이 아닌 것으로 보입니다', sub: ok ? '연 ' + won(r.annualExempt) + ' · ' + r.periodEnd + '까지' : '', body: body, topic: 'tax', label: '급여·원천징수 상담 신청' };
+    }
+  });
+
+  E.register('venture-benefits', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'date', id: 'foundDate', label: '창업일' },
+        { type: 'date', id: 'confirmDate', label: '벤처기업 확인일 (예정일)' }] },
+      { type: 'check', id: 'industryEligible', label: '제조업·정보통신업·연구개발업 등 창업감면 업종입니다', value: true },
+      { type: 'check', id: 'alreadyStartupRelief', label: '이미 창업중소기업 세액감면(조특법 제6조제1항)을 받고 있습니다' },
+      { type: 'check', id: 'options', label: '임직원에게 스톡옵션을 부여했거나 부여할 계획입니다' }
+    ],
+    run: function (v) {
+      var r = SX().ventureBenefits(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = '<ul class="basis">' + r.items.map(function (x) { return '<li><b>' + esc(x.title) + '</b>: ' + esc(x.text) + ' <a href="' + x.link + '">관련 도구</a></li>'; }).join('') + '</ul>';
+      return { r: r, cls: 'target', title: '받을 수 있는 혜택이 ' + r.count + '가지로 보입니다', sub: r.startupVenture ? '창업벤처중소기업 세액감면 대상일 수 있습니다' : '창업벤처 세액감면은 요건에 맞지 않습니다', body: body, topic: 'tax', label: '벤처 확인·세액감면 상담 신청' };
+    }
+  });
 })();

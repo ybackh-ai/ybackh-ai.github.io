@@ -14,7 +14,7 @@
       ['dev-cost.html', '개발비 자산화 요건 진단'], ['fx-translation.html', '외화환산 손익'], ['inventory-lcm.html', '재고자산 저가법 평가손실'], ['gov-grant.html', '정부보조금 회계처리'], ['unused-leave.html', '미사용 연차수당 부채'], ['accrual-prepaid.html', '선급·미지급비용 기간 배분'], ['effective-interest.html', '유효이자율 상각표 (차입금·사채)'],
     ] },
     { group: '중소기업·벤처', items: [
-      ['sme-check.html', '중소기업 해당 여부 판정기'], ['tax-sme.html', '세법상 중소기업 판정기'], ['venture-check.html', '벤처기업 확인 요건 진단'],
+      ['sme-check.html', '중소기업 해당 여부 판정기'], ['tax-sme.html', '세법상 중소기업 판정기'], ['venture-check.html', '벤처기업 확인 요건 진단'], ['venture-benefits.html', '벤처기업 확인 후 혜택'], ['startup-check.html', '창업기업 해당 여부'], ['small-biz-check.html', '소상공인 해당 여부'], ['midsize-check.html', '중견기업·졸업 유예'], ['rnd-lab-check.html', '기업부설연구소 설립 요건'], ['sme-employee-tax.html', '중소기업 취업자 소득세 감면'],
     ] },
     { group: '세무', items: [
       ['inherit-gift.html', '상속·증여세 간이 계산'], ['loan-interest.html', '가지급금 인정이자 계산기', 1], ['stock-option-tax.html', '스톡옵션 행사 세금'], ['corp-vs-personal.html', '법인 vs 개인사업자 세금 비교'], ['tax-calendar.html', '법인 세무 신고 일정표'],
