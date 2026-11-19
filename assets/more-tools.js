@@ -1198,7 +1198,8 @@
       { type: 'number', id: 'profit', label: '대표 보수 지급 전 법인 세전이익 (연)', unit: '만원', placeholder: '예: 20000' },
       { type: 'two', items: [
         { type: 'number', id: 'salary', label: '대표 급여 (연)', unit: '만원', placeholder: '예: 10000' },
-        { type: 'number', id: 'payoutPct', label: '남은 세후이익 중 배당 비율', unit: '%', placeholder: '예: 50' }] }
+        { type: 'number', id: 'payoutPct', label: '남은 세후이익 중 배당 비율', unit: '%', placeholder: '예: 50' }] },
+      { type: 'select', id: 'payYear', label: '배당 받는 해', options: [['2026', '2026년 (배당가산율 10%)'], ['2027', '2027년 이후 (배당가산율 11%)']] }
     ],
     run: function (v) {
       var r = BT().ownerPay(v);
@@ -1273,7 +1274,8 @@
         { type: 'number', id: 'prepaid', label: '매달 떼인 소득세 합계 (기납부세액)', unit: '만원', placeholder: '예: 200', hint: '급여명세서의 소득세 합계(지방소득세 제외)' }] },
       { type: 'two', items: [
         { type: 'number', id: 'dependents', label: '기본공제 인원 (본인 포함)', unit: '명', placeholder: '1' },
-        { type: 'number', id: 'children', label: '그중 8세 이상 자녀 수', unit: '명', placeholder: '0' }] },
+        { type: 'number', id: 'children', label: '그중 8세 이상 자녀 수 (자녀세액공제)', unit: '명', placeholder: '0' }] },
+      { type: 'number', id: 'cardKids', label: '20세 이하 자녀 수 (카드 공제 한도 상향)', unit: '명', placeholder: '비우면 위 자녀 수', hint: '기본공제를 받는 20세 이하 자녀·손자녀' },
       { type: 'fieldset', legend: '카드 사용액 (연)', items: [
         { type: 'two', items: [
           { type: 'number', id: 'credit', label: '신용카드', unit: '만원' },
@@ -1307,10 +1309,11 @@
     fields: [
       { type: 'number', id: 'revenue', label: '연 수입금액 (3.3% 떼기 전)', unit: '만원', placeholder: '예: 3000' },
       { type: 'radio', id: 'method', label: '경비 계산 방법', options: [['simple', '단순경비율 (소규모·신규)'], ['standard', '기준경비율 (증빙 있는 주요경비 + 기준경비율)'], ['books', '장부 (실제 경비)']] },
-      { type: 'number', id: 'simpleRate', label: '단순경비율 (업종코드별 국세청 고시)', unit: '%', placeholder: '예: 64.1', step: '0.1', when: function (v) { return v.method === 'simple'; } },
+      { type: 'number', id: 'simpleRate', label: '단순경비율 (업종코드별 국세청 고시)', unit: '%', placeholder: '예: 64.1', step: '0.1', when: function (v) { return v.method !== 'books'; }, hint: '기준경비율 방식에서도 넣으면 배율 상한을 적용합니다' },
       { type: 'two', id: 'stdBox', when: function (v) { return v.method === 'standard'; }, items: [
         { type: 'number', id: 'majorExpenses', label: '증빙 있는 주요경비 (매입·임차료·인건비)', unit: '만원' },
         { type: 'number', id: 'standardRate', label: '기준경비율', unit: '%', step: '0.1' }] },
+      { type: 'check', id: 'doubleEntry', label: '복식부기의무자입니다 (배율 3.4, 아니면 간편장부대상자 2.8)', when: function (v) { return v.method === 'standard'; } },
       { type: 'number', id: 'expenses', label: '장부상 필요경비', unit: '만원', when: function (v) { return v.method === 'books'; } },
       { type: 'two', items: [
         { type: 'number', id: 'dependents', label: '기본공제 인원 (본인 포함)', unit: '명', placeholder: '1' },
@@ -1358,15 +1361,18 @@
         { type: 'number', id: 'holdYears', label: '보유기간', unit: '년', placeholder: '예: 10', step: '0.1' },
         { type: 'number', id: 'liveYears', label: '거주기간', unit: '년', placeholder: '예: 10', step: '0.1' }] },
       { type: 'check', id: 'oneHouse', label: '양도일 현재 세대 전체가 이 주택 1채만 갖고 있습니다', value: true },
-      { type: 'check', id: 'adjustedAtAcq', label: '취득할 때 조정대상지역이었습니다 (거주 2년 필요)' }
+      { type: 'check', id: 'adjustedAtAcq', label: '취득할 때 조정대상지역이었습니다 (거주 2년 필요)', when: function (v) { return v.oneHouse; } },
+      { type: 'fieldset', id: 'multiBox', legend: '여러 채를 가진 경우', when: function (v) { return !v.oneHouse; }, items: [
+        { type: 'check', id: 'adjustedNow', label: '파는 주택이 지금 조정대상지역에 있습니다' },
+        { type: 'select', id: 'houseCount', label: '세대가 가진 주택 수 (이 주택 포함)', options: [['2', '2채'], ['3', '3채 이상']] }] }
     ],
     run: function (v) {
       var r = PT().homeSaleTax(v);
       if (r.status === 'INVALID') return { r: r };
       if (r.status === 'EXEMPT') return { r: r, cls: 'not-target', title: '1세대 1주택 비과세로 양도세가 없습니다', sub: '양도가액 12억원 이하 · 보유(거주) 요건 충족', body: '', topic: 'tax', label: '양도세 상담 신청' };
       if (r.status === 'NONE') return { r: r, cls: 'not-target', title: '양도차익이 없습니다', sub: '', body: '', topic: 'tax', label: '양도세 상담 신청' };
-      var body = table([['비과세 요건', r.exemptRequirement ? '충족 (12억원 초과분만 과세)' : '충족 안 함'], ['과세 대상 양도차익', won(r.taxableGain)], ['장기보유특별공제율', r.ltcgRate + '%'], ['과세표준', won(r.taxBase)], ['양도소득세', won(r.tax)], ['지방소득세', won(r.localTax)], ['합계', won(r.total), true]]);
-      return { r: r, cls: 'target', title: '양도세 약 ' + won(r.total) + '(지방세 포함)', sub: r.exemptRequirement ? '고가주택 12억원 초과분 과세' : '1세대 1주택 비과세 대상 아님', body: body, topic: 'tax', label: '양도세 상담 신청' };
+      var body = table([['비과세 요건', r.exemptRequirement ? '충족 (12억원 초과분만 과세)' : '충족 안 함'], r.heavyAdd ? ['다주택 중과', '기본세율 + ' + r.heavyAdd + '%p, 장기보유특별공제 없음'] : null, ['과세 대상 양도차익', won(r.taxableGain)], ['장기보유특별공제율', r.ltcgRate + '%'], ['과세표준', won(r.taxBase)], ['양도소득세', won(r.tax)], ['지방소득세', won(r.localTax)], ['합계', won(r.total), true]]);
+      return { r: r, cls: 'target', title: '양도세 약 ' + won(r.total) + '(지방세 포함)', sub: r.heavyAdd ? '조정대상지역 다주택 중과 (2026년 5월 10일 이후 양도)' : r.exemptRequirement ? '고가주택 12억원 초과분 과세' : '1세대 1주택 비과세 대상 아님', body: body, topic: 'tax', label: '양도세 상담 신청' };
     }
   });
 
@@ -1375,6 +1381,7 @@
       { type: 'number', id: 'price', label: '취득가액 (매매가)', unit: '만원', placeholder: '예: 50000' },
       { type: 'number', id: 'houses', label: '이번 주택을 포함한 세대의 주택 수', unit: '채', placeholder: '1' },
       { type: 'check', id: 'adjusted', label: '취득하는 주택이 조정대상지역에 있습니다' },
+      { type: 'check', id: 'tempTwo', label: '이사 등으로 산 일시적 2주택입니다 (종전 주택을 3년, 둘 다 조정대상지역이면 2년 안에 처분)', when: function (v) { return v.adjusted && String(v.houses) === '2'; } },
       { type: 'check', id: 'isCorp', label: '법인이 취득합니다' }
     ],
     run: function (v) {

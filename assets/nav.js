@@ -24,7 +24,7 @@
       ['vat-calc.html', '부가가치세 계산기'], ['labor-cost.html', '직원 인건비 총액(4대보험)'], ['net-salary.html', '연봉 실수령액'], ['severance-pay.html', '퇴직금·퇴직소득세'], ['owner-pay.html', '대표 보수 설계(급여 vs 배당)'], ['incorporation.html', '법인전환 이월과세·취득세'],
     ] },
     { group: '개인 세금 (직장인·프리랜서·투자자)', items: [
-      ['year-end-tax.html', '연말정산 미리보기', 1], ['pension-credit.html', '연금저축·IRP 세액공제'], ['freelancer-tax.html', '프리랜서 3.3% 환급', 1], ['foreign-stock-tax.html', '해외주식 양도소득세', 1], ['home-sale-tax.html', '1세대 1주택 양도세', 1], ['acquisition-tax.html', '주택 취득세', 1],
+      ['year-end-tax.html', '연말정산 미리보기'], ['pension-credit.html', '연금저축·IRP 세액공제'], ['freelancer-tax.html', '프리랜서 3.3% 환급'], ['foreign-stock-tax.html', '해외주식 양도소득세'], ['home-sale-tax.html', '1주택 양도세·다주택 중과', 1], ['acquisition-tax.html', '주택 취득세'],
     ] },
     { group: '세액공제·감면', items: [
       ['employment-credit.html', '통합고용세액공제', 1], ['rnd-credit.html', '연구·인력개발비 세액공제'], ['investment-credit.html', '통합투자세액공제'], ['startup-relief.html', '창업중소기업 세액감면'], ['angel-deduction.html', '엔젤투자 소득공제'],

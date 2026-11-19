@@ -145,7 +145,7 @@
   }
 
   // 4. 대표 보수 설계
-  function personal(salary, dividend) {
+  function personal(salary, dividend, guRate) {
     var g = salary;
     var earned = Math.max(0, g - earnedDeduction(g));
     var basic = 1500000;
@@ -155,7 +155,7 @@
     var tax;
     if (dividend <= 20000000) tax = Math.floor(dividend * 0.14) + wageTax;
     else {
-      var gu = Math.floor((dividend - 20000000) * 0.11);
+      var gu = Math.floor((dividend - 20000000) * guRate);
       var normal = Math.floor(20000000 * 0.14) + TT.incomeTax(Math.max(0, earned + dividend - 20000000 + gu - basic));
       var compare = Math.floor(dividend * 0.14) + TT.incomeTax(wageBase);
       tax = Math.max(normal - gu, compare);
@@ -171,9 +171,13 @@
     if (!r.errors.length && s > p) r.errors.push('대표 급여가 법인 이익보다 클 수 없습니다(이 도구는 결손을 만들지 않는 범위만 계산).');
     if (!r.errors.length && po > 100) r.errors.push('배당 비율은 100% 이하여야 합니다.');
     if (r.errors.length) { r.status = 'INVALID'; return r; }
+    // 배당가산율: 2026-12-31 이전 지급분 10%, 2027년 이후 지급분 11%(소득세법 §17③, 부칙 법률 제21221호 제1조제2호·제14조)
+    var payYear = Number(input.payYear) || 2026;
+    var guRate = payYear >= 2027 ? 0.11 : 0.10;
+    r.grossUpPct = guRate * 100;
     function plan(salW, pct) {
       var taxable = p * MAN - salW, corp = TT.corpTax(taxable), after = taxable - corp;
-      var div = Math.floor(after * pct / 100), pers = personal(salW, div);
+      var div = Math.floor(after * pct / 100), pers = personal(salW, div, guRate);
       return { salary: salW, corpTax: corp, dividend: div, personalTax: pers, totalTax: corp + pers, netToOwner: salW + div - pers, retained: after - div };
     }
     var mine = plan(s * MAN, po);
@@ -181,7 +185,7 @@
     r.scenarios = [{ name: '급여만', v: plan(p * MAN, 0) }, { name: '입력한 안', v: mine }, { name: '배당만(급여 0)', v: plan(0, 100) }];
     r.status = 'OK';
     r.basis.push('법인세율 「법인세법」 제55조, 근로소득공제 「소득세법」 제47조, 기본공제 제50조(본인 150만원), 기본세율 제55조, 근로소득세액공제 제59조');
-    r.basis.push('배당: 원천징수 14%(제129조), 연 2천만원 이하 분리과세(제14조제3항제6호), 초과분은 11% 가산(Gross-up, 제17조제3항) 후 종합과세와 비교과세 중 큰 금액(제62조), 배당세액공제(제56조)');
+    r.basis.push('배당: 원천징수 14%(제129조), 연 2천만원 이하 분리과세(제14조제3항제6호), 초과분은 ' + r.grossUpPct + '% 가산(Gross-up, 제17조제3항: 2026년 지급분 10%, 2027년 이후 지급분 11% — 부칙 법률 제21221호 제14조) 후 종합과세와 비교과세 중 큰 금액(제62조), 배당세액공제(제56조)');
     r.notes.push('지방소득세(약 10%), 대표의 4대보험(급여에는 국민연금·건강보험 등 본인·회사 부담, 배당이 연 2천만원을 넘으면 건강보험 소득월액보험료), 다른 종합소득, 각종 공제는 넣지 않은 비교용 계산입니다.');
     r.notes.push('급여는 법인 비용(손금)이 되지만 임원 보수는 정관·주주총회 결의 한도 안이어야 합니다. 배당은 상법상 배당가능이익 한도 안에서만 할 수 있습니다.');
     return r;

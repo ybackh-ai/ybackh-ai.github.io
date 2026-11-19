@@ -77,6 +77,8 @@
     var pre = num(input.prepaid, '기납부세액(원천징수된 소득세)', { optional: true }) * MAN;
     var dep = Math.max(1, Math.floor(num(input.dependents, '기본공제 인원', { optional: true, def: 1 })));
     var kids = Math.floor(num(input.children, '8세 이상 자녀 수', { optional: true }));
+    // 카드 한도의 "자녀등" = 20세 이하 직계비속(기본공제 대상) — 조특령 §121의2⑱. 비우면 8세 이상 자녀 수로 대신함
+    var cardKids = blank(input.cardKids) ? kids : Math.floor(num(input.cardKids, '20세 이하 자녀 수'));
     var insIn = blank(input.insurance) ? null : num(input.insurance, '본인 부담 4대보험료(연)') * MAN;
     var C = num(input.credit, '신용카드', { optional: true }) * MAN, D = num(input.debit, '체크카드·현금영수증', { optional: true }) * MAN;
     var M = num(input.market, '전통시장·대중교통', { optional: true }) * MAN, U = num(input.culture, '도서·공연·박물관·영화·체육시설', { optional: true }) * MAN;
@@ -88,7 +90,7 @@
     var earned = g - earnedDeduction(g);
     var ins = insIn === null ? fl(g * EMP_INS) : insIn;
     r.insurance = ins;
-    r.cardDeduction = cardDeduction(g, C, D, M, U, kids);
+    r.cardDeduction = cardDeduction(g, C, D, M, U, cardKids);
     r.taxBase = Math.max(0, earned - 1500000 * dep - ins - r.cardDeduction);
     r.calcTax = TT.incomeTax(r.taxBase);
     r.earnedCredit = earnedCredit(r.calcTax, g);
@@ -113,7 +115,8 @@
     r.basis.push('「소득세법」 제47조(근로소득공제), 제50조(기본공제), 제51조의3·제52조(보험료 공제), 제55조(세율), 제59조(근로소득세액공제), 제59조의2(자녀 1명 25만·2명 55만·3명부터 1명당 40만), 제59조의3(연금계좌), 제59조의4(보험 12%·의료비 3% 초과분 15%·교육비 15%·기부금 15/30%, 표준세액공제 13만원)');
     r.basis.push('「조세특례제한법」 제126조의2(신용카드 등 총급여 25% 초과분, 신용 15%·체크·현금 30%·전통시장·대중교통 40%·문화 30%, 한도 300만/250만원, 자녀 수별 한도, 전통시장·대중교통 추가 한도), 제95조의2(월세 15%·17%, 연 1천만원 한도)');
     r.notes.push('4대보험료를 넣지 않으면 2026년 요율로 총급여에서 추정합니다. 교육비·의료비는 대상자별 한도와 요건을 맞춘 금액을 넣으세요(교육비 1명당 한도 등은 계산하지 않음).');
-    r.notes.push('카드 공제 한도·자녀 수별 한도와 월세 공제 개정(2025년 12월)이 어느 사용분부터 적용되는지는 부칙과 시행령을 확인하지 못해 2026년 사용분에 그대로 적용했습니다(확실하지 않음). 주택자금 공제, 정치자금, 중소기업 취업자 감면은 넣지 않았습니다.');
+    r.notes.push('카드 공제 자녀별 한도·추가 한도와 월세 공제 개정(2025년 12월)은 2026년 사용·지급분부터 적용됩니다(조특법 부칙 법률 제21223호 제17조·제47조). 카드 한도의 자녀는 20세 이하 직계비속으로 기본공제 대상인 사람입니다(조특법 시행령 제121조의2제18항).');
+    r.notes.push('주택자금 공제, 정치자금, 중소기업 취업자 감면, 교육비 1명당 한도는 계산하지 않습니다. 해당하면 실제 세금은 더 줄어듭니다.');
     return r;
   }
 
@@ -136,6 +139,12 @@
     var R = rev * MAN;
     r.method = method;
     r.income = Math.max(0, Math.round(method === 'simple' ? R * (1 - sr / 100) : method === 'books' ? R - exp * MAN : R - major * MAN - R * stdr / 100));
+    // 기준경비율 소득은 단순경비율 소득 × 배율(간편장부대상자 2.8, 복식부기의무자 3.4)을 넘지 않음 — 시행령 §143③1 단서, 시행규칙 §67
+    var srCap = method === 'standard' && !blank(input.simpleRate) ? num(input.simpleRate, '단순경비율') : null;
+    if (srCap !== null) {
+      r.capIncome = Math.round(R * (1 - srCap / 100) * (input.doubleEntry ? 3.4 : 2.8));
+      if (r.income > r.capIncome) { r.income = r.capIncome; r.capped = true; }
+    }
     r.taxBase = Math.max(0, r.income - 1500000 * dep - pen * MAN);
     r.tax = Math.max(0, TT.incomeTax(r.taxBase) - 70000);
     r.localTax = fl(r.tax * 0.1);
@@ -145,7 +154,8 @@
     r.status = r.refund >= 0 ? 'REFUND' : 'PAY';
     r.basis.push('「소득세법」 제55조(세율), 제50조(기본공제), 제51조의3(연금보험료 공제), 제59조의4제9항제2호(근로소득 없는 사람 표준세액공제 7만원), 제129조제1항제3호(사업소득 원천징수 3%)');
     r.basis.push('「소득세법 시행령」 제143조제3항(기준경비율·단순경비율 추계 방법), 제4항(단순경비율 대상: 신규 사업자 또는 직전 연도 수입 6천만원·3,600만원·2,400만원 미만)');
-    r.notes.push('단순경비율·기준경비율은 업종코드별로 국세청이 매년 고시합니다(홈택스에서 업종코드로 조회). 기준경비율 방식은 단순경비율로 계산한 소득금액에 배율을 곱한 금액을 넘지 않게 하는 상한(시행령 제143조제3항제1호 단서)이 있으나 반영하지 않았습니다.');
+    r.basis.push('「소득세법 시행령」 제143조제3항제1호 단서, 시행규칙 제67조(기준경비율 소득금액 상한 = 단순경비율 소득금액 × 2.8, 복식부기의무자 3.4, 2027년 귀속까지)');
+    r.notes.push('단순경비율·기준경비율은 업종코드별로 국세청이 매년 고시합니다(홈택스에서 업종코드로 조회). 기준경비율 방식에서 단순경비율도 넣으면 배율 상한을 적용합니다.' + (r.capped ? ' 이번 계산은 상한이 적용됐습니다.' : ''));
     r.notes.push('해당 연도 수입이 복식부기의무 기준 이상이면 장부를 쓰지 않을 때 가산세가 붙을 수 있고, 다른 종합소득(근로소득 등)이 있으면 합산해 세율이 달라집니다.');
     return r;
   }
@@ -176,8 +186,8 @@
     r.status = r.total > 0 ? 'TAX' : 'NONE';
     r.basis.push('「소득세법」 제94조제1항제3호다목(외국법인 주식), 제102조(같은 그룹 안 양도차손 통산), 제103조(주식 그룹 연 250만원 기본공제), 제104조제1항제12호(중소기업 외 20%), 지방소득세 10%(합계 22%)');
     r.basis.push('「소득세법」 제97조의2제1항(배우자·직계존비속에게 증여받은 주식을 1년 안에 양도하면 증여자 취득가액 적용, 2025년 12월 개정)');
-    r.notes.push('양도차익은 매도·매수 시점의 기준환율로 원화 환산해야 합니다(환율 계산 방식은 시행령 확인 필요). 국내 상장주식 소액주주 손익은 과세 대상이 아니라 통산하지 않습니다. 다음 해 5월에 확정신고합니다.');
-    r.notes.push('증여 후 양도 특례의 1년 기준이 언제 증여분부터 적용되는지(부칙)는 확인하지 못했습니다(확실하지 않음).');
+    r.notes.push('양도차익은 원화로 환산한 금액을 넣습니다(증권사가 주는 해외주식 양도소득 자료의 원화 금액을 쓰면 됩니다). 국내 상장주식 소액주주 손익은 과세 대상이 아니라 통산하지 않습니다. 다음 해 5월에 확정신고합니다.');
+    r.notes.push('증여받은 주식을 1년 안에 팔면 증여자 취득가액을 쓰는 규정은 2026년 1월 1일 이후 양도분부터 적용됩니다(소득세법 부칙 법률 제21221호 제7조).');
     return r;
   }
 
@@ -193,7 +203,17 @@
     var exemptOk = !!input.oneHouse && hy >= 2 && (!input.adjustedAtAcq || ly >= 2);
     r.exemptRequirement = exemptOk;
     if (gain <= 0) { r.status = 'NONE'; r.total = 0; r.tax = 0; r.taxableGain = 0; r.notes.push('양도차익이 없습니다.'); r.basis.push('「소득세법」 제95조'); return r; }
+    var heavyAdd = !input.oneHouse && input.adjustedNow ? (Number(input.houseCount) >= 3 ? 30 : Number(input.houseCount) === 2 ? 20 : 0) : 0;
     if (exemptOk && sp <= 120000) { r.status = 'EXEMPT'; r.total = 0; r.tax = 0; r.taxableGain = 0; }
+    else if (heavyAdd) {
+      // 조정대상지역 다주택 중과(소득세법 §104⑦): 장기보유특별공제 없음(§95②), 기본세율 + 20%p·30%p. 중과 배제 유예(시행령 §167의10①12의2)는 2026-05-09 양도분까지
+      r.taxableGain = gain; r.ltcgRate = 0; r.heavyAdd = heavyAdd;
+      r.taxBase = Math.max(0, gain - 2500000);
+      var heavy = TT.incomeTax(r.taxBase) + fl(r.taxBase * heavyAdd / 100);
+      if (hy < 2) heavy = Math.max(heavy, fl(r.taxBase * (hy < 1 ? 0.7 : 0.6)));
+      r.tax = heavy; r.localTax = fl(r.tax * 0.1); r.total = r.tax + r.localTax;
+      r.status = 'HEAVY';
+    }
     else {
       var tg = exemptOk ? Math.round(gain * (sp - 120000) / sp) : gain;
       var H = Math.floor(hy), L = Math.floor(ly), rate = 0;
@@ -208,7 +228,8 @@
     }
     r.basis.push('「소득세법」 제89조제1항제3호(1세대 1주택 비과세, 양도가액 12억원 초과 고가주택 제외), 시행령 제154조제1항(보유 2년, 취득 당시 조정대상지역이면 거주 2년), 시행령 제160조(12억원 초과분 비율 과세)');
     r.basis.push('「소득세법」 제95조제2항(장기보유특별공제 표 1: 3년부터 연 2%, 최대 30% / 표 2: 1세대 1주택 보유 연 4%·거주 연 4%, 각 최대 40%), 제103조(기본공제 250만원), 제104조제1항(1년 미만 70%, 2년 미만 60%, 그 밖 기본세율)');
-    r.notes.push('일시적 2주택·상속·혼인·동거봉양 특례, 다주택 중과(조정대상지역 2주택 이상), 분양권·입주권, 부수토지 면적 초과분은 반영하지 않았습니다. 보유·거주기간은 년 단위로 내림해 장기보유특별공제율을 정했습니다.');
+    r.basis.push('「소득세법」 제104조제7항(조정대상지역 2주택 +20%p, 3주택 이상 +30%p), 시행령 제159조의4(장특 표 2는 보유기간 중 거주 2년 이상), 제167조의10제1항제12호의2(보유 2년 이상 중과 배제는 2026년 5월 9일 양도분까지)');
+    r.notes.push('일시적 2주택·상속·혼인·동거봉양 특례, 중과 배제 주택(지방 기준시가 3억원 이하, 장기임대주택 등 시행령 제167조의10·제167조의3), 분양권·입주권, 부수토지 면적 초과분은 반영하지 않았습니다. 보유·거주기간은 년 단위로 내림해 장기보유특별공제율을 정했습니다.');
     return r;
   }
 
@@ -224,13 +245,16 @@
     var rate, reason;
     if (input.isCorp) { rate = 0.12; reason = '법인의 주택 취득 중과(4% + 중과기준세율 2% × 4)'; }
     else if (input.adjusted && h >= 3 || !input.adjusted && h >= 4) { rate = 0.12; reason = (input.adjusted ? '조정대상지역 3주택 이상' : '조정대상지역 외 4주택 이상') + ' 중과(12%)'; }
+    else if (input.adjusted && h === 2 && input.tempTwo) { rate = std; reason = '일시적 2주택(종전 주택을 기한 안에 처분) — 일반세율 적용(지방세법 시행령 제28조의5)'; }
     else if (input.adjusted && h === 2 || !input.adjusted && h === 3) { rate = 0.08; reason = (input.adjusted ? '조정대상지역 2주택' : '조정대상지역 외 3주택') + ' 중과(8%)'; }
     else { rate = std; reason = '유상거래 주택 표준세율(6억원 이하 1%, 9억원 초과 3%, 그 사이 계산식)'; }
     r.ratePct = Math.round(rate * 10000) / 100; r.reason = reason;
     r.tax = fl(p * MAN * rate);
     r.status = rate > 0.03 ? 'HEAVY' : 'NORMAL';
     r.basis.push('「지방세법」 제11조제1항제8호(주택 유상취득 1~3%, 6억~9억원은 (취득가액 × 2/3억원 − 3) × 1/100, 소수 넷째 자리까지), 제13조의2제1항(법인·다주택 중과: 4% + 중과기준세율 2%의 200% 또는 400%)');
-    r.notes.push('취득세 본세만 계산했습니다. 지방교육세, 농어촌특별세(전용 85㎡ 초과 등)가 별도로 붙습니다. 일시적 2주택(종전 주택 처분 조건), 주택 수에서 빼는 주택(시행령), 생애최초 주택 감면은 반영하지 않았습니다.');
+    r.basis.push('「지방세법 시행령」 제28조의5(일시적 2주택: 신규 주택 취득 후 3년, 종전·신규 모두 조정대상지역이면 2년 안에 종전 주택 처분)');
+    r.notes.push('취득세 본세만 계산했습니다. 지방교육세, 농어촌특별세(전용 85㎡ 초과 등)가 별도로 붙습니다. 주택 수에는 조합원입주권·분양권·주거용 오피스텔도 들어갈 수 있고, 시가표준액 1억원 이하 주택 등은 빠질 수 있습니다(시행령). 생애최초 주택 감면은 반영하지 않았습니다.');
+    if (input.tempTwo) r.notes.push('일시적 2주택으로 일반세율을 적용했습니다. 기한 안에 종전 주택을 처분하지 않으면 중과세율과의 차액이 추징됩니다.');
     return r;
   }
 
