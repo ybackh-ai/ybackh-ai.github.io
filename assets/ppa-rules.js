@@ -16,7 +16,7 @@
 
   var VERSION = '2026-11-04';
 
-  // IFRS 3 적용사례(IE)의 무형자산 분류
+  // IFRS 3 적용사례(IE)의 무형자산 분류 — K-IFRS 1103 IE16~IE44의 다섯 분류(마케팅 IE18~22, 고객 IE23~31, 예술 IE32~33, 계약 IE34~38, 기술 IE39~44). 2026-11-19 회계기준원 원문 대조
   var INTANGIBLE_TYPES = {
     marketing: { label: '마케팅 관련', examples: '상표·상호, 도메인, 경업금지약정' },
     customer: { label: '고객 관련', examples: '고객관계, 수주잔고, 고객 목록' },
