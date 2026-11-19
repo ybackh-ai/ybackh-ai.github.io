@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="naver-site-verification" content="60d698d04287e09c54d415c82df5f87193e1fc03">
+  <meta name="google-site-verification" content="WEVGAcfT1LM_DTxTOfXPEoC7WTuA0JpTw47BiNw0DFQ">
+  <title>대표 보수 설계 (급여 vs 배당) 계산기 | 기업 회계 도구</title>
+  <meta name="description" content="법인 이익을 대표 급여로 가져갈 때와 배당으로 가져갈 때의 법인세·소득세 합계를 비교합니다. 배당 2천만원 초과분의 11% Gross-up과 비교과세까지 반영해 급여만·입력한 안·배당만 세 가지를 나란히 보여 줍니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="대표 보수 설계 (급여 vs 배당) 계산기 | 기업 회계 도구">
+  <meta property="og:description" content="법인 이익을 대표 급여로 가져갈 때와 배당으로 가져갈 때의 법인세·소득세 합계를 비교합니다. 배당 2천만원 초과분의 11% Gross-up과 비교과세까지 반영해 급여만·입력한 안·배당만 세 가지를 나란히 보여 줍니다.">
+  <meta property="og:url" content="https://cpatool.co.kr/owner-pay.html">
+  <link rel="canonical" href="https://cpatool.co.kr/owner-pay.html">
+  <meta property="og:image" content="https://cpatool.co.kr/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="기업 회계 도구 — 외부감사·내부회계·가치평가·세무 무료 계산기">
+  <meta name="twitter:card" content="summary_large_image">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-tool="owner-pay">
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>대표 보수 설계 (급여 vs 배당) 계산기</h1>
+      <p>법인 대표님이 회사 돈을 가져가는 방법은 급여와 배당입니다. 이익과 급여, 배당 비율을 넣으면 법인세와 대표 소득세를 합친 세금이 어떻게 달라지는지 비교합니다.</p>
+    </div>
+    <p class="basis-date">법령 기준 확인일 2026년 11월 19일(법제처 국가법령정보센터 현행 법령). 근거: 「법인세법」 제55조, 「소득세법」 제14조·제17조제3항·제47조·제50조·제55조·제56조·제59조·제62조·제129조.</p>
+
+    <section>
+      <form id="tool-form" novalidate><noscript><p>이 계산기는 자바스크립트가 필요합니다.</p></noscript></form>
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+<!-- guide:start -->
+    <section class="guide" aria-labelledby="guide-h">
+      <h2 id="guide-h">급여와 배당의 차이</h2>
+      <p>급여는 법인 비용이 되어 법인세를 줄이지만, 대표에게는 근로소득세(6~45%)가 붙습니다. 배당은 법인세를 낸 뒤의 이익에서 나가고, 대표에게는 연 2천만원까지 14% 분리과세, 넘는 부분은 11%를 더해 종합과세한 뒤 배당세액공제를 받습니다(종합과세와 14% 비교과세 중 큰 금액).</p>
+      <p>보통 법인세율 구간과 개인 소득세율 구간을 함께 보며 급여와 배당을 섞는 것이 유리한 경우가 많습니다. 다만 4대보험, 건강보험료, 퇴직금, 가업승계 계획에 따라 답이 달라집니다.</p>
+      <h3>자주 묻는 질문</h3>
+      <details><summary>배당에도 건강보험료가 붙나요?</summary><p>급여 외 소득(배당 등)이 연 2천만원을 넘으면 소득월액보험료가 추가로 부과될 수 있습니다. 이 계산기는 반영하지 않았습니다.</p></details>
+      <details><summary>대표 급여는 마음대로 정할 수 있나요?</summary><p>정관이나 주주총회에서 정한 한도 안이어야 하고, 같은 직위 다른 임원보다 지나치게 많으면 손금으로 인정받지 못할 수 있습니다.</p></details>
+      <p class="hint">함께 보면 좋은 도구는 <a href="corp-tax.html">법인세 계산기</a>, <a href="distributable-profit.html">배당가능이익</a>, 실제 회사 판단은 <a href="contact.html">상담 신청</a>으로 문의하실 수 있습니다.</p>
+    </section>
+    <!-- guide:end -->
+      </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a> · <a href="https://pf.kakao.com/_xgxfENX/chat" target="_blank" rel="noopener">카카오톡 채널 문의</a> · <a href="https://www.youtube.com/@cpatool_cpa" target="_blank" rel="noopener">유튜브</a> · <a href="https://blog.naver.com/ybackh" target="_blank" rel="noopener">네이버 블로그</a> · <a href="https://www.youtube.com/@gongsi_cpa" target="_blank" rel="noopener">공시 읽는 회계사(유튜브)</a> · <a href="https://www.youtube.com/@founder_cpa" target="_blank" rel="noopener">창업자 재무 과외(유튜브)</a> · <a href="https://www.youtube.com/@news_cpa" target="_blank" rel="noopener">회계사가 본 뉴스(유튜브)</a> · <a href="https://www.instagram.com/cpatool/" target="_blank" rel="noopener">인스타그램</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+  <script src="assets/tax-tools-rules.js"></script>
+  <script src="assets/biz-tax-rules.js"></script>
+  <script src="assets/tool-engine.js"></script>
+  <script src="assets/more-tools.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+  <!-- Cloudflare Web Analytics (쿠키 없음, 개인정보처리방침 9항) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3d07e2284bc1440994f639ea79477e36"}'></script>
+</body>
+</html>
