@@ -11,6 +11,7 @@
     ] },
     { group: '결산·회계처리', items: [
       ['lease.html', '리스 회계 (사용권자산·리스부채)'], ['depreciation.html', '감가상각 (세법 상각범위액)'], ['allowance.html', '대손충당금 연령분석'], ['retirement.html', '퇴직급여충당부채'], ['deferred-tax.html', '이연법인세 간이 계산'], ['revenue-check.html', '수익인식 쟁점 진단'],
+      ['dev-cost.html', '개발비 자산화 요건 진단'], ['fx-translation.html', '외화환산 손익'], ['inventory-lcm.html', '재고자산 저가법 평가손실'], ['gov-grant.html', '정부보조금 회계처리'], ['unused-leave.html', '미사용 연차수당 부채'], ['accrual-prepaid.html', '선급·미지급비용 기간 배분'], ['effective-interest.html', '유효이자율 상각표 (차입금·사채)'],
     ] },
     { group: '중소기업·벤처', items: [
       ['sme-check.html', '중소기업 해당 여부 판정기'], ['tax-sme.html', '세법상 중소기업 판정기'], ['venture-check.html', '벤처기업 확인 요건 진단'],

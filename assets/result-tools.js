@@ -59,6 +59,13 @@
     'pf-feasibility': [['dcf.html', 'DCF·WACC 간이 계산기'], ['fin-ratio.html', '재무비율 간이 진단']],
     'deferred-tax': [['corp-tax.html', '법인세 간이 계산기'], ['allowance.html', '대손충당금 연령분석'], ['depreciation.html', '감가상각 계산기']],
     'revenue-check': [['audit-prep.html', '첫 외부감사 준비 체크리스트'], ['lease.html', '리스 회계 계산기'], ['ipo-prep.html', 'IPO 준비 회계 체크리스트']],
+    'dev-cost': [['rnd-credit.html', '연구개발 세액공제'], ['impairment.html', '손상검사 간이 진단'], ['deferred-tax.html', '이연법인세 간이 계산']],
+    'fx-translation': [['closing-checklist.html', '12월 결산 체크리스트'], ['effective-interest.html', '유효이자율 상각표'], ['fin-ratio.html', '재무비율 간이 진단']],
+    'inventory-lcm': [['allowance.html', '대손충당금 연령분석'], ['working-capital.html', '운전자본·현금전환주기'], ['closing-checklist.html', '12월 결산 체크리스트']],
+    'gov-grant': [['depreciation.html', '감가상각 계산기'], ['investment-credit.html', '통합투자세액공제'], ['deferred-tax.html', '이연법인세 간이 계산']],
+    'unused-leave': [['retirement.html', '퇴직급여충당부채'], ['accrual-prepaid.html', '선급·미지급비용 기간 배분'], ['closing-checklist.html', '12월 결산 체크리스트']],
+    'accrual-prepaid': [['unused-leave.html', '미사용 연차수당 부채'], ['effective-interest.html', '유효이자율 상각표'], ['closing-checklist.html', '12월 결산 체크리스트']],
+    'effective-interest': [['rcps-cb.html', 'RCPS·CB 평가 필요 여부'], ['debt-capacity.html', 'EBITDA·순차입금'], ['lease.html', '리스 회계 계산기']],
     'corp-tax': [['deferred-tax.html', '이연법인세 간이 계산'], ['rnd-credit.html', '연구·인력개발비 세액공제'], ['tax-calendar.html', '법인 세무 신고 일정표']],
     'exec-retirement': [['loan-interest.html', '가지급금 인정이자'], ['corp-tax.html', '법인세 간이 계산기'], ['retirement.html', '퇴직급여충당부채']],
     'capital-gift': [['stock-valuation.html', '비상장주식 상증법 약식 평가'], ['related-price.html', '특수관계인 주식 거래 시가 판정'], ['inherit-gift.html', '상속·증여세 간이 계산']],
@@ -233,7 +240,7 @@
   var TOPIC_OF = {
     audit: 'audit-check audit-schedule audit-prep audit-designation audit-fee governance consolidation ipo-prep',
     icfr: 'icfr-check',
-    ifrs: 'lease depreciation allowance retirement deferred-tax revenue-check impairment rcps-cb stock-option fin-ratio capital-impairment working-capital break-even debt-capacity distributable-profit',
+    ifrs: 'lease depreciation allowance retirement deferred-tax revenue-check impairment rcps-cb stock-option fin-ratio capital-impairment working-capital break-even debt-capacity distributable-profit dev-cost fx-translation inventory-lcm gov-grant unused-leave accrual-prepaid effective-interest',
     fdd: 'valuation-needs stock-valuation dcf dilution external-valuation merger-price option-limit safe-conversion equity-bridge multiples pf-feasibility qualified-reorg',
     ppa: 'ppa'
   };

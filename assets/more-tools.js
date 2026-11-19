@@ -679,4 +679,157 @@
         sub: 'EBITDA ' + won(r.ebitda) + (r.icr === null ? '' : ' · 이자보상배율 ' + times(r.icr)), body: body, topic: 'fdd', label: '차입·재무구조 상담 신청' };
     }
   });
+
+  // ── 28~34. 결산·회계처리 7종 (2026-11-19, docs/57) ──
+  var STD2 = [['kifrs', 'K-IFRS'], ['kgaap', '일반기업회계기준']];
+  function signed(x) { return (x > 0 ? '+' : x < 0 ? '−' : '') + won(Math.abs(x)); }
+
+  E.register('dev-cost', {
+    submit: '진단하기',
+    fields: function () { return [
+      { type: 'radio', id: 'stage', label: '이 프로젝트는 지금 어느 단계인가요?', options: [['development', '개발단계 (시제품·최종안 설계·시험 등)'], ['research', '연구단계 (새 지식 탐색·대안 검토)'], ['unclear', '둘을 구분하기 어렵습니다']] },
+      { type: 'fieldset', id: 'devCritBox', legend: '자산 인식 요건 (모두 제시할 수 있어야 함)', intro: '내부 문서(사업계획·기술검토서·예산·원가 집계표)로 보여 줄 수 있는 항목만 체크합니다.', when: function (v) { return v.stage === 'development'; }, items: [
+        { type: 'checks', id: 'criteria', label: '', options: window.ClosingRules.DEV_CRITERIA }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'spendBefore', label: '요건을 모두 충족하기 전 지출', unit: '만원', placeholder: '예: 3000' },
+        { type: 'number', id: 'spendAfter', label: '요건을 모두 충족한 뒤 지출', unit: '만원', placeholder: '예: 7000', hint: '인건비·재료비·외주비 등 개발에 직접 관련된 원가' }] }
+    ]; },
+    run: function (v) {
+      var r = window.ClosingRules.devCost(v);
+      if (r.status === 'INVALID') return { r: r };
+      var rows = [['충족한 요건', r.metCount + ' / 6'], ['개발비(무형자산)로 인식', won(r.capitalized), true], ['당기 비용(경상연구개발비)', won(r.expensed), true]];
+      var body = table(rows) + (v.stage === 'development' && r.missing.length ? '<p class="hint">제시하지 못한 요건: ' + r.missing.map(esc).join(' · ') + '</p>' : '');
+      var cap = r.status === 'CAPITALIZE';
+      return { r: r, cls: cap ? 'target' : 'not-target', title: cap ? '개발비로 자산 인식할 수 있는 것으로 보입니다' : '비용으로 처리해야 할 것으로 보입니다',
+        sub: cap ? '자산 ' + won(r.capitalized) + ' · 비용 ' + won(r.expensed) : (v.stage === 'development' ? '요건 ' + (6 - r.metCount) + '개를 제시하지 못했습니다' : '연구단계 지출은 자산이 될 수 없습니다'), body: body, topic: 'ifrs', label: '개발비 회계처리 상담 신청' };
+    }
+  });
+
+  E.register('fx-translation', {
+    fields: [
+      { type: 'radio', id: 'kind', label: '어떤 항목인가요?', options: [['monetaryAsset', '화폐성 자산 (외화 예금·매출채권·대여금)'], ['monetaryLiability', '화폐성 부채 (외화 매입채무·차입금·사채)'], ['nonmonetary', '비화폐성 항목 (선급금·선수금·재고·유형자산)']] },
+      { type: 'number', id: 'fcy', label: '외화 금액', unit: '외화', placeholder: '예: 100000', hint: '달러·엔·유로 등 원래 통화 금액' },
+      { type: 'two', items: [
+        { type: 'number', id: 'bookRate', label: '장부상 환율 (거래일 또는 전기 말)', unit: '원', placeholder: '예: 1350' },
+        { type: 'number', id: 'closingRate', label: '보고기간 말 마감환율', unit: '원', placeholder: '예: 1450', hint: '서울외국환중개 매매기준율 등 회사가 쓰는 기준' }] }
+    ],
+    run: function (v) {
+      var r = window.ClosingRules.fxTranslation(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['장부상 원화 금액', won(r.bookKrw)], ['결산 후 원화 금액', won(r.translated), true], [r.gain >= 0 ? '외화환산이익' : '외화환산손실', signed(r.gain), true]]);
+      var title = v.kind === 'nonmonetary' ? '비화폐성 항목은 다시 환산하지 않습니다' : r.gain > 0 ? '외화환산이익 ' + won(r.gain) + '이 생깁니다' : r.gain < 0 ? '외화환산손실 ' + won(-r.gain) + '이 생깁니다' : '환산 차이가 없습니다';
+      return { r: r, cls: r.gain < 0 ? 'target' : 'not-target', title: title, sub: '당기손익에 반영 · 결산 후 장부금액 ' + won(r.translated), body: body, topic: 'ifrs', label: '외화 결산 상담 신청' };
+    }
+  });
+
+  E.register('inventory-lcm', {
+    fields: [
+      { type: 'radio', id: 'kind', label: '재고 종류', options: [['goods', '상품·제품·재공품'], ['raw', '원재료']] },
+      { type: 'check', id: 'finishedAboveCost', label: '이 원재료로 만들 제품은 원가 이상으로 팔릴 것으로 예상됩니다', when: function (v) { return v.kind === 'raw'; } },
+      { type: 'number', id: 'cost', label: '장부상 취득원가', unit: '만원', placeholder: '예: 5000', hint: '항목(또는 비슷한 제품군)별로 계산합니다' },
+      { type: 'fieldset', legend: '순실현가능가치 = 예상 판매가격 − 추가 완성원가 − 판매비용', items: [
+        { type: 'number', id: 'sales', label: '예상 판매가격 합계', unit: '만원', placeholder: '예: 4800', hint: '원재료는 현행대체원가(지금 다시 사는 값)를 넣어도 됩니다' },
+        { type: 'two', items: [
+          { type: 'number', id: 'completion', label: '추가 완성원가', unit: '만원', placeholder: '없으면 비움' },
+          { type: 'number', id: 'selling', label: '예상 판매비용', unit: '만원', placeholder: '예: 200' }] }] },
+      { type: 'number', id: 'prior', label: '기존 재고자산평가충당금 잔액', unit: '만원', placeholder: '없으면 비움' }
+    ],
+    run: function (v) {
+      var r = window.ClosingRules.inventoryLcm(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['순실현가능가치', won(r.nrv)], ['필요한 평가충당금', won(r.allowance), true], ['결산 후 장부금액', won(r.carrying)], [r.charge >= 0 ? '당기 평가손실(매출원가 가산)' : '당기 평가손실 환입(매출원가 차감)', won(Math.abs(r.charge)), true]]);
+      var title = r.status === 'LOSS' ? '재고자산평가손실 ' + won(r.charge) + '을 인식합니다' : r.status === 'REVERSAL' ? '평가손실 ' + won(-r.charge) + '을 환입합니다' : '평가손실을 인식하지 않습니다';
+      return { r: r, cls: r.status === 'LOSS' ? 'target' : 'not-target', title: title, sub: '순실현가능가치 ' + won(r.nrv) + ' · 충당금 ' + won(r.allowance), body: body, topic: 'ifrs', label: '재고 평가 상담 신청' };
+    }
+  });
+
+  E.register('gov-grant', {
+    fields: [
+      { type: 'radio', id: 'type', label: '보조금 종류', options: [['asset', '자산관련보조금 (설비·건물 취득 지원)'], ['income', '수익관련보조금 (인건비·운영비 지원)']] },
+      { type: 'number', id: 'grant', label: '받은 보조금', unit: '만원', placeholder: '예: 4000', hint: '상환 의무가 없는 금액' },
+      { type: 'check', id: 'conditionMet', label: '보조금 사용 조건을 이미 충족했습니다', value: true, when: function (v) { return v.type === 'income'; } },
+      { type: 'fieldset', id: 'grantAssetBox', legend: '보조금으로 산 자산', when: function (v) { return v.type === 'asset'; }, items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'assetCost', label: '자산 취득원가', unit: '만원', placeholder: '예: 10000' },
+          { type: 'number', id: 'life', label: '내용연수', unit: '년', placeholder: '예: 5' }] },
+        { type: 'two', items: [
+          { type: 'number', id: 'residual', label: '잔존가치', unit: '만원', placeholder: '없으면 비움' },
+          { type: 'number', id: 'months', label: '첫해 사용 개월 수', unit: '개월', placeholder: '12', hint: '정액법·월할 기준' }] },
+        { type: 'select', id: 'standard', label: '적용 회계기준', options: STD2 },
+        { type: 'radio', id: 'method', label: '표시 방법', options: [['deduct', '자산에서 차감'], ['deferred', '이연수익(부채)으로 표시 — K-IFRS만']] }] }
+    ],
+    run: function (v) {
+      var r = window.ClosingRules.govGrant(v);
+      if (r.status === 'INVALID') return { r: r };
+      if (v.type === 'income') {
+        return { r: r, cls: r.status === 'INCOME' ? 'not-target' : 'target', title: r.status === 'INCOME' ? '보조금 ' + won(r.grantIncome) + '을 당기 손익에 반영합니다' : '보조금 ' + won(r.deferred) + '을 선수수익으로 둡니다',
+          sub: '수익관련보조금', body: table([['당기 손익 반영', won(r.grantIncome), true], ['선수수익(부채)', won(r.deferred)]]), topic: 'ifrs', label: '정부보조금 회계처리 상담 신청' };
+      }
+      var body = table([['첫해 감가상각비', won(r.depreciation)], [r.methodUsed === 'deduct' ? '보조금 상계액(감가상각비 차감)' : '이연수익 환입(수익)', won(r.grantAmort), true], ['보조금 반영 후 순비용', won(r.netDep), true], ['첫해 말 순장부금액(취득원가 − 보조금 − 순상각)', won(r.netCarrying)]]);
+      return { r: r, cls: 'not-target', title: '첫해 순비용은 ' + won(r.netDep) + '입니다', sub: (r.methodUsed === 'deduct' ? '자산 차감 방식' : '이연수익 방식') + ' · 감가상각비 ' + won(r.depreciation) + ' 중 ' + won(r.grantAmort) + ' 상계', body: body, topic: 'ifrs', label: '정부보조금 회계처리 상담 신청' };
+    }
+  });
+
+  E.register('unused-leave', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'days', label: '결산일 현재 미사용 연차 일수 합계', unit: '일', placeholder: '예: 120', hint: '수당으로 받거나 다음 해로 넘길 수 있는 일수(전 직원 합계)' },
+        { type: 'number', id: 'dailyWage', label: '1일 통상임금 (평균)', unit: '원', placeholder: '예: 150000' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'payoutPct', label: '수당으로 지급할 것으로 예상하는 비율', unit: '%', placeholder: '100', hint: '사용 촉진으로 소멸이 예상되면 낮춥니다' },
+        { type: 'number', id: 'burdenPct', label: '사업주 부담 사회보험료율 (선택)', unit: '%', placeholder: '예: 10' }] },
+      { type: 'number', id: 'prior', label: '전기 말 미지급 연차수당 (선택)', unit: '만원', placeholder: '없으면 비움' }
+    ],
+    run: function (v) {
+      var r = window.ClosingRules.unusedLeave(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['연차수당 예상액', won(r.base)], ['사업주 부담 보험료', won(r.burden)], ['미지급비용(부채)', won(r.liability), true], [r.change >= 0 ? '당기 추가 인식(비용)' : '당기 감소(환입)', won(Math.abs(r.change)), true]]);
+      return { r: r, cls: r.liability > 0 ? 'target' : 'not-target', title: r.liability > 0 ? '미사용 연차수당 부채 ' + won(r.liability) + '을 인식합니다' : '인식할 부채가 없습니다', sub: '전기 대비 ' + signed(r.change), body: body, topic: 'ifrs', label: '결산 회계처리 상담 신청' };
+    }
+  });
+
+  E.register('accrual-prepaid', {
+    fields: [
+      { type: 'radio', id: 'type', label: '어떤 경우인가요?', options: [['prepaid', '먼저 냈다 → 선급비용 (보험료·임차료·구독료)'], ['accrued', '나중에 낸다 → 미지급비용 (이자·임차료 후불)']] },
+      { type: 'number', id: 'amount', label: '계약 기간 전체 금액', unit: '만원', placeholder: '예: 1200' },
+      { type: 'two', items: [
+        { type: 'date', id: 'start', label: '계약 시작일', value: '2026-04-01' },
+        { type: 'date', id: 'end', label: '계약 종료일', value: '2027-03-31' }] },
+      { type: 'two', items: [
+        { type: 'date', id: 'closing', label: '결산일', value: '2026-12-31' },
+        { type: 'select', id: 'method', label: '배분 방법', options: [['month', '월할 (시작 월과 결산 월 포함)'], ['day', '일할 (일수 기준)']] }] }
+    ],
+    run: function (v) {
+      var r = window.ClosingRules.accrualPrepaid(v);
+      if (r.status === 'INVALID') return { r: r };
+      var unit = r.method === 'month' ? '개월' : '일';
+      var body = table([['전체 기간', n(r.totalUnits) + unit], ['결산일까지 경과', n(r.elapsedUnits) + unit], ['당기 비용', won(r.currentExpense), true], [r.type === 'prepaid' ? '선급비용(자산)' : '미지급비용(부채)', won(r.balance), true]]);
+      return { r: r, cls: 'not-target', title: (r.type === 'prepaid' ? '선급비용 ' : '미지급비용 ') + won(r.balance) + '을 잡습니다', sub: '당기 비용 ' + won(r.currentExpense) + ' · ' + n(r.elapsedUnits) + '/' + n(r.totalUnits) + unit, body: body, topic: 'ifrs', label: '결산 회계처리 상담 신청' };
+    }
+  });
+
+  E.register('effective-interest', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'face', label: '액면금액(만기 상환액)', unit: '만원', placeholder: '예: 10000' },
+        { type: 'number', id: 'couponRate', label: '표면이자율 (연)', unit: '%', placeholder: '예: 5', hint: '무이자면 0' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'years', label: '만기', unit: '년', placeholder: '예: 3' },
+        { type: 'select', id: 'freq', label: '이자 지급', options: [['1', '연 1회'], ['2', '반기(연 2회)'], ['4', '분기(연 4회)']] }] },
+      { type: 'fieldset', legend: '발행 조건 (둘 중 하나)', items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'marketRate', label: '발행 시 시장이자율 (연)', unit: '%', placeholder: '예: 8' },
+          { type: 'number', id: 'issuePrice', label: '또는 실제 발행가액(받은 금액)', unit: '만원', placeholder: '예: 9500', hint: '넣으면 이 금액으로 계산합니다' }] },
+        { type: 'number', id: 'transactionCost', label: '거래원가(발행비용·수수료, 선택)', unit: '만원', placeholder: '없으면 비움' }] }
+    ],
+    run: function (v) {
+      var r = window.ClosingRules.effectiveInterest(v);
+      if (r.status === 'INVALID') return { r: r };
+      var per = v.freq === '2' ? '반기' : v.freq === '4' ? '분기' : '연도';
+      var sched = grid([per, '기초 장부금액', '이자비용(유효이자)', '표면이자 지급', '상각액', '기말 장부금액'], r.rows.map(function (x) { return [x.period + '회', won(x.begin), won(x.interest), won(x.cash), won(x.amort), won(x.end)]; }));
+      var body = table([['발행가액', won(r.issuePrice)], ['최초 장부금액(발행가액 − 거래원가)', won(r.initialCarrying)], ['유효이자율 (연)', n(r.eirPct) + '%', true], ['첫 회 이자비용', won(r.firstInterest)], ['만기까지 총이자비용', won(r.totalInterest), true], ['그중 표면이자', won(r.couponTotal)]]) + sched;
+      var label = r.status === 'DISCOUNT' ? '할인발행' : r.status === 'PREMIUM' ? '할증발행' : '액면발행';
+      return { r: r, cls: 'not-target', title: label + ' · 유효이자율 연 ' + n(r.eirPct) + '%', sub: '첫 회 이자비용 ' + won(r.firstInterest) + ' · 총이자비용 ' + won(r.totalInterest), body: body, topic: 'ifrs', label: '차입금·사채 회계처리 상담 신청' };
+    }
+  });
 })();
