@@ -66,6 +66,12 @@
     'unused-leave': [['retirement.html', '퇴직급여충당부채'], ['accrual-prepaid.html', '선급·미지급비용 기간 배분'], ['closing-checklist.html', '12월 결산 체크리스트']],
     'accrual-prepaid': [['unused-leave.html', '미사용 연차수당 부채'], ['effective-interest.html', '유효이자율 상각표'], ['closing-checklist.html', '12월 결산 체크리스트']],
     'effective-interest': [['rcps-cb.html', 'RCPS·CB 평가 필요 여부'], ['debt-capacity.html', 'EBITDA·순차입금'], ['lease.html', '리스 회계 계산기']],
+    'runway': [['break-even.html', '손익분기점'], ['dilution.html', '투자 유치 지분 희석'], ['safe-conversion.html', 'SAFE 전환 계산']],
+    'dupont': [['fin-ratio.html', '재무비율 간이 진단'], ['credit-metrics.html', '신용평가 주요 지표'], ['operating-cashflow.html', '영업활동 현금흐름']],
+    'operating-cashflow': [['working-capital.html', '운전자본·현금전환주기'], ['red-flags.html', '재무제표 이상 신호 점검'], ['runway.html', '런웨이·번레이트']],
+    'dscr': [['debt-capacity.html', 'EBITDA·순차입금'], ['credit-metrics.html', '신용평가 주요 지표'], ['effective-interest.html', '유효이자율 상각표']],
+    'red-flags': [['operating-cashflow.html', '영업활동 현금흐름'], ['inventory-lcm.html', '재고자산 저가법'], ['allowance.html', '대손충당금 연령분석']],
+    'credit-metrics': [['dscr.html', 'DSCR 원리금 상환능력'], ['capital-impairment.html', '자본잠식 진단'], ['dupont.html', '듀폰 분석']],
     'corp-tax': [['deferred-tax.html', '이연법인세 간이 계산'], ['rnd-credit.html', '연구·인력개발비 세액공제'], ['tax-calendar.html', '법인 세무 신고 일정표']],
     'exec-retirement': [['loan-interest.html', '가지급금 인정이자'], ['corp-tax.html', '법인세 간이 계산기'], ['retirement.html', '퇴직급여충당부채']],
     'capital-gift': [['stock-valuation.html', '비상장주식 상증법 약식 평가'], ['related-price.html', '특수관계인 주식 거래 시가 판정'], ['inherit-gift.html', '상속·증여세 간이 계산']],
@@ -240,8 +246,8 @@
   var TOPIC_OF = {
     audit: 'audit-check audit-schedule audit-prep audit-designation audit-fee governance consolidation ipo-prep',
     icfr: 'icfr-check',
-    ifrs: 'lease depreciation allowance retirement deferred-tax revenue-check impairment rcps-cb stock-option fin-ratio capital-impairment working-capital break-even debt-capacity distributable-profit dev-cost fx-translation inventory-lcm gov-grant unused-leave accrual-prepaid effective-interest',
-    fdd: 'valuation-needs stock-valuation dcf dilution external-valuation merger-price option-limit safe-conversion equity-bridge multiples pf-feasibility qualified-reorg',
+    ifrs: 'lease depreciation allowance retirement deferred-tax revenue-check impairment rcps-cb stock-option fin-ratio capital-impairment working-capital break-even debt-capacity distributable-profit dev-cost fx-translation inventory-lcm gov-grant unused-leave accrual-prepaid effective-interest dupont operating-cashflow',
+    fdd: 'valuation-needs stock-valuation dcf dilution external-valuation merger-price option-limit safe-conversion equity-bridge multiples pf-feasibility qualified-reorg runway dscr red-flags credit-metrics',
     ppa: 'ppa'
   };
   function topicOf(p) { for (var k in TOPIC_OF) { if ((' ' + TOPIC_OF[k] + ' ').indexOf(' ' + p + ' ') >= 0) return k; } return 'tax'; }

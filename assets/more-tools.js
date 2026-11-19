@@ -832,4 +832,167 @@
       return { r: r, cls: 'not-target', title: label + ' · 유효이자율 연 ' + n(r.eirPct) + '%', sub: '첫 회 이자비용 ' + won(r.firstInterest) + ' · 총이자비용 ' + won(r.totalInterest), body: body, topic: 'ifrs', label: '차입금·사채 회계처리 상담 신청' };
     }
   });
+
+  // ── 35~40. 재무분석 추가 6종 (2026-11-19, docs/58) ──
+  function F2() { return window.FinAnalysis2Rules; }
+  function pctS(x) { return x === null || x === undefined ? '계산 불가' : n(x) + '%'; }
+  function mo(x) { return n(x) + '개월'; }
+
+  E.register('runway', {
+    fields: [
+      { type: 'number', id: 'cash', label: '현재 현금 잔고', unit: '만원', placeholder: '예: 30000' },
+      { type: 'two', items: [
+        { type: 'number', id: 'monthlyRevenue', label: '월 매출(현금 유입)', unit: '만원', placeholder: '예: 1000' },
+        { type: 'number', id: 'monthlyCost', label: '월 지출(인건비·임차료 등 전부)', unit: '만원', placeholder: '예: 3500' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'revenueGrowthPct', label: '월 매출 성장률 (선택)', unit: '%', placeholder: '예: 5', allowNeg: true },
+        { type: 'number', id: 'costGrowthPct', label: '월 지출 증가율 (선택)', unit: '%', placeholder: '없으면 비움', allowNeg: true }] }
+    ],
+    run: function (v) {
+      var r = F2().runway(v);
+      if (r.status === 'INVALID') return { r: r };
+      var rows = [['현재 번레이트(월)', r.burn > 0 ? won(r.burn) : '현금이 줄지 않음', true],
+        ['런웨이', r.runwayMonths !== null ? mo(r.runwayMonths) : (r.status === 'LONG' ? '120개월 이상' : '현금이 바닥나지 않음'), true],
+        ['손익분기 도달', r.breakevenMonth === 0 ? '이미 흑자' : r.breakevenMonth !== null ? r.breakevenMonth + '개월째' : '120개월 안에 도달하지 않음'],
+        r.fundingGap !== null ? ['손익분기까지 더 필요한 자금(추정)', won(r.fundingGap), true] : null,
+        r.status === 'REACH' ? ['손익분기 직전 최저 현금', won(r.minCash)] : null];
+      var title = r.status === 'PROFITABLE' ? '이미 매출이 지출보다 많습니다' : r.status === 'REACH' ? r.breakevenMonth + '개월째 손익분기에 도달하고 현금이 버팁니다'
+        : r.status === 'LONG' ? '120개월 이상 버틸 수 있습니다' : '지금 속도면 약 ' + mo(r.runwayMonths) + ' 버틸 수 있습니다';
+      return { r: r, cls: r.status === 'RUNOUT' ? 'target' : 'not-target', title: title, sub: r.burn > 0 ? '월 번레이트 ' + won(r.burn) : '', body: table(rows), topic: 'fdd', label: '자금 계획·투자 유치 상담 신청' };
+    }
+  });
+
+  E.register('dupont', {
+    fields: [
+      { type: 'fieldset', legend: '당기', items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'netIncome', label: '당기순이익 (적자면 음수)', unit: '만원', placeholder: '예: 1000', allowNeg: true },
+          { type: 'number', id: 'revenue', label: '매출액', unit: '만원', placeholder: '예: 20000' }] },
+        { type: 'two', items: [
+          { type: 'number', id: 'assets', label: '자산총계', unit: '만원', placeholder: '예: 25000' },
+          { type: 'number', id: 'equity', label: '자본총계', unit: '만원', placeholder: '예: 10000' }] }] },
+      { type: 'fieldset', legend: '전기 (선택: 넣으면 ROE 변동 원인을 봅니다)', items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'prevNetIncome', label: '전기 당기순이익', unit: '만원', allowNeg: true },
+          { type: 'number', id: 'prevRevenue', label: '전기 매출액', unit: '만원' }] },
+        { type: 'two', items: [
+          { type: 'number', id: 'prevAssets', label: '전기 자산총계', unit: '만원' },
+          { type: 'number', id: 'prevEquity', label: '전기 자본총계', unit: '만원' }] }] }
+    ],
+    run: function (v) {
+      var r = F2().dupont(v);
+      if (r.status === 'INVALID') return { r: r };
+      var NAME = { margin: '순이익률', turnover: '총자산회전율', leverage: '재무레버리지' };
+      var body;
+      if (r.prevRoe !== undefined) {
+        body = grid(['항목', '전기', '당기', '변동'], [['ROE', pctS(r.prevRoe), pctS(r.roe), n(r1d(r.roe - r.prevRoe)) + '%p'], ['순이익률', pctS(r.prevMargin), pctS(r.margin), pctS(r.changes.margin)], ['총자산회전율', n(r.prevTurnover) + '회', n(r.turnover) + '회', pctS(r.changes.turnover)], ['재무레버리지', n(r.prevLeverage) + '배', n(r.leverage) + '배', pctS(r.changes.leverage)]]);
+      } else {
+        body = table([['순이익률', pctS(r.margin)], ['총자산회전율', n(r.turnover) + '회'], ['재무레버리지(자산 ÷ 자본)', n(r.leverage) + '배'], ['ROE', pctS(r.roe), true]]);
+      }
+      return { r: r, cls: r.roe < 0 ? 'target' : 'not-target', title: 'ROE ' + pctS(r.roe) + ' = ' + pctS(r.margin) + ' × ' + n(r.turnover) + '회 × ' + n(r.leverage) + '배',
+        sub: r.driver ? 'ROE 변동에 가장 크게 작용한 요소: ' + NAME[r.driver] : '순이익률 × 총자산회전율 × 재무레버리지', body: body, topic: 'ifrs', label: '재무 분석 상담 신청' };
+    }
+  });
+  function r1d(x) { return Math.round(x * 10) / 10; }
+
+  E.register('operating-cashflow', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'netIncome', label: '당기순이익 (적자면 음수)', unit: '만원', placeholder: '예: 5000', allowNeg: true },
+        { type: 'number', id: 'dep', label: '감가상각비 + 무형자산상각비', unit: '만원', placeholder: '예: 1000' }] },
+      { type: 'number', id: 'otherNonCash', label: '기타 비현금 손익 (선택)', unit: '만원', placeholder: '충당금 전입액 등, 이익이면 음수', allowNeg: true },
+      { type: 'fieldset', legend: '운전자본 (기초 → 기말 잔액)', items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'arBegin', label: '매출채권 기초', unit: '만원', placeholder: '예: 3000' },
+          { type: 'number', id: 'arEnd', label: '매출채권 기말', unit: '만원', placeholder: '예: 6000' }] },
+        { type: 'two', items: [
+          { type: 'number', id: 'invBegin', label: '재고자산 기초', unit: '만원', placeholder: '예: 2000' },
+          { type: 'number', id: 'invEnd', label: '재고자산 기말', unit: '만원', placeholder: '예: 4000' }] },
+        { type: 'two', items: [
+          { type: 'number', id: 'apBegin', label: '매입채무 기초', unit: '만원', placeholder: '예: 1500' },
+          { type: 'number', id: 'apEnd', label: '매입채무 기말', unit: '만원', placeholder: '예: 2000' }] }] }
+    ],
+    run: function (v) {
+      var r = F2().indirectCashflow(v);
+      if (r.status === 'INVALID') return { r: r };
+      var ni = Math.round(Number(v.netIncome) * 10000);
+      var body = table([['당기순이익', won(ni)], ['(+) 감가상각비 등', won(Math.round((Number(v.dep) || 0) * 10000))], ['(±) 기타 비현금 손익', signed(Math.round((Number(v.otherNonCash) || 0) * 10000))],
+        ['매출채권 증감 효과', signed(r.arEffect)], ['재고자산 증감 효과', signed(r.invEffect)], ['매입채무 증감 효과', signed(r.apEffect)], ['운전자본 변동 합계', signed(r.wcEffect), true], ['영업활동 현금흐름(간이)', signed(r.ocf), true],
+        r.conversion !== null ? ['이익의 현금 전환율(영업현금흐름 ÷ 순이익)', n(r.conversion) + '%'] : null]);
+      var title = r.status === 'NEGATIVE' ? '영업으로 현금이 빠져나가고 있습니다' : r.status === 'LOW' ? '이익보다 현금이 ' + won(ni - r.ocf) + ' 적게 들어왔습니다' : '영업활동 현금흐름이 이익 이상입니다';
+      return { r: r, cls: r.status === 'OK' ? 'not-target' : 'target', title: title, sub: '영업활동 현금흐름 ' + signed(r.ocf) + ' · 운전자본 ' + signed(r.wcEffect), body: body, topic: 'ifrs', label: '현금흐름·자금 상담 신청' };
+    }
+  });
+
+  E.register('dscr', {
+    fields: [
+      { type: 'number', id: 'ebitda', label: '연 EBITDA (영업이익 + 감가상각비)', unit: '만원', placeholder: '예: 12000', allowNeg: true },
+      { type: 'two', items: [
+        { type: 'number', id: 'tax', label: '법인세 납부액 (선택)', unit: '만원', placeholder: '예: 1000' },
+        { type: 'number', id: 'capex', label: '유지보수 설비투자 (선택)', unit: '만원', placeholder: '예: 1000' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'principal', label: '연간 원금 상환액', unit: '만원', placeholder: '예: 5000' },
+        { type: 'number', id: 'interest', label: '연간 이자', unit: '만원', placeholder: '예: 2000' }] },
+      { type: 'number', id: 'covenant', label: '대출 약정상 최소 DSCR (선택)', unit: '배', placeholder: '예: 1.2' }
+    ],
+    run: function (v) {
+      var r = F2().dscr(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['상환 재원(EBITDA − 세금 − 유지투자)', won(r.cfads)], ['연간 원리금', won(r.debtService)], ['DSCR', n(r.dscr) + '배', true],
+        r.covenantMet !== null ? ['약정 기준', r.covenantMet ? '충족' : '미달', true] : null,
+        r.maxDebtService !== null ? ['약정 기준으로 감당 가능한 연 원리금', won(r.maxDebtService)] : null]);
+      var title = r.status === 'SHORT' ? '영업 현금으로 원리금을 다 갚지 못하는 수준입니다' : r.status === 'BREACH' ? 'DSCR ' + n(r.dscr) + '배로 약정 기준에 못 미칩니다' : 'DSCR ' + n(r.dscr) + '배, 원리금을 갚을 여력이 있습니다';
+      return { r: r, cls: r.status === 'OK' ? 'not-target' : 'target', title: title, sub: '상환 재원 ' + won(r.cfads) + ' ÷ 원리금 ' + won(r.debtService), body: body, topic: 'fdd', label: '차입·재무구조 상담 신청' };
+    }
+  });
+
+  E.register('red-flags', {
+    fields: [
+      { type: 'fieldset', legend: '전기 → 당기', items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'revPrev', label: '전기 매출액', unit: '만원', placeholder: '예: 10000' },
+          { type: 'number', id: 'revCur', label: '당기 매출액', unit: '만원', placeholder: '예: 12000' }] },
+        { type: 'two', items: [
+          { type: 'number', id: 'arPrev', label: '전기 말 매출채권', unit: '만원', placeholder: '예: 2000' },
+          { type: 'number', id: 'arCur', label: '당기 말 매출채권', unit: '만원', placeholder: '예: 3200' }] },
+        { type: 'two', items: [
+          { type: 'number', id: 'invPrev', label: '전기 말 재고자산 (선택)', unit: '만원', placeholder: '예: 1500' },
+          { type: 'number', id: 'invCur', label: '당기 말 재고자산 (선택)', unit: '만원', placeholder: '예: 1600' }] }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'netIncome', label: '당기순이익 (선택)', unit: '만원', placeholder: '예: 800', allowNeg: true },
+        { type: 'number', id: 'ocf', label: '영업활동 현금흐름 (선택)', unit: '만원', placeholder: '예: -200', allowNeg: true, hint: '현금흐름표 숫자, 없으면 간접법 영업현금흐름 계산기로' }] }
+    ],
+    run: function (v) {
+      var r = F2().redFlags(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['매출 증가율', pctS(r.revGrowth)], ['매출채권 증가율', pctS(r.arGrowth)], ['재고자산 증가율', r.invGrowth === null ? '입력 안 함' : pctS(r.invGrowth)], ['매출채권 회전일수', n(r.arDaysPrev) + '일 → ' + n(r.arDaysCur) + '일']]) +
+        (r.flagCount ? '<h3>점검 신호</h3><ul class="basis">' + r.flags.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' : '');
+      return { r: r, cls: r.flagCount ? 'target' : 'not-target', title: r.flagCount ? '확인해 볼 신호가 ' + r.flagCount + '개 있습니다' : '이 도구의 점검 기준에서는 신호가 없습니다', sub: '매출 ' + pctS(r.revGrowth) + ' · 매출채권 ' + pctS(r.arGrowth), body: body, topic: 'fdd', label: '재무제표 검토 상담 신청' };
+    }
+  });
+
+  E.register('credit-metrics', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'assets', label: '자산총계', unit: '만원', placeholder: '예: 50000' },
+        { type: 'number', id: 'liabilities', label: '부채총계', unit: '만원', placeholder: '예: 30000' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'debt', label: '총차입금 (차입금·사채)', unit: '만원', placeholder: '예: 20000' },
+        { type: 'number', id: 'cash', label: '현금성자산', unit: '만원', placeholder: '예: 5000' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'revenue', label: '매출액', unit: '만원', placeholder: '예: 40000' },
+        { type: 'number', id: 'op', label: '영업이익 (적자면 음수)', unit: '만원', placeholder: '예: 4000', allowNeg: true }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'dep', label: '감가상각비 + 무형자산상각비', unit: '만원', placeholder: '예: 1000' },
+        { type: 'number', id: 'interest', label: '이자비용', unit: '만원', placeholder: '예: 1000' }] }
+    ],
+    run: function (v) {
+      var r = F2().creditMetrics(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['부채비율', r.debtRatio === null ? '자본잠식으로 계산 불가' : pctS(r.debtRatio), true], ['자기자본비율', pctS(r.equityRatio)], ['차입금의존도', pctS(r.debtDependence)], ['영업이익률', pctS(r.opMargin)],
+        ['EBITDA', won(r.ebitda)], ['EBITDA 이자보상배율', r.ebitdaIcr === null ? '이자비용 없음' : n(r.ebitdaIcr) + '배', true], ['순차입금 / EBITDA', r.netCash ? '순현금 상태' : r.ndEbitda === null ? 'EBITDA가 0 이하' : n(r.ndEbitda) + '배', true]]);
+      return { r: r, cls: r.impaired ? 'target' : 'not-target', title: r.impaired ? '부채가 자산보다 많은 완전자본잠식 상태입니다' : '부채비율 ' + pctS(r.debtRatio) + ' · 차입금의존도 ' + pctS(r.debtDependence),
+        sub: '신용평가에 자주 쓰이는 지표입니다. 등급은 추정하지 않습니다', body: body, topic: 'fdd', label: '신용·재무구조 상담 신청' };
+    }
+  });
 })();
