@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="naver-site-verification" content="60d698d04287e09c54d415c82df5f87193e1fc03">
+  <meta name="google-site-verification" content="WEVGAcfT1LM_DTxTOfXPEoC7WTuA0JpTw47BiNw0DFQ">
+  <title>지역가입자 건강보험료 계산기 (2026 소득·재산) | 기업 회계 도구</title>
+  <meta name="description" content="지역가입자의 소득(월 소득 × 7.19%)과 재산(재산세 과세표준에서 1억원 공제 후 60개 등급 점수 × 211.5원) 보험료, 장기요양보험료를 더해 월 건강보험료를 계산합니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="지역가입자 건강보험료 계산기 (2026 소득·재산) | 기업 회계 도구">
+  <meta property="og:description" content="지역가입자의 소득(월 소득 × 7.19%)과 재산(재산세 과세표준에서 1억원 공제 후 60개 등급 점수 × 211.5원) 보험료, 장기요양보험료를 더해 월 건강보험료를 계산합니다.">
+  <meta property="og:url" content="https://cpatool.co.kr/health-insurance.html">
+  <link rel="canonical" href="https://cpatool.co.kr/health-insurance.html">
+  <meta property="og:image" content="https://cpatool.co.kr/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="기업 회계 도구 — 외부감사·내부회계·가치평가·세무 무료 계산기">
+  <meta name="twitter:card" content="summary_large_image">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-tool="health-insurance">
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>지역가입자 건강보험료 계산기 (2026 소득·재산)</h1>
+      <p>퇴사하거나 사업을 하면 내는 지역 건강보험료가 얼마인지 계산해 보세요. 연 소득과 재산세 과세표준을 넣으면 됩니다.</p>
+    </div>
+    <p class="basis-date">법령 기준 확인일 2026년 11월 20일(법제처 국가법령정보센터 현행 법령). 근거: 「국민건강보험법 시행령」 제41조·제42조·제44조·별표 4, 「노인장기요양보험법」 제9조.</p>
+    <div class="notice beta-notice"><span class="tag tag-beta">베타</span> 소득 종류별 반영 비율(근로·연금소득 등, 보건복지부령), 전월세 보증금 평가 방식, 재산 추가 공제, 최저보험료와 경감 제도는 반영하지 않아 베타로 둡니다. 정확한 금액은 국민건강보험공단 모의 계산으로 확인하세요.</div>
+
+    <section>
+      <form id="tool-form" novalidate><noscript><p>이 계산기는 자바스크립트가 필요합니다.</p></noscript></form>
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+<!-- guide:start -->
+    <section class="guide" aria-labelledby="guide-h">
+      <h2 id="guide-h">소득과 재산 보험료</h2>
+      <p>소득 보험료는 연 소득을 12로 나눈 소득월액에 7.19%를 곱합니다. 이자·배당·사업·근로·연금·기타소득이 들어가고, 1~10월은 전전년도, 11~12월은 전년도 소득 자료를 씁니다.</p>
+      <p>재산 보험료는 주택·토지·건물의 재산세 과세표준(무주택자는 전월세 보증금 평가액) 합계에서 1억원을 빼고 60개 등급 점수를 매겨 점수당 211.5원을 곱합니다. 여기에 장기요양보험료(건강보험료의 약 13.1%)가 붙습니다.</p>
+      <h3>자주 묻는 질문</h3>
+      <details><summary>퇴사 후 보험료가 너무 많으면요?</summary><p>직장가입자 자격을 통산 1년 이상 유지했다면 지역보험료를 처음 고지받은 납부기한부터 2개월 안에 임의계속가입을 신청해, 퇴직 전 12개월 평균 보수 기준으로 직장가입자 자격을 유지할 수 있습니다(국민건강보험법 제110조). 회사 부담분 없이 전액 본인이 내되 보건복지부 고시로 일부를 경감할 수 있으니 지역보험료와 비교해 보세요.</p></details>
+      <details><summary>가족의 피부양자가 될 수 있나요?</summary><p>소득·재산 요건을 갖추면 직장가입자의 피부양자로 올라 보험료를 내지 않을 수 있습니다. 요건은 공단에 확인하세요.</p></details>
+      <p class="hint">함께 보면 좋은 도구는 <a href="financial-income.html">금융소득 종합과세</a>, <a href="home-property-tax.html">주택 재산세</a>, 실제 판단이 필요하면 <a href="contact.html">상담 신청</a>으로 문의하실 수 있습니다.</p>
+    </section>
+    <!-- guide:end -->
+      </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a> · <a href="https://pf.kakao.com/_xgxfENX/chat" target="_blank" rel="noopener">카카오톡 채널 문의</a> · <a href="https://www.youtube.com/@cpatool_cpa" target="_blank" rel="noopener">유튜브</a> · <a href="https://blog.naver.com/ybackh" target="_blank" rel="noopener">네이버 블로그</a> · <a href="https://www.youtube.com/@gongsi_cpa" target="_blank" rel="noopener">공시 읽는 회계사(유튜브)</a> · <a href="https://www.youtube.com/@founder_cpa" target="_blank" rel="noopener">창업자 재무 과외(유튜브)</a> · <a href="https://www.youtube.com/@news_cpa" target="_blank" rel="noopener">회계사가 본 뉴스(유튜브)</a> · <a href="https://www.instagram.com/cpatool/" target="_blank" rel="noopener">인스타그램</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+  <script src="assets/tax-tools-rules.js"></script>
+  <script src="assets/personal-tax3-rules.js"></script>
+  <script src="assets/tool-engine.js"></script>
+  <script src="assets/more-tools.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+  <!-- Cloudflare Web Analytics (쿠키 없음, 개인정보처리방침 9항) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3d07e2284bc1440994f639ea79477e36"}'></script>
+</body>
+</html>

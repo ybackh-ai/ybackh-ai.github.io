@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="naver-site-verification" content="60d698d04287e09c54d415c82df5f87193e1fc03">
+  <meta name="google-site-verification" content="WEVGAcfT1LM_DTxTOfXPEoC7WTuA0JpTw47BiNw0DFQ">
+  <title>종합소득세 계산기 (근로 + 사업소득 합산) | 기업 회계 도구</title>
+  <meta name="description" content="직장 근로소득과 사업·부업 소득이 함께 있을 때 합산 과세표준, 산출세액, 근로소득세액공제, 결정세액을 계산하고 이미 낸 세금과 비교해 5월에 더 낼 세금이나 환급액을 보여 줍니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="종합소득세 계산기 (근로 + 사업소득 합산) | 기업 회계 도구">
+  <meta property="og:description" content="직장 근로소득과 사업·부업 소득이 함께 있을 때 합산 과세표준, 산출세액, 근로소득세액공제, 결정세액을 계산하고 이미 낸 세금과 비교해 5월에 더 낼 세금이나 환급액을 보여 줍니다.">
+  <meta property="og:url" content="https://cpatool.co.kr/income-tax.html">
+  <link rel="canonical" href="https://cpatool.co.kr/income-tax.html">
+  <meta property="og:image" content="https://cpatool.co.kr/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="기업 회계 도구 — 외부감사·내부회계·가치평가·세무 무료 계산기">
+  <meta name="twitter:card" content="summary_large_image">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-tool="income-tax">
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>종합소득세 계산기 (근로 + 사업소득 합산)</h1>
+      <p>직장을 다니면서 부업이나 사업 소득이 있다면 5월 종합소득세가 얼마나 나올지 계산해 보세요.</p>
+    </div>
+    <p class="basis-date">법령 기준 확인일 2026년 11월 20일(법제처 국가법령정보센터 현행 법령). 근거: 「소득세법」 제47조·제50조·제55조·제59조·제59조의4제9항.</p>
+    <div class="notice">특별소득·세액공제(보험·의료·교육·기부), 자녀세액공제, 기장세액공제, 가산세는 반영하지 않습니다. 사업소득금액은 수입에서 경비를 뺀 금액을 넣습니다.</div>
+
+    <section>
+      <form id="tool-form" novalidate><noscript><p>이 계산기는 자바스크립트가 필요합니다.</p></noscript></form>
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+<!-- guide:start -->
+    <section class="guide" aria-labelledby="guide-h">
+      <h2 id="guide-h">합산 과세</h2>
+      <p>근로소득은 총급여에서 근로소득공제를 뺀 금액, 사업소득은 수입에서 경비를 뺀 금액입니다. 둘을 더하고 기본공제 등을 뺀 과세표준에 6~45% 누진세율을 적용합니다.</p>
+      <p>근로소득세액공제는 산출세액 중 근로소득에 해당하는 부분에만 적용되고 총급여에 따라 한도가 있습니다. 소득이 합쳐지면 높은 세율 구간에 걸려 연말정산 때보다 세금이 늘어나는 경우가 많습니다.</p>
+      <h3>자주 묻는 질문</h3>
+      <details><summary>부업 소득이 얼마부터 신고해야 하나요?</summary><p>사업소득이 있으면 금액과 관계없이 5월에 종합소득세 신고 대상입니다. 원천징수된 3.3%는 미리 낸 세금으로 빼 줍니다.</p></details>
+      <details><summary>프리랜서 소득만 있으면요?</summary><p>다른 소득이 없으면 <a href="freelancer-tax.html">프리랜서 3.3% 환급 계산기</a>로 경비율까지 반영해 볼 수 있습니다.</p></details>
+      <p class="hint">함께 보면 좋은 도구는 <a href="freelancer-tax.html">프리랜서 3.3% 환급</a>, <a href="year-end-tax.html">연말정산 미리보기</a>, 실제 판단이 필요하면 <a href="contact.html">상담 신청</a>으로 문의하실 수 있습니다.</p>
+    </section>
+    <!-- guide:end -->
+      </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a> · <a href="https://pf.kakao.com/_xgxfENX/chat" target="_blank" rel="noopener">카카오톡 채널 문의</a> · <a href="https://www.youtube.com/@cpatool_cpa" target="_blank" rel="noopener">유튜브</a> · <a href="https://blog.naver.com/ybackh" target="_blank" rel="noopener">네이버 블로그</a> · <a href="https://www.youtube.com/@gongsi_cpa" target="_blank" rel="noopener">공시 읽는 회계사(유튜브)</a> · <a href="https://www.youtube.com/@founder_cpa" target="_blank" rel="noopener">창업자 재무 과외(유튜브)</a> · <a href="https://www.youtube.com/@news_cpa" target="_blank" rel="noopener">회계사가 본 뉴스(유튜브)</a> · <a href="https://www.instagram.com/cpatool/" target="_blank" rel="noopener">인스타그램</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+  <script src="assets/tax-tools-rules.js"></script>
+  <script src="assets/personal-tax3-rules.js"></script>
+  <script src="assets/tool-engine.js"></script>
+  <script src="assets/more-tools.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+  <!-- Cloudflare Web Analytics (쿠키 없음, 개인정보처리방침 9항) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3d07e2284bc1440994f639ea79477e36"}'></script>
+</body>
+</html>

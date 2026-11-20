@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="naver-site-verification" content="60d698d04287e09c54d415c82df5f87193e1fc03">
+  <meta name="google-site-verification" content="WEVGAcfT1LM_DTxTOfXPEoC7WTuA0JpTw47BiNw0DFQ">
+  <title>재산세 계산기 (2026 주택, 1세대 1주택 특례) | 기업 회계 도구</title>
+  <meta name="description" content="주택 공시가격에 공정시장가액비율(60%, 2026년 1세대 1주택 43~45%)을 곱해 과세표준을 구하고, 표준세율 또는 1세대 1주택 특례 세율, 도시지역분 0.14%, 지방교육세 20%를 더해 재산세를 계산합니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="재산세 계산기 (2026 주택, 1세대 1주택 특례) | 기업 회계 도구">
+  <meta property="og:description" content="주택 공시가격에 공정시장가액비율(60%, 2026년 1세대 1주택 43~45%)을 곱해 과세표준을 구하고, 표준세율 또는 1세대 1주택 특례 세율, 도시지역분 0.14%, 지방교육세 20%를 더해 재산세를 계산합니다.">
+  <meta property="og:url" content="https://cpatool.co.kr/home-property-tax.html">
+  <link rel="canonical" href="https://cpatool.co.kr/home-property-tax.html">
+  <meta property="og:image" content="https://cpatool.co.kr/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="기업 회계 도구 — 외부감사·내부회계·가치평가·세무 무료 계산기">
+  <meta name="twitter:card" content="summary_large_image">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-tool="home-property-tax">
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>재산세 계산기 (2026 주택, 1세대 1주택 특례)</h1>
+      <p>7월과 9월에 나오는 주택 재산세를 미리 계산해 보세요. 공시가격과 1세대 1주택 여부만 넣으면 됩니다.</p>
+    </div>
+    <p class="basis-date">법령 기준 확인일 2026년 11월 20일(법제처 국가법령정보센터 현행 법령). 근거: 「지방세법」 제110조·제111조·제111조의2·제112조·제151조, 시행령 제109조.</p>
+    <div class="notice">과세표준상한(직전 연도 대비 상한율), 조례에 따른 세율 가감, 건축물분 지역자원시설세는 반영하지 않아 실제 고지액이 다를 수 있습니다.</div>
+
+    <section>
+      <form id="tool-form" novalidate><noscript><p>이 계산기는 자바스크립트가 필요합니다.</p></noscript></form>
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+<!-- guide:start -->
+    <section class="guide" aria-labelledby="guide-h">
+      <h2 id="guide-h">과세표준과 세율</h2>
+      <p>재산세 과세표준은 공시가격의 60%입니다. 2026년 1세대 1주택은 공시가격 3억원 이하 43%, 6억원 이하 44%, 그 초과 45%로 낮춰 줍니다.</p>
+      <p>세율은 과세표준 6천만원 이하 0.1%부터 3억원 초과 0.4%까지이고, 공시가격 9억원 이하 1세대 1주택은 0.05~0.35%의 특례 세율을 씁니다. 도시지역이면 과세표준의 0.14%(도시지역분), 재산세의 20%(지방교육세)가 붙습니다.</p>
+      <h3>자주 묻는 질문</h3>
+      <details><summary>종합부동산세와 무엇이 다른가요?</summary><p>재산세는 모든 주택에 지방자치단체가 매기고, 종부세는 공시가격 합계가 9억원(1세대 1주택 12억원)을 넘는 부분에 국가가 매깁니다. 종부세에서는 겹치는 재산세를 빼 줍니다.</p></details>
+      <details><summary>언제 내나요?</summary><p>주택분은 7월 16~31일에 절반, 9월 16~30일에 나머지 절반을 냅니다. 한 해 세액이 20만원 이하이면 조례에 따라 7월에 한꺼번에 낼 수 있습니다(지방세법 제115조).</p></details>
+      <p class="hint">함께 보면 좋은 도구는 <a href="property-tax.html">종합부동산세</a>, <a href="acquisition-tax.html">주택 취득세</a>, 실제 판단이 필요하면 <a href="contact.html">상담 신청</a>으로 문의하실 수 있습니다.</p>
+    </section>
+    <!-- guide:end -->
+      </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a> · <a href="https://pf.kakao.com/_xgxfENX/chat" target="_blank" rel="noopener">카카오톡 채널 문의</a> · <a href="https://www.youtube.com/@cpatool_cpa" target="_blank" rel="noopener">유튜브</a> · <a href="https://blog.naver.com/ybackh" target="_blank" rel="noopener">네이버 블로그</a> · <a href="https://www.youtube.com/@gongsi_cpa" target="_blank" rel="noopener">공시 읽는 회계사(유튜브)</a> · <a href="https://www.youtube.com/@founder_cpa" target="_blank" rel="noopener">창업자 재무 과외(유튜브)</a> · <a href="https://www.youtube.com/@news_cpa" target="_blank" rel="noopener">회계사가 본 뉴스(유튜브)</a> · <a href="https://www.instagram.com/cpatool/" target="_blank" rel="noopener">인스타그램</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+  <script src="assets/tax-tools-rules.js"></script>
+  <script src="assets/personal-tax3-rules.js"></script>
+  <script src="assets/tool-engine.js"></script>
+  <script src="assets/more-tools.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+  <!-- Cloudflare Web Analytics (쿠키 없음, 개인정보처리방침 9항) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3d07e2284bc1440994f639ea79477e36"}'></script>
+</body>
+</html>
