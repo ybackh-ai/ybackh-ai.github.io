@@ -27,6 +27,8 @@
     { group: '인사·노무·사회보험', items: [
       ['annual-leave.html', '연차 일수·연차수당'], ['min-wage.html', '주휴수당·최저임금 월급'], ['unemployment-benefit.html', '실업급여(구직급여)', 1], ['parental-leave.html', '육아휴직 급여'],
       ['national-pension.html', '국민연금 예상 수령액', 1], ['health-insurance.html', '지역가입자 건강보험료', 1],
+      ['overtime-pay.html', '연장·야간·휴일수당'], ['hourly-wage.html', '월급 → 시급·통상임금'], ['dismissal-notice.html', '해고예고수당'], ['maternity-leave.html', '출산전후휴가 급여'],
+      ['shutdown-allowance.html', '휴업수당'], ['dc-pension.html', '퇴직연금 DC 부담금'], ['work-hours.html', '주 52시간 점검'],
     ] },
     { group: '부동산·대출', items: [
       ['loan-repayment.html', '대출 이자·상환 계산기'], ['dsr-limit.html', 'DSR 대출 한도', 1], ['rent-conversion.html', '전월세 전환'], ['brokerage-fee.html', '중개보수(복비)'],

@@ -1880,4 +1880,131 @@
       return { r: r, cls: 'target', title: '지역 건강보험료 월 약 ' + won(r.total), sub: '장기요양 포함 · 경감·최저보험료 미반영', body: body, topic: 'tax', label: '세금·보험료 상담 신청' };
     }
   });
+
+  // ── 인사·노무 추가 7종 (2026-11-20, docs/64) ──
+  function L2() { return window.Labor2Rules; }
+  var UNDER5 = { type: 'check', id: 'under5', label: '상시 근로자 4명 이하 사업장입니다' };
+
+  E.register('overtime-pay', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'monthlyWage', label: '월 통상임금 (기본급 + 고정 수당)', unit: '만원', placeholder: '예: 300' },
+        { type: 'number', id: 'hourly', label: '또는 통상 시급 (알면 입력)', unit: '원', placeholder: '예: 12000' }] },
+      { type: 'number', id: 'weeklyHours', label: '1주 소정근로시간', unit: '시간', placeholder: '40', hint: '월급을 시급으로 바꿀 때 씁니다 (주 40시간이면 209시간)' },
+      { type: 'fieldset', legend: '이번 달 일한 시간', items: [
+        { type: 'two', items: [
+          { type: 'number', id: 'overtimeHours', label: '연장근로 (평일 8시간·주 40시간 초과)', unit: '시간', placeholder: '예: 10', step: '0.5' },
+          { type: 'number', id: 'nightHours', label: '야간근로 (오후 10시~오전 6시)', unit: '시간', placeholder: '예: 4', step: '0.5' }] },
+        { type: 'two', items: [
+          { type: 'number', id: 'holidayHours', label: '휴일근로 (하루 8시간까지)', unit: '시간', placeholder: '예: 8', step: '0.5' },
+          { type: 'number', id: 'holidayOverHours', label: '휴일근로 중 8시간 넘은 시간', unit: '시간', placeholder: '예: 2', step: '0.5' }] }] },
+      UNDER5
+    ],
+    run: function (v) {
+      var r = L2().overtimePay(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['통상 시급', won(r.hourly)], ['연장근로수당', won(r.overtimePay)], ['야간근로 가산', won(r.nightPremium)], ['휴일근로수당', won(r.holidayPay)], ['합계', won(r.total), true], ['그중 가산분 (50%·100%)', won(r.premiumOnly)]]);
+      return { r: r, cls: 'target', title: '연장·야간·휴일수당 합계 ' + won(r.total), sub: r.small ? '4명 이하 사업장: 가산 없이 1배' : '통상 시급 ' + won(r.hourly) + ' 기준', body: body, topic: 'tax', label: '노무·급여 상담 신청' };
+    }
+  });
+
+  E.register('hourly-wage', {
+    fields: [
+      { type: 'radio', id: 'year', label: '최저임금 비교 연도', options: [['2026', '2026년 (시급 10,320원)'], ['2027', '2027년 (시급 10,700원)']] },
+      { type: 'two', items: [
+        { type: 'number', id: 'monthlyWage', label: '월 기본급', unit: '만원', placeholder: '예: 250' },
+        { type: 'number', id: 'allowance', label: '매달 고정으로 주는 수당 (통상임금, 선택)', unit: '만원', placeholder: '예: 20', hint: '직책·자격 수당 등 정기·일률 지급분' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'weeklyHours', label: '1주 소정근로시간', unit: '시간', placeholder: '40' },
+        { type: 'number', id: 'dailyHours', label: '1일 소정근로시간', unit: '시간', placeholder: '8' }] }
+    ],
+    run: function (v) {
+      var r = L2().hourlyWage(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['월 통상임금 산정 기준시간', r.monthHours + '시간'], ['통상 시급', won(r.hourly), true], ['통상 일급', won(r.daily)], ['기본급만의 시급', won(r.basicHourly) + (r.belowMin ? ' (최저임금 미달)' : '')], [r.year + '년 최저임금 월 환산', won(r.minMonthly)]]);
+      return { r: r, cls: r.belowMin ? 'target' : 'not-target', title: '통상 시급은 ' + won(r.hourly) + '입니다', sub: r.belowMin ? '기본급 시급이 ' + r.year + '년 최저임금 ' + won(r.minHourly) + '보다 적을 수 있습니다' : '월 ' + r.monthHours + '시간 기준 · 일급 ' + won(r.daily), body: body, topic: 'tax', label: '노무·급여 상담 신청' };
+    }
+  });
+
+  E.register('dismissal-notice', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'date', id: 'hireDate', label: '입사일' },
+        { type: 'date', id: 'dismissDate', label: '해고일 (마지막 근무 다음 날)', value: TODAY }] },
+      { type: 'date', id: 'noticeDate', label: '해고를 알린 날 (예고하지 않았으면 비움)' },
+      { type: 'two', items: [
+        { type: 'number', id: 'monthlyWage', label: '월 통상임금', unit: '만원', placeholder: '예: 300' },
+        { type: 'number', id: 'dailyHours', label: '1일 소정근로시간', unit: '시간', placeholder: '8' }] },
+      { type: 'check', id: 'exception', label: '천재·사변으로 사업 계속 불가, 또는 근로자가 고의로 막대한 손해를 끼친 경우 (고용노동부령 사유)' }
+    ],
+    run: function (v) {
+      var r = L2().dismissalNotice(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['계속근로', Math.floor(r.monthsWorked / 12) + '년 ' + (r.monthsWorked % 12) + '개월'], ['예고 기간', r.noticeDays + '일'], ['통상임금 일급', won(r.daily)], ['해고예고수당', won(r.pay), true]]);
+      return { r: r, cls: r.needPay ? 'target' : 'not-target', title: r.needPay ? '해고예고수당 ' + won(r.pay) + '을 줘야 합니다' : '해고예고수당 대상이 아닙니다', sub: r.exempt ? '3개월 미만 근무 또는 예외 사유' : r.needPay ? '30일 전에 예고하지 않음' : '30일 전에 예고함', body: body, topic: 'tax', label: '노무 상담 신청' };
+    }
+  });
+
+  E.register('maternity-leave', {
+    fields: [
+      { type: 'radio', id: 'type', label: '출산 형태', options: [['single', '한 명 (90일)'], ['premature', '미숙아 (100일)'], ['multiple', '쌍둥이 이상 (120일)']] },
+      { type: 'radio', id: 'priority', label: '회사 규모', options: [['yes', '우선지원 대상기업 (중소기업 등)'], ['no', '그 밖의 기업 (대규모기업)']] },
+      { type: 'number', id: 'monthlyWage', label: '휴가 시작일 기준 월 통상임금', unit: '만원', placeholder: '예: 300' }
+    ],
+    run: function (v) {
+      var r = L2().maternityLeave(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['휴가 일수', r.leaveDays + '일 (유급 ' + r.paidDays + '일)'], ['고용보험 지급 일수', r.insuranceDays + '일'], ['고용보험 출산전후휴가 급여', won(r.insurance), true], ['회사가 줄 금액', won(r.employer), true], ['근로자가 받는 합계', won(r.total)]]);
+      return { r: r, cls: 'target', title: '고용보험 ' + won(r.insurance) + ' + 회사 ' + won(r.employer), sub: (r.priority ? '우선지원 대상기업' : '대규모기업') + ' · ' + r.leaveDays + '일 · 2026년 상한액 기준', body: body, topic: 'tax', label: '노무·급여 상담 신청' };
+    }
+  });
+
+  E.register('shutdown-allowance', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'wage3', label: '휴업 전 3개월 임금 총액 (세전)', unit: '만원', placeholder: '예: 900' },
+        { type: 'number', id: 'days3', label: '그 3개월의 총일수', unit: '일', placeholder: '92' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'monthlyWage', label: '월 통상임금 (선택)', unit: '만원', placeholder: '예: 300', hint: '70%가 통상임금보다 많으면 통상임금 지급 가능' },
+        { type: 'number', id: 'shutdownDays', label: '휴업 일수', unit: '일', placeholder: '예: 10' }] },
+      UNDER5
+    ],
+    run: function (v) {
+      var r = L2().shutdownAllowance(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['평균임금 (일)', won(r.avgDaily) + (r.avgRaised ? ' (통상임금으로 올림)' : '')], ['평균임금의 70%', won(r.seventy)], r.ordinaryDaily ? ['통상임금 (일)', won(r.ordinaryDaily)] : null, ['적용 일액', won(r.daily) + (r.useOrdinary ? ' (통상임금)' : '')], ['휴업수당', won(r.total), true]]);
+      return { r: r, cls: r.small ? 'not-target' : 'target', title: r.small ? '4명 이하 사업장은 휴업수당 규정이 적용되지 않습니다' : '휴업수당 ' + won(r.total), sub: '하루 ' + won(r.daily) + ' × 휴업 일수', body: body, topic: 'tax', label: '노무 상담 신청' };
+    }
+  });
+
+  E.register('dc-pension', {
+    fields: [
+      { type: 'number', id: 'annualWage', label: '올해 연간 임금총액 (기본급·수당·상여)', unit: '만원', placeholder: '예: 6000' },
+      { type: 'two', items: [
+        { type: 'select', id: 'times', label: '납입 횟수', options: [['12', '매월 (12회)'], ['4', '분기 (4회)'], ['2', '반기 (2회)'], ['1', '연 1회']] },
+        { type: 'number', id: 'paidSoFar', label: '올해 이미 낸 부담금 (선택)', unit: '만원', placeholder: '예: 200' }] }
+    ],
+    run: function (v) {
+      var r = L2().dcPension(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['연간 임금총액', won(r.annualTotal)], ['연 최소 부담금 (1/12)', won(r.minAnnual), true], ['1회 납입액 (' + r.times + '회)', won(r.perPayment)], ['이미 낸 금액', won(r.paid)], ['올해 더 낼 금액', won(r.remaining), true]]);
+      return { r: r, cls: 'target', title: 'DC 부담금 연 ' + won(r.minAnnual) + ' 이상', sub: r.times + '회로 나누면 1회 ' + won(r.perPayment), body: body, topic: 'tax', label: '퇴직연금·인건비 상담 신청' };
+    }
+  });
+
+  E.register('work-hours', {
+    fields: [
+      { type: 'number', id: 'regularHours', label: '1주 소정근로시간', unit: '시간', placeholder: '40', hint: '40시간 이하' },
+      { type: 'two', items: [
+        { type: 'number', id: 'overtimeHours', label: '그 주 연장근로 (평일)', unit: '시간', placeholder: '예: 10', step: '0.5' },
+        { type: 'number', id: 'holidayHours', label: '그 주 휴일근로', unit: '시간', placeholder: '예: 4', step: '0.5' }] },
+      UNDER5
+    ],
+    run: function (v) {
+      var r = L2().workHours(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['1주 실근로시간', n(r.total, 1) + '시간'], ['40시간 초과 (연장)', n(r.extension, 1) + '시간'], ['연장 한도', r.small ? '적용 안 됨 (4명 이하)' : '12시간'], ['한도 초과', n(r.over, 1) + '시간', true]]);
+      return { r: r, cls: r.ok ? 'not-target' : 'target', title: r.ok ? '주 52시간 안입니다' : '주 52시간을 ' + n(r.over, 1) + '시간 넘습니다', sub: '1주 ' + n(r.total, 1) + '시간 (휴일 포함 7일 기준)', body: body, topic: 'tax', label: '노무 상담 신청' };
+    }
+  });
 })();

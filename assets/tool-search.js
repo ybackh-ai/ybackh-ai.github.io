@@ -25,7 +25,11 @@
     '가산세': ['가산세'], '연체': ['가산세', '납부지연'], '수정신고': ['가산세'], '기한후신고': ['가산세'],
     'ipo': ['ipo', '상장'], '상장': ['상장', 'ipo'], '자본잠식': ['자본잠식'], '부동산': ['부동산', 'pf'], 'pf': ['pf'],
     '퇴직소득': ['퇴직'], '임원': ['임원'], '대표': ['임원', '가지급금'], '유상증자': ['증자'], '증자': ['증자'], '감자': ['감자'], '실권주': ['증자'],
-    '성실신고': ['성실신고'], '개인사업자': ['개인사업자', '성실신고'], '복식부기': ['복식부기', '성실신고'], '법인전환': ['개인사업자', '성실신고']
+    '성실신고': ['성실신고'], '개인사업자': ['개인사업자', '성실신고'], '복식부기': ['복식부기', '성실신고'], '법인전환': ['개인사업자', '성실신고'],
+    '야근': ['연장', '52시간'], '야근수당': ['연장'], '초과근무': ['연장', '52시간'], '주말근무': ['휴일'], '특근': ['휴일', '연장'], '수당': ['수당'],
+    '시급': ['시급'], '통상임금': ['통상임금'], '209': ['시급'], '해고': ['해고'], '권고사직': ['해고', '퇴직금'], '출산': ['출산'], '출산휴가': ['출산'],
+    '육아': ['육아휴직'], '휴업': ['휴업'], '퇴직연금': ['퇴직연금'], 'dc': ['퇴직연금'], 'irp': ['퇴직연금', '연금저축'], '근무시간': ['52시간'], '근로시간': ['52시간', '연장'],
+    '월급': ['실수령', '시급', '최저임금'], '연봉': ['실수령', '인건비'], '노무': ['노무']
   };
   function norm(s) { return String(s || '').toLowerCase().replace(/\s+/g, ''); }
 
@@ -36,8 +40,9 @@
     return { el: c, grid: grid, group: group && group.classList.contains('tools-group') ? group : null,
       text: norm(c.textContent + ' ' + (group ? group.textContent : '') + ' ' + (c.querySelector('a') ? c.querySelector('a').getAttribute('href') : '')) };
   });
-  var groups = [];
-  items.forEach(function (it) { if (groups.indexOf(it.grid) < 0) groups.push(it.grid); });
+  var groups = [], hrefs = {};
+  items.forEach(function (it) { if (groups.indexOf(it.grid) < 0) groups.push(it.grid); var a = it.el.querySelector('a'); if (a) hrefs[a.getAttribute('href')] = 1; });
+  var TOTAL = Object.keys(hrefs).length;
 
   function termMatches(text, term) {
     if (text.indexOf(term) >= 0) return true;
@@ -53,11 +58,13 @@
   function apply() {
     var raw = input.value.trim();
     var terms = raw.toLowerCase().split(/\s+/).map(norm).filter(Boolean);
-    var shown = 0, hits = [];
+    var shown = 0, hits = [], seen = {};
     items.forEach(function (it) {
       var ok = !terms.length || terms.every(function (t) { return termMatches(it.text, t); });
       it.el.classList.toggle('hidden', !ok);
-      if (ok) { shown++; hits.push(it); }
+      // (2026-11-20) 같은 도구 카드가 두 묶음에 걸려 있으면(인사·노무 묶음의 실수령액·퇴직금 등) 결과 목록·개수에는 한 번만
+      var href = it.el.querySelector('a') ? it.el.querySelector('a').getAttribute('href') : '';
+      if (ok && !seen[href]) { seen[href] = 1; shown++; hits.push(it); }
     });
     groups.forEach(function (g) {
       var any = Array.prototype.some.call(g.children, function (c) { return !c.classList.contains('hidden'); });
@@ -81,7 +88,7 @@
       } else { resultsEl.innerHTML = ''; resultsEl.classList.add('hidden'); }
     }
     searched = terms.length > 0;
-    countEl.textContent = terms.length ? (shown ? '"' + raw + '" 검색 결과 ' + shown + '개' : '"' + raw + '"에 맞는 도구가 없습니다. 다른 말로 검색하시거나 상담 신청으로 문의해 주세요.') : '전체 도구 ' + items.length + '개 중에서 이름이나 하고 싶은 일로 찾아보세요.';
+    countEl.textContent = terms.length ? (shown ? '"' + raw + '" 검색 결과 ' + shown + '개' : '"' + raw + '"에 맞는 도구가 없습니다. 다른 말로 검색하시거나 상담 신청으로 문의해 주세요.') : '전체 도구 ' + TOTAL + '개 중에서 이름이나 하고 싶은 일로 찾아보세요.';
     emptyEl.classList.toggle('hidden', !(terms.length && !shown));
   }
 
