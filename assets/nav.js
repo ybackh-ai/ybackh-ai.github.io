@@ -22,9 +22,14 @@
       ['related-price.html', '특수관계인 주식 거래 시가 판정'], ['related-party.html', '특수관계인 범위 확인'], ['succession.html', '가업상속공제 요건 확인'], ['tax-penalty.html', '가산세 계산기'],
       ['exec-retirement.html', '임원 퇴직금 한도'], ['capital-gift.html', '불공정 증자·감자 증여이익'], ['sincere-filing.html', '성실신고확인 대상 판정'],
       ['vat-calc.html', '부가가치세 계산기'], ['labor-cost.html', '직원 인건비 총액(4대보험)'], ['net-salary.html', '연봉 실수령액'], ['severance-pay.html', '퇴직금·퇴직소득세'], ['owner-pay.html', '대표 보수 설계(급여 vs 배당)'], ['incorporation.html', '법인전환 이월과세·취득세'],
+      ['registration-tax.html', '법인 설립·증자 등록면허세'], ['interim-tax.html', '법인세 중간예납'], ['semiannual-withholding.html', '원천세 반기납부 대상'],
+    ] },
+    { group: '인사·노무 (연차·최저임금·고용보험)', items: [
+      ['annual-leave.html', '연차 일수·연차수당'], ['min-wage.html', '주휴수당·최저임금 월급'], ['unemployment-benefit.html', '실업급여(구직급여)', 1], ['parental-leave.html', '육아휴직 급여'],
     ] },
     { group: '개인 세금 (직장인·프리랜서·투자자)', items: [
       ['year-end-tax.html', '연말정산 미리보기'], ['pension-credit.html', '연금저축·IRP 세액공제'], ['freelancer-tax.html', '프리랜서 3.3% 환급'], ['foreign-stock-tax.html', '해외주식 양도소득세'], ['home-sale-tax.html', '1주택 양도세·다주택 중과', 1], ['acquisition-tax.html', '주택 취득세'],
+      ['deposit-interest.html', '예금·적금 이자 세후'], ['isa-tax.html', 'ISA 비과세·분리과세'], ['financial-income.html', '금융소득 종합과세'], ['rental-income-tax.html', '주택임대소득세', 1], ['property-tax.html', '종합부동산세', 1], ['work-incentive.html', '근로·자녀장려금', 1],
     ] },
     { group: '세액공제·감면', items: [
       ['employment-credit.html', '통합고용세액공제', 1], ['rnd-credit.html', '연구·인력개발비 세액공제'], ['investment-credit.html', '통합투자세액공제'], ['startup-relief.html', '창업중소기업 세액감면'], ['angel-deduction.html', '엔젤투자 소득공제'],
@@ -33,6 +38,7 @@
       ['valuation-needs.html', '어떤 평가가 필요한가요?'], ['stock-valuation.html', '비상장주식 상증법 약식 평가'], ['dcf.html', 'DCF·WACC 간이 계산기'], ['dilution.html', '투자 유치 지분 희석'],
       ['ppa.html', 'PPA 영업권 간이 계산기'], ['impairment.html', '손상검사 간이 진단'], ['external-valuation.html', '자본시장법 외부평가 대상', 1], ['merger-price.html', '상장사 합병가액', 1], ['stock-option.html', '스톡옵션 공정가치'], ['option-limit.html', '스톡옵션 부여 한도'], ['rcps-cb.html', 'RCPS·CB 평가 필요 여부'],
       ['safe-conversion.html', 'SAFE·전환사채 전환 주식수'], ['equity-bridge.html', '기업가치→지분가치 환산'], ['multiples.html', '유사기업 멀티플 평가'], ['pf-feasibility.html', '부동산 PF 사업성'], ['qualified-reorg.html', '적격합병·적격분할 요건'],
+      ['cap-table.html', '멀티 라운드 캡테이블'], ['exit-waterfall.html', '엑싯 분배(청산우선권)'],
     ] },
     { group: '재무분석·자료', items: [
       ['fin-ratio.html', '재무비율 간이 진단'], ['capital-impairment.html', '자본잠식·채무초과 진단'], ['distributable-profit.html', '배당가능이익·자기주식 한도'], ['working-capital.html', '운전자본·현금전환주기'], ['break-even.html', '손익분기점(BEP)'], ['debt-capacity.html', 'EBITDA·순차입금 상환능력'], ['runway.html', '런웨이·번레이트'], ['dupont.html', '듀폰 분석 (ROE 분해)'], ['operating-cashflow.html', '영업활동 현금흐름 간이 계산'], ['dscr.html', 'DSCR 원리금 상환능력'], ['red-flags.html', '재무제표 이상 신호 점검'], ['credit-metrics.html', '신용평가 주요 지표'],['closing-checklist.html', '12월 결산 체크리스트'], ['glossary.html', '회계·세무 용어 사전'], ['videos.html', '영상으로 배우기'], ['qna.html', '외부감사·회계 Q&A'], ['cases.html', '수행 사례'], ['basis.html', '기준일·변경 이력'],

@@ -98,6 +98,21 @@
     'distributable-profit': [['capital-impairment.html', '자본잠식·채무초과 진단'], ['withholding.html', '배당 원천징수 계산'], ['fin-ratio.html', '재무비율 간이 진단']],
     'tax-penalty': [['tax-calendar.html', '법인 세무 신고 일정표'], ['corp-tax.html', '법인세 간이 계산기'], ['withholding.html', '원천징수 세액 계산기']],
     'withholding': [['tax-calendar.html', '법인 세무 신고 일정표'], ['corp-vs-personal.html', '법인 vs 개인사업자 세금 비교']],
+    'annual-leave': [['unused-leave.html', '미사용 연차수당 부채'], ['min-wage.html', '주휴수당·최저임금'], ['severance-pay.html', '퇴직금·퇴직소득세']],
+    'min-wage': [['labor-cost.html', '직원 인건비 총액(4대보험)'], ['net-salary.html', '연봉 실수령액'], ['annual-leave.html', '연차 일수·연차수당']],
+    'unemployment-benefit': [['severance-pay.html', '퇴직금·퇴직소득세'], ['annual-leave.html', '연차 일수·연차수당'], ['parental-leave.html', '육아휴직 급여']],
+    'parental-leave': [['unemployment-benefit.html', '실업급여'], ['net-salary.html', '연봉 실수령액'], ['year-end-tax.html', '연말정산 미리보기']],
+    'deposit-interest': [['isa-tax.html', 'ISA 비과세·분리과세'], ['financial-income.html', '금융소득 종합과세'], ['pension-credit.html', '연금저축·IRP 세액공제']],
+    'isa-tax': [['deposit-interest.html', '예금 이자 세후 계산'], ['financial-income.html', '금융소득 종합과세'], ['foreign-stock-tax.html', '해외주식 양도소득세']],
+    'financial-income': [['isa-tax.html', 'ISA 비과세·분리과세'], ['owner-pay.html', '대표 보수 설계(급여 vs 배당)'], ['deposit-interest.html', '예금 이자 세후 계산']],
+    'rental-income-tax': [['property-tax.html', '종합부동산세'], ['home-sale-tax.html', '1주택 양도세'], ['acquisition-tax.html', '주택 취득세']],
+    'property-tax': [['home-sale-tax.html', '1주택 양도세'], ['rental-income-tax.html', '주택임대소득세'], ['acquisition-tax.html', '주택 취득세']],
+    'work-incentive': [['year-end-tax.html', '연말정산 미리보기'], ['freelancer-tax.html', '프리랜서 3.3% 환급'], ['min-wage.html', '주휴수당·최저임금']],
+    'registration-tax': [['incorporation.html', '법인전환 이월과세·취득세'], ['corp-vs-personal.html', '법인 vs 개인사업자'], ['startup-check.html', '창업기업 해당 여부']],
+    'interim-tax': [['corp-tax.html', '법인세 간이 계산기'], ['tax-calendar.html', '법인 세무 신고 일정표'], ['tax-penalty.html', '가산세 계산기']],
+    'semiannual-withholding': [['withholding.html', '원천징수 세액 계산기'], ['tax-calendar.html', '법인 세무 신고 일정표'], ['labor-cost.html', '직원 인건비 총액']],
+    'cap-table': [['dilution.html', '투자 유치 지분 희석'], ['exit-waterfall.html', '엑싯 분배(청산우선권)'], ['option-limit.html', '스톡옵션 부여 한도']],
+    'exit-waterfall': [['cap-table.html', '멀티 라운드 캡테이블'], ['rcps-cb.html', 'RCPS·CB 평가 필요 여부'], ['equity-bridge.html', '기업가치→지분가치 환산']],
   };
 
   // 카카오톡 채널 친구 추가 (세법 개정 소식 안내용, 2026-11-18)
@@ -265,7 +280,7 @@
     audit: 'audit-check audit-schedule audit-prep audit-designation audit-fee governance consolidation ipo-prep',
     icfr: 'icfr-check',
     ifrs: 'lease depreciation allowance retirement deferred-tax revenue-check impairment rcps-cb stock-option fin-ratio capital-impairment working-capital break-even debt-capacity distributable-profit dev-cost fx-translation inventory-lcm gov-grant unused-leave accrual-prepaid effective-interest dupont operating-cashflow',
-    fdd: 'valuation-needs stock-valuation dcf dilution external-valuation merger-price option-limit safe-conversion equity-bridge multiples pf-feasibility qualified-reorg runway dscr red-flags credit-metrics',
+    fdd: 'valuation-needs stock-valuation dcf dilution external-valuation merger-price option-limit safe-conversion equity-bridge multiples pf-feasibility qualified-reorg runway dscr red-flags credit-metrics cap-table exit-waterfall',
     ppa: 'ppa'
   };
   function topicOf(p) { for (var k in TOPIC_OF) { if ((' ' + TOPIC_OF[k] + ' ').indexOf(' ' + p + ' ') >= 0) return k; } return 'tax'; }
