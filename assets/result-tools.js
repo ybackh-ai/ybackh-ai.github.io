@@ -112,6 +112,17 @@
     'interim-tax': [['corp-tax.html', '법인세 간이 계산기'], ['tax-calendar.html', '법인 세무 신고 일정표'], ['tax-penalty.html', '가산세 계산기']],
     'semiannual-withholding': [['withholding.html', '원천징수 세액 계산기'], ['tax-calendar.html', '법인 세무 신고 일정표'], ['labor-cost.html', '직원 인건비 총액']],
     'cap-table': [['dilution.html', '투자 유치 지분 희석'], ['exit-waterfall.html', '엑싯 분배(청산우선권)'], ['option-limit.html', '스톡옵션 부여 한도']],
+    'loan-repayment': [['dsr-limit.html', 'DSR 대출 한도'], ['effective-interest.html', '유효이자율 상각표'], ['deposit-interest.html', '예금 이자 세후']],
+    'dsr-limit': [['loan-repayment.html', '대출 이자·상환 계산기'], ['acquisition-tax.html', '주택 취득세'], ['brokerage-fee.html', '중개보수(복비)']],
+    'rent-conversion': [['brokerage-fee.html', '중개보수(복비)'], ['rental-income-tax.html', '주택임대소득세'], ['loan-repayment.html', '대출 이자·상환']],
+    'brokerage-fee': [['acquisition-tax.html', '주택 취득세'], ['home-sale-tax.html', '1주택 양도세'], ['rent-conversion.html', '전월세 전환']],
+    'home-property-tax': [['property-tax.html', '종합부동산세'], ['acquisition-tax.html', '주택 취득세'], ['health-insurance.html', '지역 건강보험료']],
+    'car-tax': [['business-car.html', '업무용승용차 비용 한도'], ['home-property-tax.html', '주택 재산세'], ['tax-calendar.html', '세무 신고 일정표']],
+    'income-tax': [['freelancer-tax.html', '프리랜서 3.3% 환급'], ['year-end-tax.html', '연말정산 미리보기'], ['corp-vs-personal.html', '법인 vs 개인사업자']],
+    'daily-worker-tax': [['withholding.html', '원천징수 세액 계산기'], ['min-wage.html', '주휴수당·최저임금'], ['net-salary.html', '연봉 실수령액']],
+    'pension-tax': [['pension-credit.html', '연금저축·IRP 세액공제'], ['national-pension.html', '국민연금 예상액'], ['health-insurance.html', '지역 건강보험료']],
+    'national-pension': [['pension-tax.html', '연금소득세'], ['pension-credit.html', '연금저축·IRP 세액공제'], ['health-insurance.html', '지역 건강보험료']],
+    'health-insurance': [['financial-income.html', '금융소득 종합과세'], ['home-property-tax.html', '주택 재산세'], ['pension-tax.html', '연금소득세']],
     'exit-waterfall': [['cap-table.html', '멀티 라운드 캡테이블'], ['rcps-cb.html', 'RCPS·CB 평가 필요 여부'], ['equity-bridge.html', '기업가치→지분가치 환산']],
   };
 
@@ -281,7 +292,8 @@
     icfr: 'icfr-check',
     ifrs: 'lease depreciation allowance retirement deferred-tax revenue-check impairment rcps-cb stock-option fin-ratio capital-impairment working-capital break-even debt-capacity distributable-profit dev-cost fx-translation inventory-lcm gov-grant unused-leave accrual-prepaid effective-interest dupont operating-cashflow',
     fdd: 'valuation-needs stock-valuation dcf dilution external-valuation merger-price option-limit safe-conversion equity-bridge multiples pf-feasibility qualified-reorg runway dscr red-flags credit-metrics cap-table exit-waterfall',
-    ppa: 'ppa'
+    ppa: 'ppa',
+    etc: 'loan-repayment dsr-limit'
   };
   function topicOf(p) { for (var k in TOPIC_OF) { if ((' ' + TOPIC_OF[k] + ' ').indexOf(' ' + p + ' ') >= 0) return k; } return 'tax'; }
   function toConsult() {

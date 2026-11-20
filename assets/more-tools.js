@@ -1692,4 +1692,192 @@
       return { r: r, cls: 'target', title: '보통주는 1주당 ' + won(r.commonPerShare) + '을 받습니다', sub: '보통주 전체 ' + won(r.commonPayout), body: body, topic: 'fdd', label: '투자계약 상담 신청' };
     }
   });
+
+  // ── 74~84. 대출·부동산 거래, 세금·연금·보험료 (2026-11-20, docs/63) ──
+  function FR() { return window.FinanceRules; }
+  function P3() { return window.PersonalTax3Rules; }
+
+  E.register('loan-repayment', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'principal', label: '대출 원금', unit: '만원', placeholder: '예: 10000' },
+        { type: 'number', id: 'rate', label: '연 이자율', unit: '%', placeholder: '예: 4', step: '0.01' }] },
+      { type: 'number', id: 'months', label: '대출 기간', unit: '개월', placeholder: '예: 360 (30년)' },
+      { type: 'radio', id: 'method', label: '상환 방식', options: [['equal', '원리금균등 (매달 같은 금액)'], ['principal', '원금균등 (매달 같은 원금 + 이자)'], ['bullet', '만기일시 (이자만 내다 마지막에 원금)']] }
+    ],
+    run: function (v) {
+      var r = FR().loanRepayment(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([[r.method === 'equal' ? '월 상환액' : '첫 달 상환액', won(r.method === 'equal' ? r.monthlyPayment : r.firstPayment), true], r.lastPayment ? ['마지막 달 상환액', won(r.lastPayment)] : null, ['총 이자', won(r.totalInterest), true], ['총 상환액', won(r.totalPayment)]]) +
+        '<h3>연도별 상환</h3>' + grid(['연차', '원금', '이자', '남은 원금'], r.yearly.map(function (y) { return [y.year + '년차', won(y.principal), won(y.interest), won(y.balance)]; })) +
+        '<h3>첫 12개월</h3>' + grid(['회차', '상환액', '원금', '이자', '잔액'], r.firstYear.map(function (x) { return [x.month + '회', won(x.payment), won(x.principal), won(x.interest), won(x.balance)]; }));
+      return { r: r, cls: 'not-target', title: (r.method === 'equal' ? '매달 ' : '첫 달 ') + won(r.method === 'equal' ? r.monthlyPayment : r.firstPayment) + '을 갚습니다', sub: '총 이자 ' + won(r.totalInterest), body: body, topic: 'etc', label: '자금 상담 신청' };
+    }
+  });
+
+  E.register('dsr-limit', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'income', label: '연 소득 (세전)', unit: '만원', placeholder: '예: 6000' },
+        { type: 'number', id: 'existing', label: '기존 대출 연간 원리금', unit: '만원', placeholder: '0' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'rate', label: '새 대출 연 이자율', unit: '%', placeholder: '예: 4', step: '0.01' },
+        { type: 'number', id: 'stress', label: '스트레스 금리 가산', unit: '%p', placeholder: '0', step: '0.01', hint: '금융회사 안내값을 넣습니다' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'years', label: '대출 기간', unit: '년', placeholder: '예: 30' },
+        { type: 'number', id: 'limit', label: 'DSR 기준', unit: '%', placeholder: '40' }] },
+      { type: 'number', id: 'loan', label: '받으려는 대출 금액 (선택)', unit: '만원', hint: '넣으면 그 대출의 DSR을 계산합니다' }
+    ],
+    run: function (v) {
+      var r = FR().dsrLimit(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['DSR 기준', r.limit + '%'], ['계산 금리 (가산 포함)', n(r.calcRate, 2) + '%'], ['새 대출에 쓸 수 있는 연 원리금', won(Math.max(0, r.annualCap))], ['최대 대출 금액 (추정)', won(r.maxLoan), true], r.dsr !== undefined ? ['받으려는 대출의 연 원리금', won(r.newAnnual)] : null, r.dsr !== undefined ? ['그 경우 DSR', pct(r.dsr) + (r.over ? ' (기준 초과)' : ''), true] : null]);
+      return { r: r, cls: r.over ? 'target' : 'not-target', title: '최대 약 ' + won(r.maxLoan) + '까지 빌릴 수 있습니다', sub: 'DSR ' + r.limit + '% 기준 · LTV 한도는 별도', body: body, topic: 'etc', label: '자금 상담 신청' };
+    }
+  });
+
+  E.register('rent-conversion', {
+    fields: [
+      { type: 'radio', id: 'mode', label: '계산 방향', options: [['toMonthly', '보증금 → 월세'], ['toDeposit', '월세 → 보증금']] },
+      { type: 'two', items: [
+        { type: 'number', id: 'amount', label: '바꿀 보증금 또는 월세', unit: '만원', placeholder: '예: 10000' },
+        { type: 'number', id: 'baseRate', label: '한국은행 기준금리', unit: '%', placeholder: '3.00', step: '0.01', hint: '2026년 10월 22일 결정 3.00%' }] }
+    ],
+    run: function (v) {
+      var r = FR().rentConversion(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['전환율 상한', n(r.capRate, 2) + '% (기준금리 + 2%, 최대 10%)'], ['보증금', won(r.deposit)], ['월세', won(r.monthly), true]]);
+      return { r: r, cls: 'not-target', title: v.mode === 'toDeposit' ? '보증금 약 ' + won(r.deposit) : '월세 최대 ' + won(r.monthly), sub: '전환율 ' + n(r.capRate, 2) + '%', body: body, topic: 'tax', label: '부동산 상담 신청' };
+    }
+  });
+
+  E.register('brokerage-fee', {
+    fields: [
+      { type: 'radio', id: 'kind', label: '거래 종류', options: [['sale', '매매·교환'], ['lease', '전세·월세']] },
+      { type: 'select', id: 'type', label: '물건 종류', options: [['house', '주택 (아파트·빌라 등)'], ['officetel', '주거용 오피스텔 (85㎡ 이하, 부엌·화장실 갖춤)'], ['other', '상가·토지·사무실 등 그 밖']] },
+      { type: 'two', items: [
+        { type: 'number', id: 'price', label: '매매가 또는 보증금', unit: '만원', placeholder: '예: 30000' },
+        { type: 'number', id: 'monthly', label: '월세 (월세 계약만)', unit: '만원', when: function (v) { return v.kind === 'lease'; } }] }
+    ],
+    run: function (v) {
+      var r = FR().brokerageFee(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['거래금액', won(r.amount)], ['상한요율', n(r.ratePct, 2) + '%'], r.cap ? ['한도액', won(r.cap)] : null, ['중개보수 상한 (한쪽)', won(r.fee), true], ['부가세 포함 (일반과세자)', won(r.feeWithVat)]]);
+      return { r: r, cls: 'not-target', title: '중개보수는 최대 ' + won(r.fee) + '입니다', sub: '상한요율 ' + n(r.ratePct, 2) + '% · 협의로 정함', body: body, topic: 'tax', label: '부동산 세금 상담 신청' };
+    }
+  });
+
+  E.register('home-property-tax', {
+    fields: [
+      { type: 'number', id: 'price', label: '주택 공시가격', unit: '만원', placeholder: '예: 50000' },
+      { type: 'check', id: 'oneHouse', label: '1세대 1주택입니다 (공정시장가액비율 43~45%, 9억원 이하 특례 세율)' },
+      { type: 'check', id: 'cityArea', label: '도시지역분 대상 지역입니다 (대부분의 도시)', value: true }
+    ],
+    run: function (v) {
+      var r = P3().homePropertyTax(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['공정시장가액비율', r.fairRatio + '%'], ['과세표준', won(r.taxBase)], ['재산세' + (r.special ? ' (1세대 1주택 특례 세율)' : ''), won(r.tax)], ['도시지역분 (0.14%)', won(r.cityTax)], ['지방교육세 (20%)', won(r.eduTax)], ['합계 (연)', won(r.total), true]]);
+      return { r: r, cls: 'target', title: '재산세 등 연 ' + won(r.total), sub: '과세표준 ' + won(r.taxBase) + ' · 과세표준상한 미반영', body: body, topic: 'tax', label: '부동산 세금 상담 신청' };
+    }
+  });
+
+  E.register('car-tax', {
+    fields: [
+      { type: 'radio', id: 'kind', label: '차종', options: [['cc', '배기량이 있는 승용차'], ['other', '전기차·수소차 등 그 밖의 승용차']] },
+      { type: 'two', items: [
+        { type: 'number', id: 'cc', label: '배기량', unit: 'cc', placeholder: '예: 1998', when: function (v) { return v.kind !== 'other'; } },
+        { type: 'number', id: 'age', label: '차령 (최초 등록 연도부터, 첫해 1년)', unit: '년', placeholder: '1' }] },
+      { type: 'check', id: 'commercial', label: '영업용입니다 (택시·렌터카 등)' },
+      { type: 'check', id: 'prepay', label: '1월에 1년치를 미리 냅니다 (연납 공제)' }
+    ],
+    run: function (v) {
+      var r = P3().carTax(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['기본 세액', won(r.baseTax) + (r.perCc ? ' (cc당 ' + r.perCc + '원)' : '')], r.reduction ? ['차령 경감 (' + r.reductionPct + '%)', '−' + won(r.reduction)] : null, ['자동차세', won(r.tax)], r.prepayDiscount ? ['연납 공제', '−' + won(r.prepayDiscount)] : null, ['지방교육세 (30%)', won(r.eduTax)], ['연 합계', won(r.total), true]]);
+      return { r: r, cls: 'not-target', title: '자동차세 연 ' + won(r.total), sub: '6월·12월에 반씩 고지' + (r.prepayDiscount ? ' · 1월 연납 기준' : ''), body: body, topic: 'tax', label: '세금 상담 신청' };
+    }
+  });
+
+  E.register('income-tax', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'wage', label: '총급여 (근로소득, 비과세 제외)', unit: '만원', placeholder: '예: 5000' },
+        { type: 'number', id: 'bizIncome', label: '사업소득금액 (수입 − 경비)', unit: '만원', placeholder: '예: 1000' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'dependents', label: '기본공제 인원 (본인 포함)', unit: '명', placeholder: '1' },
+        { type: 'number', id: 'otherDeduction', label: '그 밖의 소득공제 (국민연금·건보료·카드 등)', unit: '만원' }] },
+      { type: 'number', id: 'prepaid', label: '이미 낸 소득세 (연말정산 결정세액 + 3.3% 중 3% + 중간예납)', unit: '만원' }
+    ],
+    run: function (v) {
+      var r = P3().incomeTax(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['근로소득금액', won(r.earnedIncome)], ['종합소득금액', won(r.totalIncome)], ['과세표준', won(r.taxBase)], ['산출세액', won(r.calcTax)], ['근로소득세액공제', won(r.earnedCredit)], ['표준세액공제', won(r.standardCredit)], ['결정세액', won(r.determinedTax), true], ['이미 낸 세금', won(r.prepaid)], [r.due >= 0 ? '5월에 더 낼 소득세' : '돌려받을 소득세', won(Math.abs(r.due)), true], ['지방소득세 (결정세액의 10%)', won(r.localTax)]]);
+      return { r: r, cls: r.due > 0 ? 'target' : 'not-target', title: r.due >= 0 ? '5월에 약 ' + won(r.due) + '을 더 냅니다' : '약 ' + won(-r.due) + '을 돌려받습니다', sub: '결정세액 ' + won(r.determinedTax) + ' (지방소득세 별도)', body: body, topic: 'tax', label: '종합소득세 신고 상담 신청' };
+    }
+  });
+
+  E.register('daily-worker-tax', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'dailyWage', label: '일당 (세전)', unit: '원', placeholder: '예: 200000' },
+        { type: 'number', id: 'days', label: '한 번에 받는 일수', unit: '일', placeholder: '1', hint: '주급이면 5처럼 넣습니다' }] }
+    ],
+    run: function (v) {
+      var r = P3().dailyWorkerTax(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['하루 과세 대상 (일당 − 15만원)', won(r.taxablePerDay)], ['하루 산출세액 (6%)', won(r.calcPerDay)], ['세액공제 (55%)', won(r.creditPerDay)], ['하루 소득세', won(r.taxPerDay)], ['이번 지급분 소득세', won(r.tax) + (r.smallExempt ? ' (1천원 미만 소액부징수)' : ''), true], ['지방소득세', won(r.localTax)], ['실수령액', won(r.net), true]]);
+      return { r: r, cls: 'not-target', title: r.tax ? '세금 ' + won(r.tax + r.localTax) + ', 실수령 ' + won(r.net) : '떼는 세금이 없습니다', sub: '일당 15만원까지는 과세하지 않음', body: body, topic: 'tax', label: '세금 상담 신청' };
+    }
+  });
+
+  E.register('pension-tax', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'privatePension', label: '연금저축·IRP 연금 연 수령액', unit: '만원', placeholder: '예: 1200', hint: '퇴직금을 연금으로 받는 부분은 제외' },
+        { type: 'number', id: 'publicPension', label: '국민연금 등 공적연금 연 수령액', unit: '만원' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'age', label: '나이', unit: '세', placeholder: '예: 65' },
+        { type: 'number', id: 'otherBase', label: '다른 종합소득 과세표준', unit: '만원', placeholder: '0' }] }
+    ],
+    run: function (v) {
+      var r = P3().pensionTax(v);
+      if (r.status === 'INVALID') return { r: r };
+      var rows = [['연금계좌 원천징수 세율', r.withholdRate + '%'], ['연금계좌 원천징수액', won(r.withheld)]];
+      if (r.status === 'SEPARATE') rows.push(['연금계좌 분리과세 (끝)', won(r.privateTax)], ['공적연금 종합과세분', won(r.publicTax)]);
+      else rows.push(['[선택 1] 종합과세', won(r.combinedTax)], ['[선택 2] 15% 분리과세', won(r.separate15Tax)], ['유리한 쪽', r.best === 'combined' ? '종합과세' : '15% 분리과세']);
+      rows.push(['연금 관련 소득세', won(r.tax), true], ['지방소득세 포함', won(r.total), true]);
+      return { r: r, cls: 'target', title: '연금 세금 약 ' + won(r.total) + '(지방세 포함)', sub: r.status === 'SEPARATE' ? '연금계좌 1,500만원 이하 분리과세' : '1,500만원 초과: ' + (r.best === 'combined' ? '종합과세가 유리' : '15% 분리과세가 유리'), body: table(rows), topic: 'tax', label: '연금 세금 상담 신청' };
+    }
+  });
+
+  E.register('national-pension', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'income', label: '가입기간 평균 월소득 (지금 가치)', unit: '만원', placeholder: '예: 300' },
+        { type: 'number', id: 'years', label: '가입기간 (예상 합계)', unit: '년', placeholder: '예: 25', step: '0.1' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'aValue', label: 'A값 (전체 가입자 평균소득월액)', unit: '원', placeholder: '3193511', hint: '2026년 국민연금공단 안내값' },
+        { type: 'select', id: 'earlyYears', label: '조기 수령', options: [['0', '정상 수령'], ['1', '1년 앞당김 (94%)'], ['2', '2년 (88%)'], ['3', '3년 (82%)'], ['4', '4년 (76%)'], ['5', '5년 (70%)']] }] }
+    ],
+    run: function (v) {
+      var r = P3().nationalPension(v);
+      if (r.status === 'INVALID') return { r: r };
+      if (r.status === 'LUMP') return { r: r, cls: 'not-target', title: '가입 10년 미만은 연금 대신 일시금입니다', sub: '추가 납부·임의계속가입으로 10년을 채울 수 있습니다', body: '', topic: 'tax', label: '노후 자금 상담 신청' };
+      var body = table([['A값', won(r.aValue)], ['기본연금액 (연, 20년 기준)', won(Math.round(r.basicAnnual))], ['조기 수령 비율', r.earlyRate + '%'], ['예상 월 연금 (현재 가치)', won(r.monthly), true], ['연간', won(r.annual)]]);
+      return { r: r, cls: 'target', title: '월 약 ' + won(r.monthly) + '(현재 가치)', sub: '2026년 계수 1.29로 단순 추정 · 공단 조회와 다를 수 있음', body: body, topic: 'tax', label: '노후 자금 상담 신청' };
+    }
+  });
+
+  E.register('health-insurance', {
+    fields: [
+      { type: 'number', id: 'income', label: '보험료 부과 대상 연 소득 (사업·이자·배당·연금·기타 등)', unit: '만원', placeholder: '예: 2400', hint: '종합소득세 신고 소득금액 기준' },
+      { type: 'number', id: 'propertyBase', label: '재산세 과세표준 합계 (주택은 공시가격 × 60% 등)', unit: '만원', placeholder: '예: 30000', hint: '무주택 전월세는 보증금 평가액' }
+    ],
+    run: function (v) {
+      var r = P3().healthInsurance(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['소득 보험료 (월)', won(r.incomePremium)], ['재산 등급·점수', r.grade ? r.grade + '등급 · ' + r.points + '점' : '1억원 공제 후 없음'], ['재산 보험료 (월)', won(r.propertyPremium)], ['건강보험료 (월)', won(r.health)], ['장기요양보험료 (월)', won(r.ltc)], ['월 합계', won(r.total), true]]);
+      return { r: r, cls: 'target', title: '지역 건강보험료 월 약 ' + won(r.total), sub: '장기요양 포함 · 경감·최저보험료 미반영', body: body, topic: 'tax', label: '세금·보험료 상담 신청' };
+    }
+  });
 })();

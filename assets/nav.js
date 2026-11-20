@@ -24,12 +24,17 @@
       ['vat-calc.html', '부가가치세 계산기'], ['labor-cost.html', '직원 인건비 총액(4대보험)'], ['net-salary.html', '연봉 실수령액'], ['severance-pay.html', '퇴직금·퇴직소득세'], ['owner-pay.html', '대표 보수 설계(급여 vs 배당)'], ['incorporation.html', '법인전환 이월과세·취득세'],
       ['registration-tax.html', '법인 설립·증자 등록면허세'], ['interim-tax.html', '법인세 중간예납'], ['semiannual-withholding.html', '원천세 반기납부 대상'],
     ] },
-    { group: '인사·노무 (연차·최저임금·고용보험)', items: [
+    { group: '인사·노무·사회보험', items: [
       ['annual-leave.html', '연차 일수·연차수당'], ['min-wage.html', '주휴수당·최저임금 월급'], ['unemployment-benefit.html', '실업급여(구직급여)', 1], ['parental-leave.html', '육아휴직 급여'],
+      ['national-pension.html', '국민연금 예상 수령액', 1], ['health-insurance.html', '지역가입자 건강보험료', 1],
+    ] },
+    { group: '부동산·대출', items: [
+      ['loan-repayment.html', '대출 이자·상환 계산기'], ['dsr-limit.html', 'DSR 대출 한도', 1], ['rent-conversion.html', '전월세 전환'], ['brokerage-fee.html', '중개보수(복비)'],
     ] },
     { group: '개인 세금 (직장인·프리랜서·투자자)', items: [
       ['year-end-tax.html', '연말정산 미리보기'], ['pension-credit.html', '연금저축·IRP 세액공제'], ['freelancer-tax.html', '프리랜서 3.3% 환급'], ['foreign-stock-tax.html', '해외주식 양도소득세'], ['home-sale-tax.html', '1주택 양도세·다주택 중과', 1], ['acquisition-tax.html', '주택 취득세'],
       ['deposit-interest.html', '예금·적금 이자 세후'], ['isa-tax.html', 'ISA 비과세·분리과세'], ['financial-income.html', '금융소득 종합과세'], ['rental-income-tax.html', '주택임대소득세', 1], ['property-tax.html', '종합부동산세', 1], ['work-incentive.html', '근로·자녀장려금', 1],
+      ['income-tax.html', '종합소득세 (근로 + 사업)'], ['daily-worker-tax.html', '일용직 세금'], ['pension-tax.html', '연금소득세'], ['home-property-tax.html', '주택 재산세'], ['car-tax.html', '자동차세'],
     ] },
     { group: '세액공제·감면', items: [
       ['employment-credit.html', '통합고용세액공제', 1], ['rnd-credit.html', '연구·인력개발비 세액공제'], ['investment-credit.html', '통합투자세액공제'], ['startup-relief.html', '창업중소기업 세액감면'], ['angel-deduction.html', '엔젤투자 소득공제'],
