@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="naver-site-verification" content="60d698d04287e09c54d415c82df5f87193e1fc03">
+  <meta name="google-site-verification" content="WEVGAcfT1LM_DTxTOfXPEoC7WTuA0JpTw47BiNw0DFQ">
+  <title>주 52시간 계산기 (연장근로 12시간 한도) | 기업 회계 도구</title>
+  <meta name="description" content="1주 소정근로시간과 그 주의 평일 연장근로·휴일근로 시간을 넣으면 1주 실근로시간이 52시간(40 + 연장 12)을 넘는지, 몇 시간 넘는지 확인합니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="주 52시간 계산기 (연장근로 12시간 한도) | 기업 회계 도구">
+  <meta property="og:description" content="1주 소정근로시간과 그 주의 평일 연장근로·휴일근로 시간을 넣으면 1주 실근로시간이 52시간(40 + 연장 12)을 넘는지, 몇 시간 넘는지 확인합니다.">
+  <meta property="og:url" content="https://cpatool.co.kr/work-hours.html">
+  <link rel="canonical" href="https://cpatool.co.kr/work-hours.html">
+  <meta property="og:image" content="https://cpatool.co.kr/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="기업 회계 도구 — 외부감사·내부회계·가치평가·세무 무료 계산기">
+  <meta name="twitter:card" content="summary_large_image">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-tool="work-hours">
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>주 52시간 계산기 (연장근로 12시간 한도)</h1>
+      <p>이번 주 근무시간이 주 52시간을 넘는지 확인해 보세요. 소정근로시간과 연장·휴일근로 시간만 넣으면 됩니다.</p>
+    </div>
+    <p class="basis-date">법령 기준 확인일 2026년 11월 20일(법제처 국가법령정보센터 현행 법령). 근거: 「근로기준법」 제2조제1항제7호·제50조·제53조, 시행령 제7조 별표 1.</p>
+    <div class="notice">탄력적·선택적 근로시간제, 특별연장근로 인가, 근로시간 특례 업종은 반영하지 않습니다. 1일 8시간을 넘는 시간도 연장근로입니다.</div>
+
+    <section>
+      <form id="tool-form" novalidate><noscript><p>이 계산기는 자바스크립트가 필요합니다.</p></noscript></form>
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+<!-- guide:start -->
+    <section class="guide" aria-labelledby="guide-h">
+      <h2 id="guide-h">52시간 계산</h2>
+      <p>1주 근로시간은 휴게시간을 빼고 40시간, 1일 8시간을 넘을 수 없고(근로기준법 제50조), 당사자가 합의하면 1주 12시간까지 연장할 수 있습니다(제53조제1항). 그래서 1주 최대 52시간입니다.</p>
+      <p>1주는 휴일을 포함한 7일이라(제2조제1항제7호) 토요일·일요일 근무도 52시간에 들어갑니다. 상시 4명 이하 사업장에는 제50조·제53조가 적용되지 않습니다.</p>
+      <h3>자주 묻는 질문</h3>
+      <details><summary>하루 10시간씩 주 4일이면요?</summary><p>1주 40시간이라 52시간 안이지만, 하루 8시간을 넘는 2시간씩은 연장근로라 가산수당 대상입니다(탄력적 근로시간제를 도입하지 않은 경우).</p></details>
+      <details><summary>52시간을 넘기면 어떻게 되나요?</summary><p>법 위반으로 벌칙 대상이 될 수 있습니다. 넘긴 시간에 대한 연장·휴일 가산수당도 따로 줘야 합니다. <a href="overtime-pay.html">연장·야간·휴일수당</a>에서 계산해 보세요.</p></details>
+      <p class="hint">함께 보면 좋은 도구는 <a href="overtime-pay.html">연장·야간·휴일수당</a>, <a href="hourly-wage.html">월급 → 시급 환산</a>, 실제 판단이 필요하면 <a href="contact.html">상담 신청</a>으로 문의하실 수 있습니다.</p>
+    </section>
+    <!-- guide:end -->
+      </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a> · <a href="https://pf.kakao.com/_xgxfENX/chat" target="_blank" rel="noopener">카카오톡 채널 문의</a> · <a href="https://www.youtube.com/@cpatool_cpa" target="_blank" rel="noopener">유튜브</a> · <a href="https://blog.naver.com/ybackh" target="_blank" rel="noopener">네이버 블로그</a> · <a href="https://www.youtube.com/@gongsi_cpa" target="_blank" rel="noopener">공시 읽는 회계사(유튜브)</a> · <a href="https://www.youtube.com/@founder_cpa" target="_blank" rel="noopener">창업자 재무 과외(유튜브)</a> · <a href="https://www.youtube.com/@news_cpa" target="_blank" rel="noopener">회계사가 본 뉴스(유튜브)</a> · <a href="https://www.instagram.com/cpatool/" target="_blank" rel="noopener">인스타그램</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+  <script src="assets/labor-rules.js"></script>
+  <script src="assets/labor2-rules.js"></script>
+  <script src="assets/tool-engine.js"></script>
+  <script src="assets/more-tools.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+  <!-- Cloudflare Web Analytics (쿠키 없음, 개인정보처리방침 9항) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3d07e2284bc1440994f639ea79477e36"}'></script>
+</body>
+</html>

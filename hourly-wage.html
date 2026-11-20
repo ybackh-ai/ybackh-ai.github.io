@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="naver-site-verification" content="60d698d04287e09c54d415c82df5f87193e1fc03">
+  <meta name="google-site-verification" content="WEVGAcfT1LM_DTxTOfXPEoC7WTuA0JpTw47BiNw0DFQ">
+  <title>월급 시급 환산 계산기 (통상임금 209시간) | 기업 회계 도구</title>
+  <meta name="description" content="월 기본급과 고정 수당, 1주 소정근로시간으로 월 통상임금 산정 기준시간(주 40시간이면 209시간)을 구하고 통상 시급·일급을 계산해 최저임금과 비교합니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="월급 시급 환산 계산기 (통상임금 209시간) | 기업 회계 도구">
+  <meta property="og:description" content="월 기본급과 고정 수당, 1주 소정근로시간으로 월 통상임금 산정 기준시간(주 40시간이면 209시간)을 구하고 통상 시급·일급을 계산해 최저임금과 비교합니다.">
+  <meta property="og:url" content="https://cpatool.co.kr/hourly-wage.html">
+  <link rel="canonical" href="https://cpatool.co.kr/hourly-wage.html">
+  <meta property="og:image" content="https://cpatool.co.kr/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="기업 회계 도구 — 외부감사·내부회계·가치평가·세무 무료 계산기">
+  <meta name="twitter:card" content="summary_large_image">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-tool="hourly-wage">
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>월급 시급 환산 계산기 (통상임금 209시간)</h1>
+      <p>내 월급을 시급으로 바꾸면 얼마인지, 최저임금보다 많은지 확인해 보세요. 월급과 주당 근무시간만 넣으면 됩니다.</p>
+    </div>
+    <p class="basis-date">법령 기준 확인일 2026년 11월 20일(법제처 국가법령정보센터 현행 법령). 근거: 「근로기준법 시행령」 제6조, 최저임금 고시(2026년 10,320원, 2027년 10,700원).</p>
+    <div class="notice">통상임금에 들어가는 수당은 정기적·일률적으로 소정근로에 지급하기로 정한 것입니다. 어떤 수당이 들어가는지는 회사 규정과 판례에 따라 따져야 합니다.</div>
+
+    <section>
+      <form id="tool-form" novalidate><noscript><p>이 계산기는 자바스크립트가 필요합니다.</p></noscript></form>
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+<!-- guide:start -->
+    <section class="guide" aria-labelledby="guide-h">
+      <h2 id="guide-h">209시간은 어디서 나오나요</h2>
+      <p>월급을 시급으로 바꿀 때는 월 통상임금 산정 기준시간으로 나눕니다(근로기준법 시행령 제6조제2항제4호). 1주 소정근로시간 40시간에 유급 주휴 8시간을 더한 48시간에 1년 평균 주 수(365 ÷ 7)를 곱하고 12로 나누면 약 208.6시간, 반올림해 209시간입니다.</p>
+      <p>주 20시간 근무라면 주휴 4시간을 더한 24시간으로 같은 계산을 해 약 104시간입니다. 통상 일급은 시급에 1일 소정근로시간을 곱합니다.</p>
+      <h3>자주 묻는 질문</h3>
+      <details><summary>월급 250만원이면 시급은?</summary><p>주 40시간 기준 2,500,000 ÷ 209 = 약 11,961원입니다. 2026년 최저임금 10,320원보다 많습니다.</p></details>
+      <details><summary>최저임금 위반 여부도 이걸로 보면 되나요?</summary><p>여기서는 기본급만으로 비교합니다. 최저임금에 넣는 임금의 범위는 최저임금법 제6조에 따로 정해져 있어 상여금·복리후생비 일부가 들어갈 수 있습니다. <a href="min-wage.html">주휴수당·최저임금 월급</a>도 함께 보세요.</p></details>
+      <p class="hint">함께 보면 좋은 도구는 <a href="min-wage.html">주휴수당·최저임금 월급</a>, <a href="overtime-pay.html">연장·야간·휴일수당</a>, 실제 판단이 필요하면 <a href="contact.html">상담 신청</a>으로 문의하실 수 있습니다.</p>
+    </section>
+    <!-- guide:end -->
+      </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a> · <a href="https://pf.kakao.com/_xgxfENX/chat" target="_blank" rel="noopener">카카오톡 채널 문의</a> · <a href="https://www.youtube.com/@cpatool_cpa" target="_blank" rel="noopener">유튜브</a> · <a href="https://blog.naver.com/ybackh" target="_blank" rel="noopener">네이버 블로그</a> · <a href="https://www.youtube.com/@gongsi_cpa" target="_blank" rel="noopener">공시 읽는 회계사(유튜브)</a> · <a href="https://www.youtube.com/@founder_cpa" target="_blank" rel="noopener">창업자 재무 과외(유튜브)</a> · <a href="https://www.youtube.com/@news_cpa" target="_blank" rel="noopener">회계사가 본 뉴스(유튜브)</a> · <a href="https://www.instagram.com/cpatool/" target="_blank" rel="noopener">인스타그램</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+  <script src="assets/labor-rules.js"></script>
+  <script src="assets/labor2-rules.js"></script>
+  <script src="assets/tool-engine.js"></script>
+  <script src="assets/more-tools.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+  <!-- Cloudflare Web Analytics (쿠키 없음, 개인정보처리방침 9항) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3d07e2284bc1440994f639ea79477e36"}'></script>
+</body>
+</html>
