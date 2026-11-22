@@ -161,7 +161,7 @@
     'stock-option': [['WyMopcdTxLA', '스톡옵션 공정가치 계산']],
     'inherit-gift': [['N-85bgrYViY', '상속세 과세표준 20억이면 얼마?'], ['0Lc0eftwXxM', '자녀 증여세 2026']],
     'loan-interest': [['dveLPNuVYjc', '가지급금 인정이자 2026']],
-    'capital-impairment': [['ivgUEVG_81o', '자본잠식 뜻과 계산법']],
+    'capital-impairment': [['ivgUEVG_81o', '자본잠식 뜻과 계산법'], ['pw_ysXnu3Do', '파라타항공 분기 손실 494억→184억 (공시 해설)']],
     'corp-vs-personal': [['8NN1tXzkNkw', '이익 3억, 법인이 유리할까?'], ['jC5iZJCLVFM', '법인 vs 개인사업자 세금 비교']],
     'tax-calendar': [['FyX-kP1hA-o', '법인 세무 신고 일정']],
     'tax-sme': [['HfS9aiG3qFM', '세법상 중소기업 기준']],
@@ -178,7 +178,7 @@
     'related-party': [['hiQTKFYLt8g', '특수관계인 범위']],
     'equity-bridge': [['HIEGwhE4KE0', '기업가치 150억이면 주식값도 150억?'], ['83hnFxzAtnY', '회사 가치 300억, 주주 몫은?']],
     'valuation-needs': [['tVtXaagsKEQ', '회사 주식 평가, 어떤 걸 받아야 할까?']],
-    'fin-ratio': [['I07k-BbmdTM', '은행·투자자가 먼저 보는 재무비율']],
+    'fin-ratio': [['I07k-BbmdTM', '은행·투자자가 먼저 보는 재무비율'], ['gdv6mj0fu2A', '부채비율·유동비율 읽는 법 (공시 해설)']],
     'lease': [['4fPbUu3Y5jg', '리스 회계처리, 월세 200만원 사무실']],
     'allowance': [['dunN_J1njZI', '대손충당금 계산']],
     'retirement': [['ybWhwGgwACY', '퇴직급여충당부채 계산']],
@@ -191,6 +191,12 @@
     'merger-price': [['ktLNlK-3Poc', '상장사 합병가액 계산']],
     'pf-feasibility': [['Jvd5G8h6gw0', '부동산 PF 사업성 계산']],
     'qualified-reorg': [['oNgPfkCLArQ', '적격합병 요건']],
+    'audit-fee': [['fBPjumbp4b0', '외부감사 보수는 어떻게 정해질까']],
+    'exec-retirement': [['JHSpRbSZC40', '임원 퇴직금 한도 2026'], ['L4UiHVJm11o', '임원 퇴직금 5억, 비용 인정은?']],
+    'capital-gift': [['bdhBZt-PVVc', '불공정 증자·감자 증여세']],
+    'sincere-filing': [['Fce_3V3qO4A', '성실신고확인 대상 2026']],
+    'break-even': [['sUUiRJ0AvqM', '런웨이·번레이트 (창업자 재무 과외)']],
+    'working-capital': [['1vgwYsAivQ4', '재고자산 회전일수 읽기 (공시 해설)']],
   };
 
   var box = document.getElementById('result');
