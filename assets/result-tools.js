@@ -178,7 +178,7 @@
     'related-party': [['hiQTKFYLt8g', '특수관계인 범위']],
     'equity-bridge': [['HIEGwhE4KE0', '기업가치 150억이면 주식값도 150억?'], ['83hnFxzAtnY', '회사 가치 300억, 주주 몫은?']],
     'valuation-needs': [['tVtXaagsKEQ', '회사 주식 평가, 어떤 걸 받아야 할까?']],
-    'fin-ratio': [['I07k-BbmdTM', '은행·투자자가 먼저 보는 재무비율'], ['gdv6mj0fu2A', '부채비율·유동비율 읽는 법 (공시 해설)']],
+    'fin-ratio': [['I07k-BbmdTM', '은행·투자자가 먼저 보는 재무비율'], ['gdv6mj0fu2A', '부채비율·유동비율 읽는 법 (공시 해설)'], ['iKANxydKr2s', '영업이익 늘었는데 순이익 감소, 한화오션 (공시 해설)']],
     'lease': [['4fPbUu3Y5jg', '리스 회계처리, 월세 200만원 사무실']],
     'allowance': [['dunN_J1njZI', '대손충당금 계산']],
     'retirement': [['ybWhwGgwACY', '퇴직급여충당부채 계산']],
@@ -197,6 +197,10 @@
     'sincere-filing': [['Fce_3V3qO4A', '성실신고확인 대상 2026']],
     'break-even': [['sUUiRJ0AvqM', '런웨이·번레이트 (창업자 재무 과외)']],
     'working-capital': [['1vgwYsAivQ4', '재고자산 회전일수 읽기 (공시 해설)']],
+    'year-end-tax': [['gWSq6hjgTfY', '연봉 5천, 연말정산 40만원 토해낸다면?']],
+    'pension-credit': [['gWSq6hjgTfY', '연금저축 넣으면 연말정산 환급은?']],
+    'parental-leave': [['-nIAoGcXBKg', '육아휴직 급여, 월급 300이든 500이든 2,310만원? (뉴스 해설)']],
+    'annual-leave': [['siBuh4c5SZs', '퇴사 직원 미사용 연차수당 (창업자 재무 과외)']],
   };
 
   var box = document.getElementById('result');
