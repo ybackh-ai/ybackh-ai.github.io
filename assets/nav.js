@@ -108,7 +108,9 @@
   var key = 'cpt_visit_day', counted = false;
   try { counted = localStorage.getItem(key) === today; } catch (e) {}
   var live = location.hostname === 'cpatool.co.kr' || location.hostname === 'www.cpatool.co.kr';
-  fetch(API, { method: live && !counted ? 'POST' : 'GET', cache: 'no-store' })
+  // 자동 화면 캡처와 검색 로봇은 방문 수에 넣지 않습니다(조회만 함, 2026-11-23).
+  var automated = navigator.webdriver === true || /HeadlessChrome|Lighthouse|Googlebot|bingbot|Yeti|Daumoa|AhrefsBot|SemrushBot|crawler|spider/.test(navigator.userAgent || '');
+  fetch(API, { method: live && !counted && !automated ? 'POST' : 'GET', cache: 'no-store' })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (d) {
       if (!d || typeof d.total !== 'number') return;
