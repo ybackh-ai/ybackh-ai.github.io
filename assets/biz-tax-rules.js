@@ -36,8 +36,11 @@
   }
   // 부동소수 오차(예: 19599.9999…)로 1원 덜 나오는 것을 막고 원 미만을 버린다
   function fl(x) { return Math.floor(x + 1e-6); }
+  // 국민연금 기준소득월액 하한·상한: 복지부고시 제2026-31호(2026년 7월분~2027년 6월분), 국민연금법 시행령 제5조제5항
+  var PENSION_BASE = { min: 410000, max: 6590000 };
+  function pensionBase(pay) { return Math.min(PENSION_BASE.max, Math.max(PENSION_BASE.min, pay)); }
   function employeeIns(pay) {
-    return { pension: fl(pay * INS.pension), health: fl(pay * INS.health / 2), ltc: fl(pay * INS.ltc / 2), emp: fl(pay * INS.unemp) };
+    return { pension: fl(pensionBase(pay) * INS.pension), health: fl(pay * INS.health / 2), ltc: fl(pay * INS.ltc / 2), emp: fl(pay * INS.unemp) };
   }
 
   // 1. 부가가치세
@@ -91,7 +94,7 @@
     if (r.errors.length) { r.status = 'INVALID'; return r; }
     var pay = (m - nt) * MAN, gross = m * MAN;
     var stab = INS.stab[input.band] !== undefined ? INS.stab[input.band] : INS.stab.u150;
-    r.pension = fl(pay * INS.pension); r.health = fl(pay * INS.health / 2); r.ltc = fl(pay * INS.ltc / 2);
+    r.pension = fl(pensionBase(pay) * INS.pension); r.health = fl(pay * INS.health / 2); r.ltc = fl(pay * INS.ltc / 2);
     r.employment = fl(pay * (INS.unemp + stab)); r.accident = fl(pay * acc / 100);
     r.monthlyEmployer = r.pension + r.health + r.ltc + r.employment + r.accident;
     r.annualSalary = gross * 12; r.annualEmployer = r.monthlyEmployer * 12;
@@ -101,7 +104,7 @@
     r.status = 'OK';
     r.basis.push('국민연금 사용자 부담 4.75%(「국민연금법」 부칙 법률 제20903호 제4조, 2026년), 건강보험 7.19%의 절반(「국민건강보험법 시행령」 제44조), 장기요양 0.9448%의 절반(「노인장기요양보험법 시행령」 제4조)');
     r.basis.push('고용보험 실업급여 0.9% + 고용안정·직업능력개발 0.25~0.85%(「고용보험 및 산업재해보상보험의 보험료징수 등에 관한 법률 시행령」 제12조), 퇴직금 적립 = 1년에 30일분 평균임금(「근로자퇴직급여 보장법」 제8조)을 월 급여 1개월분으로 추정');
-    r.notes.push('보험료는 비과세 수당을 뺀 보수에 요율을 곱해 원 단위로 계산했습니다. 국민연금 기준소득월액 상·하한(고시)과 고지액의 10원 미만 절사는 반영하지 않았습니다.');
+    r.notes.push('보험료는 비과세 수당을 뺀 보수에 요율을 곱해 원 단위로 계산했습니다. 국민연금은 2026년 7월~2027년 6월 기준소득월액 하한 41만원·상한 659만원을 적용했습니다. 기준소득월액의 천원 미만 절사와 고지액의 10원 미만 절사는 반영하지 않았습니다.');
     r.notes.push('산재보험료율은 업종마다 고용노동부 고시로 정해집니다. 근로복지공단 고지서의 요율을 넣으세요.');
     return r;
   }
@@ -245,6 +248,7 @@
     r.basis.push('「소득세법」 제47조(근로소득공제), 제50조(기본공제 1명 150만원), 제51조의3(연금보험료공제), 제52조(건강·고용보험료 공제), 제55조(세율), 제59조(근로소득세액공제), 제59조의4제9항(표준세액공제 13만원), 지방소득세는 소득세의 10%');
     r.notes.push('매달 떼는 세금은 근로소득 간이세액표(시행령 별표)로 정해져 이 계산과 조금 다를 수 있습니다. 이 계산은 1년치 결정세액을 12로 나눈 값이라, 연말정산 뒤의 실제 부담에 가깝습니다.');
     r.notes.push('자녀세액공제, 신용카드·의료비·교육비·월세 공제 등은 넣지 않았습니다. 넣으면 세금이 더 줄어듭니다.');
+    r.notes.push('국민연금은 2026년 7월~2027년 6월 기준소득월액 하한 41만원·상한 659만원을 적용했습니다(보건복지부고시 제2026-31호). 천원 미만 절사는 반영하지 않았습니다.');
     return r;
   }
 
