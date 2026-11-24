@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="naver-site-verification" content="60d698d04287e09c54d415c82df5f87193e1fc03">
+  <meta name="google-site-verification" content="WEVGAcfT1LM_DTxTOfXPEoC7WTuA0JpTw47BiNw0DFQ">
+  <title>주당이익 기준서 해설, EPS는 어떻게 계산하나요? (K-IFRS 1033, 일반기업회계기준 26장) | 기업 회계 도구</title>
+  <meta name="description" content="주당이익을 공시하는 회사(K-IFRS 제1033호 문단 2), 기본주당이익 계산(문단 10·12·19), 무상증자·주식분할 소급 조정(문단 26·64), 희석주당이익(문단 31·41), 일반기업회계기준 26장(기본주당이익만), 유상증자 예시를 정리했습니다.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="주당이익 기준서 해설, EPS는 어떻게 계산하나요? (K-IFRS 1033, 일반기업회계기준 26장)">
+  <meta property="og:description" content="주당이익을 공시하는 회사(K-IFRS 제1033호 문단 2), 기본주당이익 계산(문단 10·12·19), 무상증자·주식분할 소급 조정(문단 26·64), 희석주당이익(문단 31·41), 일반기업회계기준 26장(기본주당이익만), 유상증자 예시를 정리했습니다.">
+  <meta property="og:url" content="https://cpatool.co.kr/kifrs-eps.html">
+  <link rel="canonical" href="https://cpatool.co.kr/kifrs-eps.html">
+  <meta property="og:image" content="https://cpatool.co.kr/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="기업 회계 도구 — 외부감사·내부회계·가치평가·세무 무료 계산기">
+  <meta name="twitter:card" content="summary_large_image">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+  <!-- jsonld:start -->
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"주당이익 기준서 해설, EPS는 어떻게 계산하나요? (K-IFRS 1033, 일반기업회계기준 26장)","description":"주당이익을 공시하는 회사(K-IFRS 제1033호 문단 2), 기본주당이익 계산(문단 10·12·19), 무상증자·주식분할 소급 조정(문단 26·64), 희석주당이익(문단 31·41), 일반기업회계기준 26장(기본주당이익만), 유상증자 예시를 정리했습니다.","inLanguage":"ko-KR","datePublished":"2026-11-24","dateModified":"2026-11-24","mainEntityOfPage":"https://cpatool.co.kr/kifrs-eps.html","image":"https://cpatool.co.kr/assets/og-image.png","author":{"@type":"Organization","name":"기업 회계 도구 (공인회계사 운영)","url":"https://cpatool.co.kr/"},"publisher":{"@type":"Organization","name":"기업 회계 도구","url":"https://cpatool.co.kr/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"기업 회계 도구","item":"https://cpatool.co.kr/"},{"@type":"ListItem","position":2,"name":"기준서 해설","item":"https://cpatool.co.kr/standards.html"},{"@type":"ListItem","position":3,"name":"주당이익 기준서 해설, EPS는 어떻게 계산하나요? (K-IFRS 1033, 일반기업회계기준 26장)","item":"https://cpatool.co.kr/kifrs-eps.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"주당이익은 어느 회사가 공시하나요?","acceptedAnswer":{"@type":"Answer","text":"K-IFRS는 보통주나 잠재적보통주가 공개 시장에서 거래되는 회사, 공개 시장에서 보통주를 발행하려고 재무제표를 증권감독기구 등에 제출하는 회사에 적용합니다(K-IFRS 제1033호 문단 2). 상장사와 상장 준비 회사가 대상입니다. 일반기업회계기준 26장은 기본주당이익의 산정방법과 공시를 정하지만, 희석주당이익은 다루지 않고(26.1) 누가 언제 보고해야 하는지도 정하지 않습니다(26.2)."}},{"@type":"Question","name":"기본주당이익은 어떻게 계산하나요?","acceptedAnswer":{"@type":"Answer","text":"보통주에 귀속되는 당기순손익을 그 기간 유통된 보통주식수의 가중평균으로 나눕니다(문단 10·19). 분자에서는 자본으로 분류된 우선주에 대한 세후 우선주 배당금 등을 빼야 합니다(문단 12). 보통주 주주 몫만 남기기 위해서입니다."}},{"@type":"Question","name":"무상증자나 주식분할이 있으면 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"돈이 들어오지 않고 주식 수만 늘어난 무상증자·주식분할(또는 주식병합)은 처음부터 그 주식이 있었던 것처럼 조정합니다(문단 26). 비교 표시하는 과거 기간의 주당이익도 소급해서 다시 계산합니다(문단 64). 보고기간 후 재무제표 발행 승인 전에 이런 변동이 생겨도 새 주식 수로 계산합니다(문단 64). 상장 직전 액면분할을 많이 하므로 꼭 챙겨야 하는 부분입니다."}},{"@type":"Question","name":"희석주당이익은 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"전환사채, 전환우선주, 스톡옵션처럼 나중에 보통주가 될 수 있는 잠재적보통주가 모두 보통주로 바뀌었다고 가정하고 계산한 주당이익입니다. 분자와 분모를 모두 조정합니다(문단 31). 다만 전환하면 주당이익이 줄어드는(희석되는) 경우만 반영합니다. 오히려 주당이익을 늘리는 반희석 효과가 있는 잠재적보통주는 빼고 계산합니다(문단 41)."}}]}</script>
+  <!-- jsonld:end -->
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools">회계 도구</a>
+        <a href="standards.html" aria-current="page">기준서 해설</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap article">
+    <p class="meta"><a href="standards.html">기준서 해설</a> · 2026-11-24 · 공인회계사 작성</p>
+    <h1>주당이익 기준서 해설, EPS는 어떻게 계산하나요? (K-IFRS 1033, 일반기업회계기준 26장)</h1>
+    <p>상장을 준비하거나 투자자에게 실적을 설명할 때 "주당이익은 어떻게 계산하나요?"라는 질문이 나옵니다. 순이익을 주식 수로 나누는 단순한 계산 같지만, 기중에 주식 수가 바뀌면 가중평균을 해야 합니다.</p>
+    <div class="notice"><strong>이 글의 질문</strong><ol><li><a href="#q1">주당이익은 어느 회사가 공시하나요?</a></li><li><a href="#q2">기본주당이익은 어떻게 계산하나요?</a></li><li><a href="#q3">무상증자나 주식분할이 있으면 어떻게 하나요?</a></li><li><a href="#q4">희석주당이익은 무엇인가요?</a></li><li><a href="#q5">예시: 기중 유상증자가 있으면</a></li></ol></div>
+
+    <h2 id="q1">주당이익은 어느 회사가 공시하나요?</h2>
+    <p>K-IFRS는 보통주나 잠재적보통주가 공개 시장에서 거래되는 회사, 공개 시장에서 보통주를 발행하려고 재무제표를 증권감독기구 등에 제출하는 회사에 적용합니다(K-IFRS 제1033호 문단 2). 상장사와 상장 준비 회사가 대상입니다.</p>
+    <p>일반기업회계기준 26장은 기본주당이익의 산정방법과 공시를 정하지만, 희석주당이익은 다루지 않고(26.1) 누가 언제 보고해야 하는지도 정하지 않습니다(26.2).</p>
+
+    <h2 id="q2">기본주당이익은 어떻게 계산하나요?</h2>
+    <p>보통주에 귀속되는 당기순손익을 그 기간 유통된 보통주식수의 가중평균으로 나눕니다(문단 10·19).</p>
+    <p>분자에서는 자본으로 분류된 우선주에 대한 세후 우선주 배당금 등을 빼야 합니다(문단 12). 보통주 주주 몫만 남기기 위해서입니다.</p>
+
+    <h2 id="q3">무상증자나 주식분할이 있으면 어떻게 하나요?</h2>
+    <p>돈이 들어오지 않고 주식 수만 늘어난 무상증자·주식분할(또는 주식병합)은 처음부터 그 주식이 있었던 것처럼 조정합니다(문단 26). 비교 표시하는 과거 기간의 주당이익도 소급해서 다시 계산합니다(문단 64).</p>
+    <p>보고기간 후 재무제표 발행 승인 전에 이런 변동이 생겨도 새 주식 수로 계산합니다(문단 64). 상장 직전 액면분할을 많이 하므로 꼭 챙겨야 하는 부분입니다.</p>
+
+    <h2 id="q4">희석주당이익은 무엇인가요?</h2>
+    <p>전환사채, 전환우선주, 스톡옵션처럼 나중에 보통주가 될 수 있는 잠재적보통주가 모두 보통주로 바뀌었다고 가정하고 계산한 주당이익입니다. 분자와 분모를 모두 조정합니다(문단 31).</p>
+    <p>다만 전환하면 주당이익이 줄어드는(희석되는) 경우만 반영합니다. 오히려 주당이익을 늘리는 반희석 효과가 있는 잠재적보통주는 빼고 계산합니다(문단 41).</p>
+
+    <h2 id="q5">예시: 기중 유상증자가 있으면</h2>
+    <p>올해 순이익 12억원, 기초 보통주 100만 주, 7월 1일 유상증자로 20만 주를 새로 발행했다고 가정합니다(우선주 없음).</p>
+    <div class="table-scroll"><table class="basis"><tbody><tr><th>기초 주식</th><td>100만 주 × 12/12 = 100만 주</td></tr><tr><th>7월 1일 발행분</th><td>20만 주 × 6/12 = 10만 주</td></tr><tr><th>가중평균유통보통주식수</th><td>110만 주</td></tr><tr><th>기본주당이익</th><td>약 1,091원 (12억원 ÷ 110만 주)</td></tr><tr><th>만약 유상증자가 아니라 무상증자였다면</th><td>기초부터 120만 주로 보아 1,000원</td></tr></tbody></table></div>
+    <p>스톡옵션이나 전환사채가 있으면 희석주당이익을 따로 계산해야 합니다. 주식 수 변화는 아래 지분 희석 계산기로 확인해 보세요.</p>
+
+    <h2>원문과 계산기</h2>
+    <p>원문은 한국회계기준원 회계기준 열람 서비스에서 볼 수 있습니다. <a href="https://db.kasb.or.kr/s/1033" target="_blank" rel="noopener">K-IFRS 제1033호</a> · <a href="https://db.kasb.or.kr/s/26" target="_blank" rel="noopener">일반기업회계기준 제26장</a></p>
+    <div class="btn-row"><a class="btn" href="dilution.html">지분 희석 계산기</a><a class="btn secondary" href="option-limit.html">스톡옵션 부여 한도</a><a class="btn secondary" href="ipo-prep.html">IPO 준비 체크리스트</a></div>
+    <div class="notice" style="margin-top:24px">이 글은 2026-11-24 현재 K-IFRS와 일반기업회계기준 원문을 바탕으로 한 일반적인 안내이며 개별 자문이 아닙니다. 회계기준 원문을 옮기지 않고 요약했으므로 실제 적용은 원문과 사실관계를 함께 확인해 주세요. 판단이 필요하면 <a href="contact.html">상담 신청</a>으로 문의해 주세요.</div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a> · <a href="https://pf.kakao.com/_xgxfENX/chat" target="_blank" rel="noopener">카카오톡 채널 문의</a> · <a href="https://www.youtube.com/@cpatool_cpa" target="_blank" rel="noopener">유튜브</a> · <a href="https://blog.naver.com/ybackh" target="_blank" rel="noopener">네이버 블로그</a> · <a href="https://www.youtube.com/@gongsi_cpa" target="_blank" rel="noopener">공시 읽는 회계사(유튜브)</a> · <a href="https://www.youtube.com/@founder_cpa" target="_blank" rel="noopener">창업자 재무 과외(유튜브)</a> · <a href="https://www.youtube.com/@news_cpa" target="_blank" rel="noopener">회계사가 본 뉴스(유튜브)</a> · <a href="https://www.instagram.com/cpatool/" target="_blank" rel="noopener">인스타그램</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+  <script src="assets/nav.js"></script>
+  <!-- Cloudflare Web Analytics (쿠키 없음, 개인정보처리방침 9항) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3d07e2284bc1440994f639ea79477e36"}'></script>
+</body>
+</html>
