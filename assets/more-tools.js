@@ -347,7 +347,7 @@
       { type: 'rows', id: 'rows', label: '기말 일시적차이 (세무조정 유보 잔액)', rows: 4, addLabel: '항목 추가', hint: '차감할 차이 예: 대손충당금 한도초과, 미지급비용, 감가상각 부인액. 가산할 차이 예: 미수이자, 일시상각충당금.',
         columns: [{ key: 'name', label: '항목', type: 'text' }, { key: 'amount', label: '금액' }, { key: 'type', label: '구분', type: 'select', options: [['deductible', '차감할 차이(자산)'], ['taxable', '가산할 차이(부채)']] }] },
       { type: 'two', items: [
-        { type: 'number', id: 'rate', label: '적용 세율(지방소득세 포함)', unit: '%', placeholder: '예: 20.9' },
+        { type: 'number', id: 'rate', label: '적용 세율(지방소득세 포함)', unit: '%', placeholder: '예: 22 (2026년 과세표준 2억~200억원 구간, 법인세 20%+지방 2%)' },
         { type: 'number', id: 'priorDta', label: '기초 이연법인세자산', placeholder: '없으면 비움' },
         { type: 'number', id: 'priorDtl', label: '기초 이연법인세부채', placeholder: '없으면 비움' }] },
       { type: 'check', id: 'recoverable', value: true, label: '앞으로 과세소득이 충분해 차감할 차이를 실현할 수 있습니다' }
