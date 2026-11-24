@@ -160,7 +160,7 @@
     'stock-option-tax': [['-2h2PTuSfYw', '스톡옵션 부여 한도와 행사 세금']],
     'stock-option': [['WyMopcdTxLA', '스톡옵션 공정가치 계산']],
     'inherit-gift': [['N-85bgrYViY', '상속세 과세표준 20억이면 얼마?'], ['0Lc0eftwXxM', '자녀 증여세 2026']],
-    'loan-interest': [['dveLPNuVYjc', '가지급금 인정이자 2026']],
+    'loan-interest': [['dveLPNuVYjc', '가지급금 인정이자 2026'], ['S0-5yQ5UiAA', '대표 가지급금 1억, 이자 안 내면? (창업자 재무 과외)']],
     'capital-impairment': [['ivgUEVG_81o', '자본잠식 뜻과 계산법'], ['pw_ysXnu3Do', '파라타항공 분기 손실 494억→184억 (공시 해설)']],
     'corp-vs-personal': [['8NN1tXzkNkw', '이익 3억, 법인이 유리할까?'], ['jC5iZJCLVFM', '법인 vs 개인사업자 세금 비교']],
     'tax-calendar': [['FyX-kP1hA-o', '법인 세무 신고 일정']],
@@ -201,6 +201,14 @@
     'pension-credit': [['gWSq6hjgTfY', '연금저축 넣으면 연말정산 환급은?']],
     'parental-leave': [['-nIAoGcXBKg', '육아휴직 급여, 월급 300이든 500이든 2,310만원? (뉴스 해설)']],
     'annual-leave': [['siBuh4c5SZs', '퇴사 직원 미사용 연차수당 (창업자 재무 과외)']],
+    'unused-leave': [['siBuh4c5SZs', '퇴사 직원 미사용 연차수당 (창업자 재무 과외)']],
+    'net-salary': [['C1yz1Py7k4A', '연봉 5천 실수령액 2026']],
+    'severance-pay': [['Q7BZdvO1ThE', '5년 다닌 직원 퇴직금 (창업자 재무 과외)']],
+    'sme-employee-tax': [['AOs3Cl5mDq4', '청년 직원 소득세 90% 감면 (창업자 재무 과외)']],
+    'exit-waterfall': [['TC0EI5WnCgY', '드래그얼롱·태그얼롱 (창업자 재무 과외)'], ['uEc8zdugwSA', '청산우선권, 100억에 팔면 창업자 몫은? (창업자 재무 과외)']],
+    'cap-table': [['HKSDkSvvmMY', '투자 세 번 받으면 창업자 지분은? (창업자 재무 과외)']],
+    'foreign-stock-tax': [['tB3vWykbvXs', '해외주식 손실, 12월 안에 팔면?']],
+    'runway': [['sUUiRJ0AvqM', '런웨이·번레이트 (창업자 재무 과외)']],
   };
 
   var box = document.getElementById('result');
