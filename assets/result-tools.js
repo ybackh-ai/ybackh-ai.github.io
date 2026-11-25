@@ -211,10 +211,25 @@
     'runway': [['sUUiRJ0AvqM', '런웨이·번레이트 (창업자 재무 과외)']],
   };
 
+  // 계산기 → 기준서 해설(standards.html의 kifrs-*.html) 연결 (2026-11-25 운영자 "구조도 보강")
+  var STD = {
+    'lease': [['kifrs-lease.html', '리스']], 'depreciation': [['kifrs-ppe.html', '유형자산·감가상각']], 'allowance': [['kifrs-expected-credit-loss.html', '대손충당금(기대신용손실)']],
+    'retirement': [['kifrs-retirement-benefit.html', '퇴직급여']], 'impairment': [['kifrs-impairment.html', '자산손상'], ['kifrs-intangible.html', '무형자산 일반']],
+    'consolidation': [['kifrs-consolidation.html', '연결재무제표'], ['kifrs-joint-arrangement.html', '공동기업·공동영업']], 'ppa': [['kifrs-business-combination.html', '사업결합·PPA']],
+    'stock-option': [['kifrs-stock-option.html', '스톡옵션(주식기준보상)']], 'rcps-cb': [['kifrs-rcps-cb.html', 'RCPS·CB'], ['kifrs-perpetual-bond.html', '신종자본증권(영구채)']],
+    'deferred-tax': [['kifrs-deferred-tax.html', '이연법인세']], 'revenue-check': [['kifrs-revenue.html', '수익인식'], ['kifrs-construction.html', '진행기준 매출'], ['kifrs-loyalty-voucher.html', '포인트·상품권 매출']],
+    'dev-cost': [['kifrs-intangible-dev.html', '개발비'], ['kifrs-intangible.html', '무형자산 일반']], 'fx-translation': [['kifrs-fx.html', '외화환산']], 'inventory-lcm': [['kifrs-inventory.html', '재고자산']],
+    'gov-grant': [['kifrs-gov-grant.html', '정부보조금']], 'unused-leave': [['kifrs-short-term-benefit.html', '연차수당·단기종업원급여']], 'accrual-prepaid': [['kifrs-accrual.html', '발생주의와 기간귀속']],
+    'effective-interest': [['kifrs-borrowings.html', '차입금·사채'], ['kifrs-debt-instrument.html', '채무상품 분류']], 'capital-impairment': [['kifrs-going-concern.html', '계속기업 가정'], ['kifrs-equity.html', '자본(자기주식·감자)']],
+    'fin-ratio': [['kifrs-presentation.html', '재무제표 표시'], ['kifrs-perpetual-bond.html', '신종자본증권(영구채)']], 'distributable-profit': [['kifrs-dividend.html', '배당과 이익준비금']],
+    'working-capital': [['kifrs-supplier-finance.html', '공급자금융약정'], ['kifrs-receivable-transfer.html', '매출채권 양도']], 'operating-cashflow': [['kifrs-cash-flow.html', '현금흐름표']],
+    'sme-check': [['kifrs-sme-special.html', '중소기업 회계처리 특례']], 'audit-check': [['kifrs-sme-special.html', '중소기업 회계처리 특례'], ['kifrs-first-adoption.html', 'K-IFRS 최초 도입']]
+  };
   var box = document.getElementById('result');
   if (!box) return;
   var page = (location.pathname.split('/').pop() || '').replace(/\.html$/, '');
   var related = RELATED[page] || [];
+  var stds = STD[page] || [];
   var videos = VIDEOS[page] || [];
 
   // ── 결과 링크 공유: 입력값을 주소의 # 뒤에만 담는다(# 뒤는 서버로 전송되지 않음).
@@ -344,6 +359,9 @@
     }
     if (related.length) {
       html += '<p class="related-title">함께 보면 좋은 도구</p><ul class="related">' + related.map(function (r) { return '<li><a href="' + r[0] + '">' + esc(r[1]) + '</a></li>'; }).join('') + '</ul>';
+    }
+    if (stds.length) {
+      html += '<p class="related-title">기준서 해설로 더 알아보기</p><ul class="related">' + stds.map(function (r) { return '<li><a href="' + r[0] + '">' + esc(r[1]) + ' 기준서 해설</a></li>'; }).join('') + '<li><a href="standards.html">기준서 해설 전체(질문 검색)</a></li></ul>';
     }
     html += '<p class="kakao-add">세법이 바뀌면 카카오톡으로 알려 드립니다. <a href="' + KAKAO_ADD + '" target="_blank" rel="noopener">카카오톡 채널 추가하기</a></p>';
     html += '</div>';
