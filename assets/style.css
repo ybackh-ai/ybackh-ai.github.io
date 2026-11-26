@@ -374,3 +374,14 @@ h2 { font-size: 23px; margin: 0 0 16px; }
   .quick-tools a { font-size: 14px; padding: 7px 12px; }
   .tool-group-box > .grid { padding: 2px 10px 12px; }
 }
+
+/* 분야 색 (2026-11-26 A안): 첫 화면 타일·전체 도구 띠·계산기 페이지 머리에 공통. 그룹→색은 nav.js TOOLS의 tone */
+:root{--t-blue:#E6F1FB;--t-blue-i:#0C447C;--t-coral:#FAECE7;--t-coral-i:#712B13;--t-teal:#E1F5EE;--t-teal-i:#085041;--t-purple:#EEEDFE;--t-purple-i:#3C3489;--t-amber:#FAEEDA;--t-amber-i:#633806;--t-green:#EAF3DE;--t-green-i:#27500A;--t-pink:#FBEAF0;--t-pink-i:#72243E}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--t-blue:#0C447C;--t-blue-i:#B5D4F4;--t-coral:#712B13;--t-coral-i:#F5C4B3;--t-teal:#085041;--t-teal-i:#9FE1CB;--t-purple:#3C3489;--t-purple-i:#CECBF6;--t-amber:#633806;--t-amber-i:#FAC775;--t-green:#27500A;--t-green-i:#C0DD97;--t-pink:#72243E;--t-pink-i:#F4C0D1}}
+:root[data-theme="dark"]{--t-blue:#0C447C;--t-blue-i:#B5D4F4;--t-coral:#712B13;--t-coral-i:#F5C4B3;--t-teal:#085041;--t-teal-i:#9FE1CB;--t-purple:#3C3489;--t-purple-i:#CECBF6;--t-amber:#633806;--t-amber-i:#FAC775;--t-green:#27500A;--t-green-i:#C0DD97;--t-pink:#72243E;--t-pink-i:#F4C0D1}
+[data-tone=blue]{--tb:var(--t-blue);--ti:var(--t-blue-i)}[data-tone=coral]{--tb:var(--t-coral);--ti:var(--t-coral-i)}[data-tone=teal]{--tb:var(--t-teal);--ti:var(--t-teal-i)}[data-tone=purple]{--tb:var(--t-purple);--ti:var(--t-purple-i)}[data-tone=amber]{--tb:var(--t-amber);--ti:var(--t-amber-i)}[data-tone=green]{--tb:var(--t-green);--ti:var(--t-green-i)}[data-tone=pink]{--tb:var(--t-pink);--ti:var(--t-pink-i)}
+body[data-tone] .page-title{background:var(--tb);color:var(--ti);border-radius:16px;padding:22px 24px 18px;margin-top:24px}
+body[data-tone] .page-title h1,body[data-tone] .page-title p{color:inherit}
+.page-group{display:inline-block;margin:0 0 6px;font-size:14px;font-weight:700;color:inherit;text-decoration:none}
+.page-group:hover{text-decoration:underline}
+@media (max-width:760px){body[data-tone] .page-title{padding:18px 16px 14px;margin-top:16px}}
