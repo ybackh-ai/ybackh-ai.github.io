@@ -1741,7 +1741,7 @@
       { type: 'radio', id: 'mode', label: '계산 방향', options: [['toMonthly', '보증금 → 월세'], ['toDeposit', '월세 → 보증금']] },
       { type: 'two', items: [
         { type: 'number', id: 'amount', label: '바꿀 보증금 또는 월세', unit: '만원', placeholder: '예: 10000' },
-        { type: 'number', id: 'baseRate', label: '한국은행 기준금리', unit: '%', placeholder: '3.00', step: '0.01', hint: '2026년 10월 22일 결정 3.00%' }] }
+        { type: 'number', id: 'baseRate', label: '한국은행 기준금리', unit: '%', placeholder: '3.25', step: '0.01', hint: '2026년 11월 26일 결정 3.25%' }] }
     ],
     run: function (v) {
       var r = FR().rentConversion(v);

@@ -96,8 +96,8 @@
     var r = base(), num = reader(r.errors);
     var toDeposit = input.mode === 'toDeposit';
     var amt = num(input.amount, toDeposit ? '월세' : '월세로 바꿀 보증금', { positive: true });
-    var br = num(input.baseRate, '한국은행 기준금리', { optional: true, def: 3.0 });
-    if (blank(input.baseRate)) br = 3.0;
+    var br = num(input.baseRate, '한국은행 기준금리', { optional: true, def: 3.25 });
+    if (blank(input.baseRate)) br = 3.25;
     if (r.errors.length) { r.status = 'INVALID'; return r; }
     r.baseRate = br;
     r.capRate = Math.round(Math.min(10, br + 2) * 1000) / 1000;
@@ -105,7 +105,7 @@
     else { r.deposit = Math.round(amt * MAN); r.monthly = Math.round(amt * MAN * r.capRate / 100 / 12); }
     r.status = 'OK';
     r.basis.push('「주택임대차보호법」 제7조의2: 보증금을 월차임으로 전환할 때 월차임 산정률 상한은 연 10%(시행령 제9조제1항)와 한국은행 기준금리 + 연 2%(시행령 제9조제2항) 중 낮은 비율');
-    r.notes.push('기준금리 기본값 3.00%는 2026년 10월 22일 금융통화위원회 결정(언론 보도 기준)입니다. 바뀌었으면 직접 넣으세요.');
+    r.notes.push('기준금리 기본값 3.25%는 2026년 11월 26일 금융통화위원회 결정(통화정책방향 결정문 보도 기준)입니다. 바뀌었으면 직접 넣으세요.');
     r.notes.push(toDeposit ? '월세를 보증금으로 바꾸는 경우(역전환)는 법에 상한이 없어 같은 비율로 환산한 참고값입니다.' : '계약 기간 중이나 갱신 때 보증금을 월세로 바꾸면 이 금액을 넘는 월세는 받을 수 없습니다. 새 계약은 당사자가 정합니다.');
     return r;
   }
