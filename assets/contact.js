@@ -6,6 +6,12 @@
   var errBox = document.getElementById('contact-errors');
   var done = document.getElementById('contact-done');
   var useMailto = !cfg.FORM_ENDPOINT;
+  // 상담 버튼 집계(2026-11-26): 계산기 이름(영문 키)과 버튼 종류만 보낸다. 입력값·개인정보는 보내지 않음(개인정보처리방침 9항). 실제 사이트에서만
+  function consultPing(tool, ev) {
+    if (!/^(www\.)?cpatool\.co\.kr$/.test(location.hostname) || !/^[a-z0-9-]{1,40}$/.test(tool || '') || !navigator.sendBeacon) return;
+    try { navigator.sendBeacon('https://cpatool-counter.ybackh.workers.dev/consult?t=' + tool + '&e=' + ev); } catch (e) { /* 무시 */ }
+  }
+  var fromTool = new URLSearchParams(location.search).get('from') || '';
 
   if (useMailto) {
     document.getElementById('mailto-hint').classList.remove('hidden');
@@ -24,6 +30,7 @@
         var copied = false; try { copied = document.execCommand('copy'); } catch (e) { /* 무시 */ }
         document.body.removeChild(ta);
         if (!copied && navigator.clipboard) { try { navigator.clipboard.writeText(text); copied = true; } catch (e) { /* 무시 */ } }
+        consultPing(fromTool, 'send');
         var win = window.open('https://pf.kakao.com/_xgxfENX/chat', '_blank');
         st.textContent = copied ? '복사했습니다. 열린 카카오톡 채팅창에 붙여 넣고 보내 주세요.' : '복사가 지원되지 않는 환경입니다. 문의 내용을 직접 복사해 주세요.';
         if (!win) st.textContent += ' 창이 열리지 않았다면 위쪽 "카카오톡으로 문의" 버튼을 눌러 주세요.';
@@ -104,6 +111,7 @@
     }
     errBox.innerHTML = '';
     var d = data();
+    consultPing(fromTool, 'send');
 
     if (useMailto) {
       var subject = '[상담 신청] ' + (d.company || d.name) + ' - ' + d.topic;

@@ -346,7 +346,13 @@
     etc: 'loan-repayment dsr-limit ltv-limit prepayment-fee subscription-score'
   };
   function topicOf(p) { for (var k in TOPIC_OF) { if ((' ' + TOPIC_OF[k] + ' ').indexOf(' ' + p + ' ') >= 0) return k; } return 'tax'; }
+  // 상담 버튼 집계(2026-11-26): 계산기 이름(영문 키)과 버튼 종류만 보낸다. 입력값·개인정보는 보내지 않음(개인정보처리방침 9항). 실제 사이트에서만
+  function consultPing(tool, ev) {
+    if (!/^(www\.)?cpatool\.co\.kr$/.test(location.hostname) || !/^[a-z0-9-]{1,40}$/.test(tool || '') || !navigator.sendBeacon) return;
+    try { navigator.sendBeacon('https://cpatool-counter.ybackh.workers.dev/consult?t=' + tool + '&e=' + ev); } catch (e) { /* 무시 */ }
+  }
   function toConsult() {
+    consultPing(page, 'click');
     var text = resultText();
     if (text.length > 1800) text = text.slice(0, 1800) + '\n…(이하 생략)';
     try { sessionStorage.setItem('cptConsult', JSON.stringify({ tool: document.title.split('|')[0].trim(), page: page, text: text })); } catch (e) { /* 저장소 사용 불가: 빈 신청서로 이동 */ }
@@ -379,6 +385,8 @@
     var btn = host.querySelector('[data-copy]'), state = host.querySelector('.copy-state');
     host.querySelector('[data-print]').addEventListener('click', printResult);
     host.querySelector('[data-consult]').addEventListener('click', toConsult);
+    host.querySelector('a.kakao').addEventListener('click', function () { consultPing(page, 'kakao'); });
+    [].forEach.call(box.querySelectorAll('a[href^="contact.html"]'), function (a) { a.addEventListener('click', function () { consultPing(page, 'click'); }); });
     var sb = host.querySelector('[data-share]');
     if (sb) sb.addEventListener('click', function () {
       var url = shareUrl();
