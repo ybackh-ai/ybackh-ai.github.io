@@ -34,7 +34,8 @@
   // 판정기에서 넘어온 경우: 상담 분야와 결과 요약 미리 채우기
   var params = new URLSearchParams(location.search);
   var topic = params.get('topic');
-  if (topic && form.topic.querySelector('option[value="' + topic + '"]')) form.topic.value = topic;
+  // 주소 값을 선택자에 넣지 않는다(따옴표가 들어오면 오류로 아래 제출 처리가 빠져 입력값이 주소창으로 샐 수 있음)
+  if (topic && [].some.call(form.topic.options, function (o) { return o.value === topic; })) form.topic.value = topic;
   try {
     var summary = sessionStorage.getItem('auditCheckSummary');
     if (summary && topic && !form.message.value) form.message.value = summary + '\n\n[추가 문의 내용]\n';
