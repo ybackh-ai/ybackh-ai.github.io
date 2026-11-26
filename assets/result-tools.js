@@ -120,7 +120,17 @@
     'semiannual-withholding': [['withholding.html', '원천징수 세액 계산기'], ['tax-calendar.html', '법인 세무 신고 일정표'], ['labor-cost.html', '직원 인건비 총액']],
     'cap-table': [['dilution.html', '투자 유치 지분 희석'], ['exit-waterfall.html', '엑싯 분배(청산우선권)'], ['option-limit.html', '스톡옵션 부여 한도']],
     'loan-repayment': [['dsr-limit.html', 'DSR 대출 한도'], ['effective-interest.html', '유효이자율 상각표'], ['deposit-interest.html', '예금 이자 세후']],
-    'dsr-limit': [['loan-repayment.html', '대출 이자·상환 계산기'], ['acquisition-tax.html', '주택 취득세'], ['brokerage-fee.html', '중개보수(복비)']],
+    'dsr-limit': [['ltv-limit.html', 'LTV·DSR 대출 한도'], ['loan-repayment.html', '대출 이자·상환 계산기'], ['acquisition-tax.html', '주택 취득세']],
+    'rent-credit': [['year-end-tax.html', '연말정산 미리보기'], ['special-credits.html', '의료비·교육비·기부금 세액공제'], ['rent-conversion.html', '전월세 전환']],
+    'special-credits': [['year-end-tax.html', '연말정산 미리보기'], ['rent-credit.html', '월세 세액공제'], ['pension-credit.html', '연금저축·IRP 세액공제']],
+    'sme-special-relief': [['sme-check.html', '중소기업 해당 여부'], ['credit-carryforward.html', '세액공제 이월·최저한세'], ['corp-tax.html', '법인세 계산기']],
+    'refund-claim': [['credit-carryforward.html', '세액공제 이월·최저한세'], ['employment-credit.html', '통합고용세액공제'], ['sme-special-relief.html', '중소기업 특별세액감면']],
+    'credit-carryforward': [['rnd-credit.html', '연구·인력개발비 세액공제'], ['investment-credit.html', '통합투자세액공제'], ['refund-claim.html', '경정청구 환급']],
+    'gift-vs-sale': [['inherit-gift.html', '상속·증여세'], ['home-sale-tax.html', '1주택 양도세'], ['acquisition-tax.html', '주택 취득세']],
+    'ltv-limit': [['dsr-limit.html', 'DSR 대출 한도'], ['loan-repayment.html', '대출 이자·상환'], ['acquisition-tax.html', '주택 취득세']],
+    'prepayment-fee': [['loan-repayment.html', '대출 이자·상환'], ['ltv-limit.html', 'LTV·DSR 대출 한도'], ['effective-interest.html', '유효이자율 상각표']],
+    'rental-yield': [['rental-income-tax.html', '주택임대소득세'], ['acquisition-tax.html', '주택 취득세'], ['rent-conversion.html', '전월세 전환']],
+    'subscription-score': [['ltv-limit.html', 'LTV·DSR 대출 한도'], ['acquisition-tax.html', '주택 취득세'], ['loan-repayment.html', '대출 이자·상환']],
     'rent-conversion': [['brokerage-fee.html', '중개보수(복비)'], ['rental-income-tax.html', '주택임대소득세'], ['loan-repayment.html', '대출 이자·상환']],
     'brokerage-fee': [['acquisition-tax.html', '주택 취득세'], ['home-sale-tax.html', '1주택 양도세'], ['rent-conversion.html', '전월세 전환']],
     'home-property-tax': [['property-tax.html', '종합부동산세'], ['acquisition-tax.html', '주택 취득세'], ['health-insurance.html', '지역 건강보험료']],
@@ -333,7 +343,7 @@
     ifrs: 'lease depreciation allowance retirement deferred-tax revenue-check impairment rcps-cb stock-option fin-ratio capital-impairment working-capital break-even debt-capacity distributable-profit dev-cost fx-translation inventory-lcm gov-grant unused-leave accrual-prepaid effective-interest dupont operating-cashflow',
     fdd: 'valuation-needs stock-valuation dcf dilution external-valuation merger-price option-limit safe-conversion equity-bridge multiples pf-feasibility qualified-reorg runway dscr red-flags credit-metrics cap-table exit-waterfall',
     ppa: 'ppa',
-    etc: 'loan-repayment dsr-limit'
+    etc: 'loan-repayment dsr-limit ltv-limit prepayment-fee subscription-score'
   };
   function topicOf(p) { for (var k in TOPIC_OF) { if ((' ' + TOPIC_OF[k] + ' ').indexOf(' ' + p + ' ') >= 0) return k; } return 'tax'; }
   function toConsult() {

@@ -2007,4 +2007,219 @@
       return { r: r, cls: r.ok ? 'not-target' : 'target', title: r.ok ? '주 52시간 안입니다' : '주 52시간을 ' + n(r.over, 1) + '시간 넘습니다', sub: '1주 ' + n(r.total, 1) + '시간 (휴일 포함 7일 기준)', body: body, topic: 'tax', label: '노무 상담 신청' };
     }
   });
+  // 2026-11-26 세액공제·감면 5종 + 부동산·대출 5종 (credit-realty-rules.js, docs/65)
+  function CR() { return window.CreditRealtyRules; }
+  var YEAR_NOW = new Date().getFullYear();
+
+  E.register('rent-credit', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'salary', label: '총급여 (연봉, 비과세 제외)', unit: '만원', placeholder: '예: 5000' },
+        { type: 'number', id: 'income', label: '종합소득금액 (다른 소득이 있을 때만)', unit: '만원', hint: '근로소득만 있으면 비워 두세요' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'monthly', label: '월세 (한 달)', unit: '만원', placeholder: '예: 60' },
+        { type: 'number', id: 'months', label: '올해 낸 개월 수', unit: '개월', placeholder: '12' }] }
+    ],
+    run: function (v) {
+      var r = CR().rentCredit(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['올해 낸 월세', won(r.paid)], ['공제 대상 (한도 1천만원)', won(r.base)], ['공제율', r.ratePct + '%'], ['월세 세액공제', won(r.credit), true], ['지방소득세 감소 (10%)', won(r.localTax)]]);
+      return { r: r, cls: r.eligible ? 'target' : 'not-target', title: r.eligible ? '월세 세액공제 ' + won(r.credit) : '월세 세액공제 대상이 아닙니다', sub: r.eligible ? '공제율 ' + r.ratePct + '% · 지방소득세 포함 ' + won(r.credit + r.localTax) : '총급여 8천만원 이하(종합소득금액 7천만원 이하)만 받을 수 있습니다', body: body, topic: 'tax', label: '연말정산 상담 신청' };
+    }
+  });
+
+  E.register('special-credits', {
+    fields: [
+      { type: 'number', id: 'salary', label: '총급여 (연봉, 비과세 제외)', unit: '만원', placeholder: '예: 5000', hint: '의료비는 총급여의 3%를 넘는 부분부터 공제됩니다' },
+      { type: 'two', items: [
+        { type: 'number', id: 'medical', label: '의료비 — 일반 부양가족', unit: '만원' },
+        { type: 'number', id: 'medicalSelf', label: '의료비 — 본인·6세 이하·65세 이상·장애인', unit: '만원' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'preemie', label: '미숙아·선천성이상아 의료비', unit: '만원' },
+        { type: 'number', id: 'ivf', label: '난임시술비', unit: '만원' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'eduUni', label: '대학생 교육비 합계', unit: '만원', hint: '1명당 900만원 한도' },
+        { type: 'number', id: 'uniCount', label: '대학생 수', unit: '명', placeholder: '1' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'eduSchool', label: '취학 전·초중고 교육비 합계', unit: '만원', hint: '1명당 300만원 한도' },
+        { type: 'number', id: 'schoolCount', label: '취학 전·초중고 자녀 수', unit: '명', placeholder: '1' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'eduSelf', label: '본인 교육비 (대학원 포함)', unit: '만원' },
+        { type: 'number', id: 'eduDisabled', label: '장애인 특수교육비', unit: '만원' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'donation', label: '기부금 (종교단체·공익단체 등)', unit: '만원' },
+        { type: 'number', id: 'hometown', label: '고향사랑 기부금', unit: '만원' }] },
+      { type: 'number', id: 'political', label: '정치자금 기부금', unit: '만원' }
+    ],
+    run: function (v) {
+      var r = CR().specialCredits(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['의료비 문턱 (총급여 3%)', won(r.threshold)], ['의료비 세액공제', won(r.medicalCredit)], ['교육비 세액공제', won(r.educationCredit)], ['기부금 세액공제', won(r.donationCredit)], ['고향사랑 기부금', won(r.hometownCredit)], ['정치자금', won(r.politicalCredit)], ['세액공제 합계', won(r.total), true]]);
+      return { r: r, cls: r.total > 0 ? 'target' : 'not-target', title: '세액공제 합계 ' + won(r.total), sub: '의료비 ' + won(r.medicalCredit) + ' · 교육비 ' + won(r.educationCredit) + ' · 기부금 ' + won(r.donationCredit + r.hometownCredit + r.politicalCredit), body: body, topic: 'tax', label: '연말정산 상담 신청' };
+    }
+  });
+
+  E.register('sme-special-relief', {
+    fields: [
+      { type: 'number', id: 'tax', label: '감면 업종 사업장 소득에 대한 산출세액', unit: '만원', placeholder: '예: 5000', hint: '감면 업종이 아닌 소득분은 빼고 넣으세요' },
+      { type: 'radio', id: 'size', label: '기업 규모', options: [['small', '소기업'], ['medium', '중기업 (소기업이 아닌 중소기업)']] },
+      { type: 'radio', id: 'region', label: '사업장 위치', options: [['metro', '수도권 (본점이 수도권인 법인 포함)'], ['local', '수도권 밖']] },
+      { type: 'select', id: 'industry', label: '업종', options: [['general', '제조·건설·IT·연구개발 등 감면 업종'], ['retail', '도매·소매업, 의료업'], ['publish', '일반 서적 출판업 등 (중기업 수도권)'], ['none', '감면 업종이 아님 (음식점·숙박·부동산임대 등)']] },
+      { type: 'number', id: 'empDrop', label: '상시근로자가 직전 연도보다 줄어든 인원', unit: '명', hint: '1명당 한도 500만원 차감' },
+      { type: 'check', id: 'long10', label: '10년 이상 계속 경영 + 종합소득금액 1억원 이하 + 성실사업자 (110%)' }
+    ],
+    run: function (v) {
+      var r = CR().smeSpecialRelief(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['감면 비율', n(r.ratePct, 2) + '%'], ['감면 한도', won(r.limit)], ['감면세액', won(r.relief), true]]);
+      return { r: r, cls: r.eligible ? 'target' : 'not-target', title: r.eligible ? '특별세액감면 ' + won(r.relief) : '특별세액감면 대상이 아닙니다', sub: r.eligible ? '감면 비율 ' + n(r.ratePct, 2) + '%' + (r.capped ? ' · 한도에 걸림' : '') : '중기업 수도권 사업장은 출판업 외에는 감면이 없습니다', body: body, topic: 'tax', label: '세액감면 검토 상담 신청' };
+    }
+  });
+
+  var CL_YEARS = [];
+  for (var cy = YEAR_NOW - 6; cy <= YEAR_NOW - 1; cy++) CL_YEARS.push(cy);
+  E.register('refund-claim', {
+    fields: [
+      { type: 'radio', id: 'kind', label: '누가 신고했나요', options: [['corp', '법인 (12월 결산)'], ['indiv', '개인사업자·종합소득세'], ['wage', '직장인 (연말정산)']] },
+      { type: 'two', items: CL_YEARS.map(function (y) { return { type: 'number', id: 'y' + y, label: y + '년 귀속 놓친 공제·감면액', unit: '만원' }; }) }
+    ],
+    run: function (v) {
+      var r = CR().refundClaim(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table(r.rows.map(function (x) { return [x.year + '년 귀속 (기한 ' + x.deadline + ')', x.ok ? won(x.amount + x.local) : '기한 지남']; }).concat([['국세 환급', won(r.national)], ['지방소득세 환급', won(r.local)], ['환급 예상 합계', won(r.total), true]]));
+      return { r: r, cls: r.claimableCount ? 'target' : 'not-target', title: r.claimableCount ? '돌려받을 수 있는 세금 ' + won(r.total) : '경정청구 기한이 모두 지났습니다', sub: r.claimableCount ? '가장 급한 기한 ' + r.firstDeadline + ' · ' + r.claimableCount + '개 연도' : '법정신고기한 후 5년이 지나면 청구할 수 없습니다', body: body, topic: 'tax', label: '경정청구 상담 신청' };
+    }
+  });
+
+  E.register('credit-carryforward', {
+    fields: [
+      { type: 'check', id: 'sme', label: '중소기업입니다 (최저한세 7%)', value: true },
+      { type: 'two', items: [
+        { type: 'number', id: 'taxBase', label: '과세표준', unit: '만원', placeholder: '예: 50000' },
+        { type: 'number', id: 'calcTax', label: '산출세액', unit: '만원', placeholder: '예: 9000' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'relief', label: '최저한세 대상 세액감면 (중소기업 특별감면 등)', unit: '만원' },
+        { type: 'number', id: 'credit', label: '최저한세 대상 세액공제 (고용·투자 등)', unit: '만원' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'carried', label: '지난해까지 이월된 미공제 세액공제', unit: '만원' },
+        { type: 'number', id: 'other', label: '최저한세 적용 제외 공제 (중소기업 연구개발비 등)', unit: '만원' }] }
+    ],
+    run: function (v) {
+      var r = CR().carryforward(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['최저한세', won(r.minTax)], ['세액감면 적용', won(r.usedRelief)], ['이월 공제 사용', won(r.usedCarried)], ['당기 공제 사용', won(r.usedCredit)], ['최저한세 제외 공제', won(r.usedOther)], ['납부할 세액', won(r.payable), true], ['다음 해로 이월 (10년)', won(r.carryOver), true], r.lostRelief ? ['쓰지 못한 감면 (이월 안 됨)', won(r.lostRelief)] : null]);
+      return { r: r, cls: r.carryOver > 0 || r.lostRelief > 0 ? 'target' : 'not-target', title: r.carryOver > 0 ? won(r.carryOver) + '은 다음 해로 이월됩니다' : '공제를 모두 쓸 수 있습니다', sub: '최저한세 ' + won(r.minTax) + ' · 납부세액 ' + won(r.payable), body: body, topic: 'tax', label: '세액공제 검토 상담 신청' };
+    }
+  });
+
+  E.register('gift-vs-sale', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'price', label: '주택 시가 (감정가·유사 매매가)', unit: '만원', placeholder: '예: 50000' },
+        { type: 'number', id: 'salePrice', label: '가족에게 파는 가격', unit: '만원', hint: '비우면 시가로 계산' }] },
+      { type: 'select', id: 'relation', label: '받는 사람', options: [['asc_adult', '성년 자녀 (부모 → 자녀)'], ['asc_minor', '미성년 자녀'], ['spouse', '배우자'], ['relative', '그 밖의 친족']] },
+      { type: 'two', items: [
+        { type: 'number', id: 'stdPrice', label: '시가표준액 (공시가격)', unit: '만원', hint: '조정대상지역 증여 중과 판단용, 비우면 시가' },
+        { type: 'number', id: 'parentGain', label: '파는 부모의 양도소득세 예상액', unit: '만원', hint: '1주택 양도세 계산기로 구한 금액' }] },
+      { type: 'check', id: 'adjusted', label: '조정대상지역 주택입니다' },
+      { type: 'check', id: 'giverOneHouse', label: '주는 사람이 1세대 1주택자입니다 (증여 취득세 중과 제외)' }
+    ],
+    run: function (v) {
+      var r = CR().giftVsSale(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['증여세', won(r.giftTax)], ['증여 취득세 (' + r.giftAcqRate + '%)', won(r.giftAcq)], ['증여 합계', won(r.giftTotal), true], ['저가 양수 증여 의제액', won(r.deemedGift)], ['그 증여세', won(r.deemedGiftTax)], ['매매 취득세 (' + n(r.saleAcqRate, 2) + '%' + (r.unfair ? ', 시가 기준' : '') + ')', won(r.saleAcq)], ['부모 양도소득세 (입력)', won(r.parentGain)], ['매매 합계', won(r.saleTotal), true]]);
+      return { r: r, cls: 'not-target', title: (r.cheaper === 'sale' ? '매매' : '증여') + '가 ' + won(Math.abs(r.giftTotal - r.saleTotal)) + ' 적게 듭니다' + (r.parentGain ? '' : ' (부모 양도세 제외)'), sub: '증여 ' + won(r.giftTotal) + ' · 매매 ' + won(r.saleTotal) + (r.unfair ? ' · 시가와 차이가 커서 부당행위 계산 대상' : ''), body: body, topic: 'tax', label: '증여·양도 상담 신청' };
+    }
+  });
+
+  E.register('ltv-limit', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'price', label: '주택 시세 (KB시세·감정가)', unit: '만원', placeholder: '예: 50000' },
+        { type: 'number', id: 'ltv', label: 'LTV 비율', unit: '%', placeholder: '예: 70', hint: '지역·주택 수에 따라 다름, 은행에 확인' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'deduct', label: '방공제 (소액임차보증금 차감)', unit: '만원', hint: '모르면 비움' },
+        { type: 'number', id: 'cap', label: '주택담보대출 금액 상한', unit: '만원', hint: '규제지역 상한이 있으면 입력' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'income', label: '연 소득 (세전)', unit: '만원', placeholder: '예: 6000' },
+        { type: 'number', id: 'existing', label: '기존 대출 연간 원리금', unit: '만원' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'rate', label: '대출 금리', unit: '%', placeholder: '예: 4', step: '0.01' },
+        { type: 'number', id: 'stress', label: '스트레스 금리 가산', unit: '%p', step: '0.01' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'years', label: '대출 기간', unit: '년', placeholder: '30' },
+        { type: 'number', id: 'limit', label: 'DSR 기준', unit: '%', placeholder: '40' }] }
+    ],
+    run: function (v) {
+      var r = CR().ltvLimit(v);
+      if (r.status === 'INVALID') return { r: r };
+      var why = { ltv: 'LTV 한도', dsr: 'DSR 한도', cap: '금액 상한' }[r.binding];
+      var body = table([['LTV 한도', won(r.ltvLoan)], ['DSR 한도 (' + r.dsrLimitPct + '%, 금리 ' + n(r.calcRate, 2) + '%)', won(r.dsrLoan)], ['받을 수 있는 최대 금액', won(r.maxLoan), true]]);
+      return { r: r, cls: 'not-target', title: '최대 약 ' + won(r.maxLoan), sub: why + '에 걸립니다', body: body, topic: 'etc', label: '자금 계획 상담 신청' };
+    }
+  });
+
+  E.register('prepayment-fee', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'amount', label: '중도상환(갈아탈) 금액', unit: '만원', placeholder: '예: 10000' },
+        { type: 'number', id: 'feeRate', label: '중도상환수수료율', unit: '%', placeholder: '예: 1.2', step: '0.01' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'elapsed', label: '대출받은 뒤 지난 기간', unit: '개월', placeholder: '예: 12' },
+        { type: 'number', id: 'period', label: '수수료 부과 기간', unit: '개월', placeholder: '36' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'oldRate', label: '지금 금리', unit: '%', step: '0.01', hint: '갈아타기 비교용' },
+        { type: 'number', id: 'newRate', label: '갈아탈 금리', unit: '%', step: '0.01' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'remaining', label: '남은 대출 기간', unit: '개월', placeholder: '예: 240' },
+        { type: 'number', id: 'extra', label: '갈아타기 부대비용 (인지세 등)', unit: '만원' }] }
+    ],
+    run: function (v) {
+      var r = CR().prepaymentFee(v);
+      if (r.status === 'INVALID') return { r: r };
+      var rows = [['수수료가 남은 기간', r.left + '개월'], ['중도상환수수료', won(r.fee), true]];
+      if (r.saving !== undefined) rows = rows.concat([['지금 금리 남은 이자', won(r.oldInterest)], ['새 금리 남은 이자', won(r.newInterest)], ['이자 절감', won(r.saving)], ['수수료·비용 뺀 순효과', won(r.net), true]]);
+      var title = r.saving === undefined ? '중도상환수수료 ' + won(r.fee) : (r.worth ? '갈아타면 ' + won(r.net) + ' 이득입니다' : '갈아타면 ' + won(-r.net) + ' 손해입니다');
+      return { r: r, cls: r.saving === undefined ? 'not-target' : r.worth ? 'target' : 'not-target', title: title, sub: '수수료 ' + won(r.fee) + (r.saving !== undefined ? ' · 이자 절감 ' + won(r.saving) : ''), body: table(rows), topic: 'etc', label: '자금 상담 신청' };
+    }
+  });
+
+  E.register('rental-yield', {
+    fields: [
+      { type: 'two', items: [
+        { type: 'number', id: 'price', label: '매입가', unit: '만원', placeholder: '예: 30000' },
+        { type: 'number', id: 'costs', label: '취득 부대비용 (취득세·중개보수 등)', unit: '만원' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'deposit', label: '임대 보증금', unit: '만원', placeholder: '예: 3000' },
+        { type: 'number', id: 'monthly', label: '월세', unit: '만원', placeholder: '예: 120' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'loan', label: '대출금', unit: '만원' },
+        { type: 'number', id: 'loanRate', label: '대출 금리', unit: '%', step: '0.01' }] },
+      { type: 'number', id: 'expense', label: '연간 보유 비용 (관리비·수선비·재산세)', unit: '만원' }
+    ],
+    run: function (v) {
+      var r = CR().rentalYield(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['연 월세 수입', won(r.annualRent)], ['연 대출 이자', won(r.interest)], ['연 순수익', won(r.annualNet)], ['실투자금', won(r.equity)], ['표면 수익률', n(r.grossPct, 2) + '%'], ['실투자 수익률', n(r.netPct, 2) + '%', true]]);
+      return { r: r, cls: 'not-target', title: '실투자 수익률 ' + n(r.netPct, 2) + '%', sub: '표면 수익률 ' + n(r.grossPct, 2) + '% · 실투자금 ' + won(r.equity), body: body, topic: 'tax', label: '임대사업 세금 상담 신청' };
+    }
+  });
+
+  E.register('subscription-score', {
+    fields: [
+      { type: 'check', id: 'ownsHouse', label: '세대 구성원 중 주택을 가진 사람이 있습니다' },
+      { type: 'two', items: [
+        { type: 'number', id: 'noHouseYears', label: '무주택 기간', unit: '년', step: '0.1', hint: '만 30세(또는 혼인신고일)부터', when: function (v) { return !v.ownsHouse; } },
+        { type: 'number', id: 'dependents', label: '부양가족 수 (본인 제외)', unit: '명', placeholder: '예: 3' }] },
+      { type: 'two', items: [
+        { type: 'number', id: 'accountYears', label: '청약통장 가입 기간', unit: '년', step: '0.1', placeholder: '예: 10' },
+        { type: 'number', id: 'spouseAccountYears', label: '배우자 청약통장 가입 기간', unit: '년', step: '0.1', hint: '50%를 최대 3점까지 더함' }] }
+    ],
+    run: function (v) {
+      var r = CR().subscriptionScore(v);
+      if (r.status === 'INVALID') return { r: r };
+      var body = table([['무주택 기간 (최대 32점)', r.noHouse + '점'], ['부양가족 (최대 35점)', r.family + '점'], ['청약통장 (최대 17점)', r.account + '점' + (r.spouseBonus ? ' (배우자 가산 ' + r.spouseBonus + '점 포함)' : '')], ['합계 (84점 만점)', r.total + '점', true]]);
+      return { r: r, cls: 'not-target', title: '청약 가점 ' + r.total + '점', sub: '무주택 ' + r.noHouse + ' · 부양가족 ' + r.family + ' · 통장 ' + r.account, body: body, topic: 'etc', label: '내 집 마련 자금 상담 신청' };
+    }
+  });
 })();

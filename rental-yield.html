@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="naver-site-verification" content="60d698d04287e09c54d415c82df5f87193e1fc03">
+  <meta name="google-site-verification" content="WEVGAcfT1LM_DTxTOfXPEoC7WTuA0JpTw47BiNw0DFQ">
+  <title>임대수익률 계산기 (오피스텔·상가 실투자 수익률) | 기업 회계 도구</title>
+  <meta name="description" content="매입가, 보증금, 월세, 대출금과 금리, 취득 부대비용과 연간 보유 비용을 넣으면 표면 수익률과 대출을 뺀 실투자금 대비 수익률을 계산합니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="기업 회계 도구">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="임대수익률 계산기 (오피스텔·상가 실투자 수익률) | 기업 회계 도구">
+  <meta property="og:description" content="매입가, 보증금, 월세, 대출금과 금리, 취득 부대비용과 연간 보유 비용을 넣으면 표면 수익률과 대출을 뺀 실투자금 대비 수익률을 계산합니다.">
+  <meta property="og:url" content="https://cpatool.co.kr/rental-yield.html">
+  <link rel="canonical" href="https://cpatool.co.kr/rental-yield.html">
+  <meta property="og:image" content="https://cpatool.co.kr/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="기업 회계 도구 — 외부감사·내부회계·가치평가·세무 무료 계산기">
+  <meta name="twitter:card" content="summary_large_image">
+  <script>try{if(window.top!==window.self)document.documentElement.classList.add("in-frame")}catch(e){document.documentElement.classList.add("in-frame")}</script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%231f4e9c%27/%3E%3Cpath d=%27M9 16.5l5 5 9-11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+  <!-- jsonld:start -->
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"임대수익률 계산기","url":"https://cpatool.co.kr/rental-yield.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","inLanguage":"ko-KR","isAccessibleForFree":true,"description":"매입가, 보증금, 월세, 대출금과 금리, 취득 부대비용과 연간 보유 비용을 넣으면 표면 수익률과 대출을 뺀 실투자금 대비 수익률을 계산합니다.","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"기업 회계 도구","url":"https://cpatool.co.kr/","description":"공인회계사가 운영하는 무료 회계·세무 계산기"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"회계 도구","item":"https://cpatool.co.kr/"},{"@type":"ListItem","position":2,"name":"임대수익률 계산기","item":"https://cpatool.co.kr/rental-yield.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"취득세는 어떻게 넣나요?","acceptedAnswer":{"@type":"Answer","text":"오피스텔·상가는 보통 취득가액의 4.6%(지방교육세·농어촌특별세 포함)입니다. 중개보수와 함께 부대비용 칸에 넣으세요."}},{"@type":"Question","name":"임대소득세는요?","acceptedAnswer":{"@type":"Answer","text":"주택임대는 주택임대소득세 계산기로, 상가 임대는 종합소득세로 따로 계산하세요."}}]}]}</script>
+  <!-- jsonld:end -->
+</head>
+<body data-tool="rental-yield">
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">기업 회계 도구<small>공인회계사 운영</small></a>
+      <nav class="nav">
+        <a href="about.html">소개</a>
+        <a href="index.html#tools" aria-current="page">회계 도구</a>
+        <a href="standards.html">기준서 해설</a>
+        <a href="contact.html">상담 신청</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-title">
+      <h1>임대수익률 계산기 (오피스텔·상가 실투자 수익률)</h1>
+      <p>오피스텔이나 상가에 투자하면 실제 수익률이 얼마인지 계산해 보세요. 대출과 보증금을 빼고 내 돈 기준으로 봅니다.</p>
+    </div>
+    <p class="basis-date">작성일 2026년 11월 26일. 근거: 법령이 아닌 일반 수익률 산식.</p>
+    <div class="notice">세금(임대소득세·재산세·종부세), 공실, 보증금 운용 수익, 시세 변동은 반영하지 않았습니다.</div>
+
+    <section>
+      <form id="tool-form" novalidate><noscript><p>이 계산기는 자바스크립트가 필요합니다.</p></noscript></form>
+      <div id="result" class="result hidden" aria-live="polite"></div>
+    </section>
+<!-- guide:start -->
+    <section class="guide" aria-labelledby="guide-h">
+      <h2 id="guide-h">두 가지 수익률</h2>
+      <p>표면 수익률은 1년 월세를 매입가로 나눈 값입니다. 3억원에 월세 120만원이면 4.8%입니다.</p>
+      <p>실투자 수익률은 1년 월세에서 대출 이자와 보유 비용을 뺀 순수익을, 매입가에 부대비용을 더하고 보증금과 대출금을 뺀 내 돈으로 나눈 값입니다. 대출 금리가 수익률보다 낮으면 대출이 수익률을 높이고, 높으면 낮춥니다.</p>
+      <h3>자주 묻는 질문</h3>
+      <details><summary>취득세는 어떻게 넣나요?</summary><p>오피스텔·상가는 보통 취득가액의 4.6%(지방교육세·농어촌특별세 포함)입니다. 중개보수와 함께 부대비용 칸에 넣으세요.</p></details>
+      <details><summary>임대소득세는요?</summary><p>주택임대는 <a href="rental-income-tax.html">주택임대소득세 계산기</a>로, 상가 임대는 종합소득세로 따로 계산하세요.</p></details>
+      <p class="hint">함께 보면 좋은 도구는 <a href="rental-income-tax.html">주택임대소득세</a>, <a href="acquisition-tax.html">주택 취득세</a>, 실제 판단이 필요하면 <a href="contact.html">상담 신청</a>으로 문의하실 수 있습니다.</p>
+    </section>
+    <!-- guide:end -->
+      </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>기업 회계 도구</b> · 공인회계사 운영</p>
+      <p>이메일 <a href="mailto:ybackh@gmail.com">ybackh@gmail.com</a> · <a href="https://pf.kakao.com/_xgxfENX/chat" target="_blank" rel="noopener">카카오톡 채널 문의</a> · <a href="https://www.youtube.com/@cpatool_cpa" target="_blank" rel="noopener">유튜브</a> · <a href="https://blog.naver.com/ybackh" target="_blank" rel="noopener">네이버 블로그</a> · <a href="https://www.youtube.com/@gongsi_cpa" target="_blank" rel="noopener">공시 읽는 회계사(유튜브)</a> · <a href="https://www.youtube.com/@founder_cpa" target="_blank" rel="noopener">창업자 재무 과외(유튜브)</a> · <a href="https://www.youtube.com/@news_cpa" target="_blank" rel="noopener">회계사가 본 뉴스(유튜브)</a> · <a href="https://www.instagram.com/cpatool/" target="_blank" rel="noopener">인스타그램</a></p>
+      <p>이 사이트의 계산 결과는 참고용이며 법률·회계 자문을 대신하지 않습니다. · <a href="terms.html">이용 조건과 면책</a> · <a href="basis.html">기준일·변경 이력</a> · <a href="privacy.html">개인정보처리방침</a></p>
+    </div>
+  </footer>
+  <script src="assets/tax-tools-rules.js"></script>
+  <script src="assets/tax-credit-rules.js"></script>
+  <script src="assets/inherit-gift-rules.js"></script>
+  <script src="assets/personal-tax-rules.js"></script>
+  <script src="assets/finance-rules.js"></script>
+  <script src="assets/credit-realty-rules.js"></script>
+  <script src="assets/tool-engine.js"></script>
+  <script src="assets/more-tools.js"></script>
+  <script src="assets/result-tools.js"></script>
+  <script src="assets/nav.js"></script>
+  <!-- Cloudflare Web Analytics (쿠키 없음, 개인정보처리방침 9항) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3d07e2284bc1440994f639ea79477e36"}'></script>
+</body>
+</html>

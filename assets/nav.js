@@ -32,6 +32,7 @@
     ] },
     { group: '부동산·대출', tone: 'green', items: [
       ['loan-repayment.html', '대출 이자·상환 계산기'], ['dsr-limit.html', 'DSR 대출 한도', 1], ['rent-conversion.html', '전월세 전환'], ['brokerage-fee.html', '중개보수(복비)'],
+      ['gift-vs-sale.html', '부동산 증여 vs 매매', 1], ['ltv-limit.html', '주택담보대출 한도 (LTV+DSR)', 1], ['prepayment-fee.html', '중도상환수수료·갈아타기'], ['rental-yield.html', '임대수익률'], ['subscription-score.html', '청약 가점'],
     ] },
     { group: '개인 세금 (직장인·프리랜서·투자자)', tone: 'pink', items: [
       ['year-end-tax.html', '연말정산 미리보기'], ['pension-credit.html', '연금저축·IRP 세액공제'], ['freelancer-tax.html', '프리랜서 3.3% 환급'], ['foreign-stock-tax.html', '해외주식 양도소득세'], ['home-sale-tax.html', '1주택 양도세·다주택 중과', 1], ['acquisition-tax.html', '주택 취득세'],
@@ -40,6 +41,7 @@
     ] },
     { group: '세액공제·감면', tone: 'teal', items: [
       ['employment-credit.html', '통합고용세액공제', 1], ['rnd-credit.html', '연구·인력개발비 세액공제'], ['investment-credit.html', '통합투자세액공제'], ['startup-relief.html', '창업중소기업 세액감면'], ['angel-deduction.html', '엔젤투자 소득공제'],
+      ['rent-credit.html', '월세 세액공제'], ['special-credits.html', '의료비·교육비·기부금 세액공제'], ['sme-special-relief.html', '중소기업 특별세액감면'], ['refund-claim.html', '경정청구 환급 (5년)'], ['credit-carryforward.html', '세액공제 이월·최저한세'],
     ] },
     { group: '가치평가·M&A', tone: 'blue', items: [
       ['valuation-needs.html', '어떤 평가가 필요한가요?'], ['stock-valuation.html', '비상장주식 상증법 약식 평가'], ['dcf.html', 'DCF·WACC 간이 계산기'], ['dilution.html', '투자 유치 지분 희석'],
