@@ -38,11 +38,9 @@
     var m = num(input.monthly, '월세(월)', { positive: true });
     var months = Math.min(12, Math.floor(num(input.months, '낸 개월 수', { optional: true, def: 12 }) || 12));
     if (bad(r)) return r;
-    r.eligible = g <= 8000 && (inc === null || inc <= 7000);
-    r.ratePct = g <= 5500 && (inc === null || inc <= 4500) ? 17 : 15;
     r.paid = m * months * MAN;
-    r.base = Math.min(r.paid, 1000 * MAN);
-    r.credit = r.eligible ? fl(r.base * r.ratePct / 100) : 0;
+    var rc = PT.rentCreditOf(g * MAN, inc === null ? null : inc * MAN, r.paid); // 규칙은 personal-tax-rules.js 한 곳
+    r.eligible = rc.eligible; r.ratePct = rc.ratePct; r.base = rc.base; r.credit = rc.credit;
     r.localTax = fl(r.credit * 0.1);
     r.status = r.eligible ? 'OK' : 'NOT_ELIGIBLE';
     r.basis.push('「조세특례제한법」 제95조의2제1항(총급여 8천만원 이하·종합소득금액 7천만원 이하 15%, 총급여 5,500만원 이하·종합소득금액 4,500만원 이하 17%, 월세 연 1천만원 한도), 제2항(2026년 지급분부터 요건을 갖춘 배우자 추가 공제, 합계 1천만원 한도)');
@@ -63,16 +61,11 @@
     var schN = Math.max(1, Math.floor(num(input.schoolCount, '취학 전·초중고 자녀 수', { optional: true, def: 1 }) || 1));
     var don = o('donation', '기부금'), home = o('hometown', '고향사랑 기부금'), pol = o('political', '정치자금 기부금');
     if (bad(r)) return r;
-    // 의료비: 총급여 3% 문턱을 일반 → 본인 등 → 미숙아 → 난임 순서로 뺌(§59의4② 각 호 단서)
-    var thr = g * 0.03;
-    var genEx = Math.min(Math.max(0, gen - thr), 700 * MAN), rem = Math.max(0, thr - gen);
-    var selfEx = Math.max(0, self - rem); rem = Math.max(0, rem - self);
-    var preEx = Math.max(0, pre - rem); rem = Math.max(0, rem - pre);
-    var ivfEx = Math.max(0, ivf - rem);
-    r.threshold = fl(thr);
-    r.medicalCredit = fl((genEx + selfEx) * 0.15) + fl(preEx * 0.2) + fl(ivfEx * 0.3);
+    var med = PT.medicalCreditOf(g, gen, self, pre, ivf); // 의료비·기부금 규칙은 personal-tax-rules.js 한 곳
+    r.threshold = med.threshold;
+    r.medicalCredit = med.credit;
     r.educationCredit = fl((eSelf + Math.min(eUni, 900 * MAN * uniN) + Math.min(eSch, 300 * MAN * schN) + eDis) * 0.15);
-    r.donationCredit = fl(Math.min(don, 1000 * MAN) * 0.15 + Math.max(0, don - 1000 * MAN) * 0.3);
+    r.donationCredit = PT.donationCreditOf(don);
     var h = Math.min(home, 2000 * MAN);
     r.hometownCredit = fl(Math.min(h, 10 * MAN) * 100 / 110) + fl(Math.min(Math.max(0, h - 10 * MAN), 10 * MAN) * 0.4) + fl(Math.max(0, h - 20 * MAN) * 0.15);
     r.politicalCredit = fl(Math.min(pol, 10 * MAN) * 100 / 110) + fl(Math.min(Math.max(0, pol - 10 * MAN), 3000 * MAN) * 0.15) + fl(Math.max(0, pol - 3010 * MAN) * 0.25);

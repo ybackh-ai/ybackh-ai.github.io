@@ -70,6 +70,26 @@
     var extra = ded > lim ? Math.min(ded - lim, Math.min(M * 0.4 + (low ? U * 0.3 : 0), low ? 3e6 : 2e6)) : 0;
     return fl(Math.min(ded, lim) + extra);
   }
+  // 특별세액공제 공통 규칙 — 연말정산 미리보기와 credit-realty-rules.js(월세·의료비 등 계산기)가 함께 씀. 금액은 원.
+  // 월세: 조특법 §95의2① (총급여 8천만·종합소득금액 7천만 이하 15%, 5,500만·4,500만 이하 17%, 1천만원 한도)
+  function rentCreditOf(g, inc, rent) {
+    var eligible = g <= 8e7 && (inc === null || inc === undefined || inc <= 7e7);
+    var ratePct = g <= 5.5e7 && (inc === null || inc === undefined || inc <= 4.5e7) ? 17 : 15;
+    var base = Math.min(rent, 1e7);
+    return { eligible: eligible, ratePct: ratePct, base: base, credit: eligible ? fl(base * ratePct / 100) : 0 };
+  }
+  // 의료비: 소득세법 §59의4② (총급여 3% 문턱을 일반 → 본인 등 → 미숙아 → 난임 순으로 차감, 일반 700만원 한도, 15/15/20/30%)
+  function medicalCreditOf(g, gen, self, pre, ivf) {
+    var thr = g * 0.03;
+    var genEx = Math.min(Math.max(0, gen - thr), 7e6), rem = Math.max(0, thr - gen);
+    var selfEx = Math.max(0, self - rem); rem = Math.max(0, rem - self);
+    var preEx = Math.max(0, (pre || 0) - rem); rem = Math.max(0, rem - (pre || 0));
+    var ivfEx = Math.max(0, (ivf || 0) - rem);
+    return { threshold: fl(thr), credit: fl((genEx + selfEx) * 0.15) + fl(preEx * 0.2) + fl(ivfEx * 0.3) };
+  }
+  // 기부금: 소득세법 §59의4④ (15%, 1천만원 초과분 30%)
+  function donationCreditOf(don) { return fl(Math.min(don, 1e7) * 0.15 + Math.max(0, don - 1e7) * 0.3); }
+
   function yearEndTax(input) {
     input = input || {};
     var r = base(), num = reader(r.errors);
@@ -97,13 +117,11 @@
     r.childCredit = kids <= 0 ? 0 : kids === 1 ? 250000 : 550000 + (kids - 2) * 400000;
     var penEl = Math.min(pen * MAN, 9e6); // 연금저축(600만원 이내)·IRP 합계 입력, 900만원 한도
     r.pensionCredit = fl(penEl * (g <= 5.5e7 ? 0.15 : 0.12));
-    var thr = g * 0.03;
-    var medEx = Math.min(Math.max(0, medG - thr), 7e6), medSelf = Math.max(0, medS - Math.max(0, thr - medG));
-    r.medicalCredit = fl((medEx + medSelf) * 0.15);
+    r.medicalCredit = medicalCreditOf(g, medG, medS).credit;
     r.educationCredit = fl(edu * 0.15);
     r.insuranceCredit = fl(Math.min(insP, 1e6) * 0.12);
-    r.donationCredit = fl(Math.min(don, 1e7) * 0.15 + Math.max(0, don - 1e7) * 0.3);
-    r.rentCredit = g <= 8e7 ? fl(Math.min(rent, 1e7) * (g <= 5.5e7 ? 0.17 : 0.15)) : 0;
+    r.donationCredit = donationCreditOf(don);
+    r.rentCredit = rentCreditOf(g, null, rent).credit;
     var special = r.medicalCredit + r.educationCredit + r.insuranceCredit + r.donationCredit + r.rentCredit;
     r.useStandard = special < 130000;
     r.specialCredit = r.useStandard ? 130000 : special;
@@ -258,7 +276,7 @@
     return r;
   }
 
-  var api = { pensionCredit: pensionCredit, yearEndTax: yearEndTax, freelancerTax: freelancerTax, foreignStockTax: foreignStockTax, homeSaleTax: homeSaleTax, acquisitionTax: acquisitionTax, VERSION: VERSION };
+  var api = { rentCreditOf: rentCreditOf, medicalCreditOf: medicalCreditOf, donationCreditOf: donationCreditOf, pensionCredit: pensionCredit, yearEndTax: yearEndTax, freelancerTax: freelancerTax, foreignStockTax: foreignStockTax, homeSaleTax: homeSaleTax, acquisitionTax: acquisitionTax, VERSION: VERSION };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.PersonalTaxRules = api;
 })(this);

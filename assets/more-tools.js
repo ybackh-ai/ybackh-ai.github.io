@@ -1140,6 +1140,7 @@
         { type: 'number', id: 'sales', label: '매출 (일반: 공급가액 / 간이: 부가세 포함 공급대가)', unit: '만원', placeholder: '예: 10000' },
         { type: 'number', id: 'purchases', label: '매입 (일반: 공제 가능한 공급가액 / 간이: 세금계산서 등 받은 공급대가)', unit: '만원', placeholder: '예: 6000' }] },
       { type: 'number', id: 'cardSales', label: '신용카드·현금영수증 발행금액 (선택)', unit: '만원', hint: '개인 소매·음식점 등만 공제. 법인은 비움' },
+      { type: 'select', id: 'year', label: '공급 연도 (카드 발행 세액공제율)', options: (new Date(Date.now() + 9 * 3600000).getUTCFullYear() >= 2027 ? [['2027', '2027년 (1%, 연 500만원 한도)'], ['2026', '2026년 (1.3%, 연 1천만원 한도)']] : [['2026', '2026년 (1.3%, 연 1천만원 한도)'], ['2027', '2027년 (1%, 연 500만원 한도)']]) },
       { type: 'number', id: 'prevYearSupply', label: '직전 연도 공급대가 합계 (선택: 간이과세 가능 여부 확인)', unit: '만원', placeholder: '예: 9000' }
     ]; },
     run: function (v) {
@@ -1156,6 +1157,7 @@
 
   E.register('labor-cost', {
     fields: [
+      { type: 'select', id: 'year', label: '적용 연도 (국민연금 요율)', options: (new Date(Date.now() + 9 * 3600000).getUTCFullYear() >= 2027 ? [['2027', '2027년 (국민연금 5.0%)'], ['2026', '2026년 (4.75%)']] : [['2026', '2026년 (국민연금 4.75%)'], ['2027', '2027년 (5.0%)']]) },
       { type: 'two', items: [
         { type: 'number', id: 'monthly', label: '월 급여 (세전)', unit: '만원', placeholder: '예: 300' },
         { type: 'number', id: 'nonTaxable', label: '그중 비과세 수당 (식대 등)', unit: '만원', placeholder: '예: 20' }] },
@@ -1166,7 +1168,7 @@
     run: function (v) {
       var r = BT().laborCost(v);
       if (r.status === 'INVALID') return { r: r };
-      var body = table([['국민연금 (4.75%)', won(r.pension)], ['건강보험 (3.595%)', won(r.health)], ['장기요양 (0.4724%)', won(r.ltc)], ['고용보험', won(r.employment)], ['산재보험', won(r.accident)], ['회사 부담 4대보험 (월)', won(r.monthlyEmployer), true]]) +
+      var body = table([['국민연금 (' + r.pensionPct + '%)', won(r.pension)], ['건강보험 (3.595%)', won(r.health)], ['장기요양 (0.4724%)', won(r.ltc)], ['고용보험', won(r.employment)], ['산재보험', won(r.accident)], ['회사 부담 4대보험 (월)', won(r.monthlyEmployer), true]]) +
         table([['연 급여', won(r.annualSalary)], ['연 4대보험 회사 부담', won(r.annualEmployer)], ['퇴직금 적립 (연, 추정)', won(r.severanceReserve)], ['연간 총 인건비', won(r.annualTotal), true]]);
       return { r: r, cls: 'not-target', title: '이 직원 1명에게 1년에 약 ' + won(r.annualTotal) + '이 듭니다', sub: '연봉의 ' + n(r.ratio) + '% · 4대보험 회사 부담 월 ' + won(r.monthlyEmployer), body: body, topic: 'tax', label: '급여·인건비 상담 신청' };
     }
@@ -1235,6 +1237,7 @@
 
   E.register('net-salary', {
     fields: [
+      { type: 'select', id: 'year', label: '적용 연도 (국민연금 요율)', options: (new Date(Date.now() + 9 * 3600000).getUTCFullYear() >= 2027 ? [['2027', '2027년 (국민연금 5.0%)'], ['2026', '2026년 (4.75%)']] : [['2026', '2026년 (국민연금 4.75%)'], ['2027', '2027년 (5.0%)']]) },
       { type: 'two', items: [
         { type: 'number', id: 'monthly', label: '월 급여 (세전)', unit: '만원', placeholder: '예: 300', hint: '연봉이면 12로 나눠 넣습니다' },
         { type: 'number', id: 'nonTaxable', label: '그중 비과세 수당 (식대 등)', unit: '만원', placeholder: '예: 20' }] },
