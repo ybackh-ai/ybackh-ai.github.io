@@ -266,6 +266,8 @@ th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line
 th { color: var(--muted); font-weight: 600; font-size: 13px; }
 td.num { text-align: right; white-space: nowrap; }
 th.num { text-align: right; }
+td.txt, th.txt { text-align: left; }
+.table-scroll td:first-child, .table-scroll th:first-child { min-width: 6em; }
 tr.row-total td { font-weight: 700; color: var(--ink); }
 .mark-yes { color: var(--warn); font-weight: 700; }
 .mark-no { color: var(--muted); }

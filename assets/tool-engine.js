@@ -10,13 +10,17 @@
   function won(x) { return n(x, 0) + '원'; }
   function man(x) { return n(Math.round(x / 10000), 0) + '만원'; }
   /** rows: [[label, value, isTotal]] → 2열 표 */
+  // 긴 문장은 숫자 칸(오른쪽 정렬·줄바꿈 없음)으로 두면 375px에서 첫 열이 한 글자 폭으로 눌린다(2026-11-27)
+  function isLong(s) { return String(s === undefined || s === null ? '' : s).length > 16; }
   function table(rows) {
-    return '<table><tbody>' + rows.filter(Boolean).map(function (r) { return '<tr' + (r[2] ? ' class="row-total"' : '') + '><td>' + esc(r[0]) + '</td><td class="num">' + esc(r[1]) + '</td></tr>'; }).join('') + '</tbody></table>';
+    return '<table><tbody>' + rows.filter(Boolean).map(function (r) { return '<tr' + (r[2] ? ' class="row-total"' : '') + '><td>' + esc(r[0]) + '</td><td' + (isLong(r[1]) ? ' class="txt"' : ' class="num"') + '>' + esc(r[1]) + '</td></tr>'; }).join('') + '</tbody></table>';
   }
-  /** head: [..], rows: [[..]] → 스크롤 표 (첫 열 제외 숫자 정렬) */
+  /** head: [..], rows: [[..]] → 스크롤 표 (첫 열 제외 숫자 정렬, 긴 문장 열은 왼쪽 정렬·줄바꿈) */
   function grid(head, rows) {
-    return '<div class="table-scroll"><table><thead><tr>' + head.map(function (h, i) { return '<th' + (i ? ' class="num"' : '') + '>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
-      rows.map(function (r) { return '<tr>' + r.map(function (c, i) { return '<td' + (i ? ' class="num"' : '') + '>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+    var txt = head.map(function (h, i) { return i > 0 && rows.some(function (r) { return isLong(r[i]); }); });
+    var cls = function (i) { return !i ? '' : txt[i] ? ' class="txt"' : ' class="num"'; };
+    return '<div class="table-scroll"><table><thead><tr>' + head.map(function (h, i) { return '<th' + cls(i) + '>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      rows.map(function (r) { return '<tr>' + r.map(function (c, i) { return '<td' + cls(i) + '>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
   }
   function list(title, arr) { return arr && arr.length ? '<h3>' + esc(title) + '</h3><ul class="basis">' + arr.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : ''; }
 
