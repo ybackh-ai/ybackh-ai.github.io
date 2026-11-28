@@ -166,7 +166,7 @@
     'stock-valuation': [['189-W1L_H20', '비상장주식 평가 2026'], ['84IeUI_yAlo', '비상장주식 자녀 증여 세금']],
     'corp-tax': [['FKyQBFnGRF8', '법인세 계산 2026']],
     'depreciation': [['H6CH7fJS7vg', '감가상각비 세법 한도']],
-    'option-limit': [['-2h2PTuSfYw', '스톡옵션 부여 한도와 행사 세금'], ['uRfLS4DfbY4', '스톡옵션 풀과 법정 한도 (창업자 재무 과외)']],
+    'option-limit': [['-2h2PTuSfYw', '스톡옵션 부여 한도와 행사 세금'], ['oyzOLHEmf98', '스톡옵션 풀과 법정 한도 (창업자 재무 과외)']],
     'stock-option-tax': [['-2h2PTuSfYw', '스톡옵션 부여 한도와 행사 세금']],
     'stock-option': [['WyMopcdTxLA', '스톡옵션 공정가치 계산']],
     'inherit-gift': [['N-85bgrYViY', '상속세 과세표준 20억이면 얼마?'], ['0Lc0eftwXxM', '자녀 증여세 2026']],
